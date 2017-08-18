@@ -1,0 +1,53 @@
+snelSLiM
+Openly available as free software under the GNU AGPL License http://www.gnu.org/licenses/agpl-3.0.html and available on https://github.com/bertvandepoel/snelslim
+
+snelSLiM - Interface for quick Stable Lexical Marker Analysis
+Copyright (c) 2017 Bert Van de Poel
+Under superivison of Prof. Dr. Dirk Speelman
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/. 
+
+
+Foliafolia
+Openly available as free software under the GNU AGPL License http://www.gnu.org/licenses/agpl-3.0.html and available on https://github.com/VincentVanlaer/foliafolie
+
+Foliafolie - A fast parser to extract lemma and text elements from folia xml
+Copyright (C) 2017 Vincent Vanlaer
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/. 
+
+
+Bootstrap
+Openly available as open source software software under the MIT License https://opensource.org/licenses/MIT and available on https://github.com/twbs/bootstrap
+Copyright (c) 2011-2016 Twitter, Inc.
+
+
+Bootstrap Lumen Theme
+Openly available as open source software software under the MIT License https://opensource.org/licenses/MIT and available on https://github.com/thomaspark/bootswatch/tree/gh-pages/lumen
+Copyright (c) 2013 Thomas Park
+
+
+libxml - xmllint
+snelSLiM uses the installed version of xmllint on the server it is deployed to. Non the less an acknowledgement is in place for the great work at the libxml project http://www.xmlsoft.org/

@@ -1,0 +1,16 @@
+.page-header, h1 {
+	margin-top: 0px;
+}
+
+.tooltip {
+	font-size: 15px;
+}
+
+.formtooltip {
+	margin-left: 15px;
+}
+
+.form-or {
+	text-align: center;
+	font-style: italic;
+}

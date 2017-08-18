@@ -1,0 +1,177 @@
+<div class="page-header" id="banner">
+	<div class="row">
+		<div class="col-md-12">
+			<h1>Corpus Formats</h1>
+			<p class="lead">There is a wide variety of both similar and very different corpus formats in the world of linguistics. Many are however not well known or sometimes hard to identify. Below we look at each possible format and how to recognise it.</p>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>CoNLL</h1>
+		<p>CoNLL is a tab seperated value creates a column structure similar to the one below. CGN plk and syn files, Jasmin pos files, Lassy lp files and COCA all use this format. You have to specify which column you wish to select as the lemma isn't always in the first column. It may contain marker rows in XML, they will be ignored.</p>
+		<pre>uhm	TSW()	uhm	381784	125606
+&lt;au id="1" s="N01002" tb="0.403"&gt;
+moeten	WW(pv,tgw,mv)	moeten	192216	63891
+die	VNW(aanw,det,stan,prenom,zonder,rest)	die	619640	134811</pre>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>FoLiA XML</h1>
+		<p>FoLiA is the most complex and detailed format we support. It usually features a vast amount of information about each word in a text or fragment. Because of this high amount of information, it can be slow to parse. We offer 2 options to parse FoLiA. The fast option uses foliafolie and selects any word of which the class is WORD, WORD-WITHSUFFIX, WORD-COMPOUNT, WORD-TOKEN, WORD-PARPREFIX or WORD-PARSUFFIX. If literal strings (text items in FoLiA context) are selected, then foliafolie will select all occurances within the structure of the word that do not have any attributes. If lemmas are selected, foliafolie will select the first lemma that is not within an alt-tag. The method using XPath will only select words of the class WORD. If literal strings (text items in FoLiA context) are selected, then the xpath option will select all occurances directly under w but not in a substructure. If lemmas are selected, the xpath method will select the all lemma directly under w but not in a substructure. In most cases, the fast option is the better option.<br><br>FoLiA is used in corpora such as SoNaR and SoNaR New Media<br><br>The example below is a heavily simplified, your file will look similar but have many more attributes and elements</p>
+		<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;FoLiA xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://ilk.uvt.nl/folia" xml:id="WR-U-E-D-0000000001" generator="libfolia-v0.10" version="0.8"&gt;
+&lt;text xml:id="hallo.test"&gt;
+&lt;t&gt;Hallo tests&lt;/t&gt;
+&lt;s&gt;
+	&lt;w class="WORD"&gt;
+		&lt;t&gt;Hallo&lt;/t&gt;
+		&lt;lemma class="hallo"/&gt;
+	&lt;/w&gt;
+	&lt;w class="WORD"&gt;
+		&lt;t&gt;tests&lt;/t&gt;
+		&lt;lemma class="test"/&gt;
+	&lt;/w&gt;
+&lt;/s&gt;
+&lt;/text&gt;
+&lt;/FoLiA&gt;</pre>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>DCOI XML</h1>
+		<p>This XML format is somewhat similar to FoLiA but contains less information. You can easily recognise it based on the starting DCOI-tag on the second line of each file.</p>
+		<pre>&lt;?xml version="1.0" encoding="iso-8859-15"?&gt;
+&lt;DCOI xmlns:imdi="http://www.mpi.nl/IMDI/Schema/IMDI" xmlns="http://lands.let.ru.nl/projects/d-coi/ns/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d-coi="http://lands.let.ru.nl/projects/d-coi/ns/1.0" xsi:schemaLocation="http://lands.let.ru.nl/projects/d-coi/ns/1.0 dcoi.xsd"&gt;
+	&lt;text&gt;
+		&lt;body&gt;
+			&lt;p&gt;
+				&lt;s&gt;
+					&lt;w pos="LID(bep,stan,rest)" lemma="de"&gt;De&lt;/w&gt;
+					&lt;w pos="N(soort,ev,basis,zijd,stan)" lemma="partij"&gt;partij&lt;/w&gt;
+					&lt;w pos="WW(pv,tgw,ev)" lemma="zijn"&gt;is&lt;/w&gt;
+					&lt;w pos="VZ(init)" lemma="aan"&gt;aan&lt;/w&gt;
+					&lt;w pos="LID(bep,stan,rest)" lemma="de"&gt;de&lt;/w&gt;
+					&lt;w pos="N(soort,ev,basis,zijd,stan)" lemma="macht"&gt;macht&lt;/w&gt;
+					&lt;w pos="LET()" lemma="."&gt;.&lt;/w&gt;
+				&lt;/s&gt;
+			&lt;/p&gt;
+		&lt;/body&gt;
+	&lt;/text&gt;
+&lt;/DCOI&gt;</pre>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>Plain text</h1>
+		<p>Plain text is just what you would think. A bare txt-file featuring text without any layout or metadata.</p>
+		<pre>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras turpis arcu, varius sit amet viverra ut, 
+molestie quis turpis. Proin viverra, justo ut vulputate consequat, justo velit suscipit sapien, eget tempor urna libero sit amet magna. 
+Phasellus in luctus massa, a bibendum arcu. Cras elementum, felis eu feugiat scelerisque, sem mi pretium ex, eget venenatis massa lectus at nulla. 
+Nam fermentum velit orci, quis condimentum ligula pellentesque quis. Nam sed eleifend neque. Mauris id orci a massa accumsan ultrices eget vel dolor. 
+Sed vitae ante lorem. Proin ac aliquam massa. </pre>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>Alpino XML</h1>
+		<p>Alpino is a format more suitable for saving syntactic trees rather than entire corpora, but it is technically possible to analyse them with snelSLiM. Alpino is an XML format that features a simple open tag and then just nodes. It is easy to recognise as it is mostly just nested nodes.</p>
+		<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;alpino_ds version="1.3"&gt;
+  &lt;node begin="0" cat="top" end="19" id="0" rel="top"&gt;
+    &lt;node begin="0" cat="du" end="18" id="1" rel="--"&gt;
+      &lt;node begin="0" end="1" id="2" lemma="nu" pos="adv" postag="BW()" pt="bw" rel="dp" root="nu" word="Nu"/&gt;
+      &lt;node begin="1" cat="advp" end="18" id="3" rel="dp"&gt;
+        &lt;node begin="1" end="2" id="4" lemma="terug" pos="adv" postag="BW()" pt="bw" rel="hd" root="terug" word="terug"/&gt;
+      &lt;/node&gt;
+    &lt;/node&gt;
+  &lt;/node&gt;
+&lt;/alpino&gt;</pre>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>TEI XML - BNC/Brown Corpus variant</h1>
+		<p>The TEI XML standard is a rather ambitious standard that wishes to support </p>
+		<pre>...
+&lt;s n="1"&gt;
+&lt;w c5="PNP" hw="it" pos="PRON"&gt;It&lt;/w&gt;
+&lt;w c5="VM0" hw="would" pos="VERB"&gt;would&lt;/w&gt;
+&lt;w c5="VVI" hw="help" pos="VERB"&gt;help&lt;/w&gt;
+&lt;w c5="PNP" hw="we" pos="PRON"&gt;us&lt;/w&gt;
+&lt;/s&gt;
+...</pre>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>Corpus Eindhoven</h1>
+		<p>This corpus uses its own custom format. Each word is follow by an underscore and a categorisation number, each line is encapsuled in &lt; and &gt;. One file contains several texts or fragments, so the preparser will attempt to split them.</p>
+		<pre>&lt; dit_360 in_600 verband_000 met_600 de_370 gemiddeld_150 langere_106 levensduur_000 van_600 de_370 vrouw_000 . &gt;</pre>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>Corpus Gysseling</h1>
+		<p>This corpus uses its own custom format, all files have the .fromdb-extension. It features some metadata and is then followed by lemma's inside of C-tags prefixed with a number categorisation. Each C-tag is followed by its literal string. </p>
+		<pre>...
+&lt;L 1330:42&gt; &lt;C 474_DE/HET&gt; den &lt;C 1_STEEN&gt; stene &lt;C 309_EEN&gt; .i. &lt;C 9_DENARIUS&gt; d 
+...</pre>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>OANC XML</h1>
+		<p>The Open American National Corpus seems to be one of the few corpora to use a variant of the XCES standard (a standard similar in aim to TEI). This XML format starts with a cesAna-tag and then features words and properties in struct-tags containing feat-tags</p>
+		<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;cesAna xmlns="http://www.xces.org/schema/2003" version="1.0.4"&gt;
+   &lt;struct type="tok" from="324" to="332"&gt;
+      &lt;feat name="base" value="severely"/&gt;
+      &lt;feat name="msd" value="RB"/&gt;
+   &lt;/struct&gt;
+   &lt;struct type="tok" from="333" to="343"&gt;
+      &lt;feat name="msd" value="VBN"/&gt;
+      &lt;feat name="base" value="challenge"/&gt;
+      &lt;feat name="affix" value="ed"/&gt;
+   &lt;/struct&gt;
+&lt;/cesAna&gt;</pre>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>OANC MASC XML</h1>
+		<p>MASC is a subcorpus of OANC with more annotations. It uses the XCES GrAF format instead of regular XCES. Words are structured within a-tags containing fs-tags containing f-tags with the string and annotations. It starts with a graph-tag and can be easily recognised by its structural elements.</p>
+		<pre>&lt;graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/"&gt;
+  &lt;graphHeader&gt;
+    ...
+  &lt;/graphHeader&gt;
+  &lt;node xml:id="penn-n0"&gt;
+    &lt;link targets="seg-r0"/&gt;
+  &lt;/node&gt;
+  &lt;a xml:id="penn-N65571" label="tok" ref="penn-n0" as="anc"&gt;
+    &lt;fs&gt;
+      &lt;f name="string" value="My"/&gt;
+      &lt;f name="msd" value="PRP$"/&gt;
+      &lt;f name="base" value="my"/&gt;
+    &lt;/fs&gt;
+  &lt;/a&gt;
+  &lt;node xml:id="penn-n1"&gt;
+    &lt;link targets="seg-r2"/&gt;
+  &lt;/node&gt;
+  &lt;a xml:id="penn-N65599" label="tok" ref="penn-n1" as="anc"&gt;
+    &lt;fs&gt;
+      &lt;f name="string" value="name"/&gt;
+      &lt;f name="msd" value="NN"/&gt;
+      &lt;f name="base" value="name"/&gt;
+    &lt;/fs&gt;
+  &lt;/a&gt;
+&lt;/graph&gt;</pre>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>Other XML formats</h1>
+		<p>The vast amount of different XML formats used in linguistics makes it hard to make sure to support every relevant format. Specially when new formats could be around the corner. Therefore this application offers a generic XPath option. Do keep in mind that the XPath query needs to end in either the selection of a tag or an attribute (as in /tag or /@attr). Otherwise, output from the query might not get processed correctly.</p>
+	</div>
+</div>

@@ -1,0 +1,6 @@
+.settings/
+.settings/*
+.project
+parser
+preparser
+analyser

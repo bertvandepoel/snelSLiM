@@ -1,0 +1,26 @@
+<div class="page-header" id="banner">
+	<div class="row">
+		<div class="col-md-12">
+			<h1>Association Measures</h1>
+			<p class="lead">Association Measures are different ways to calculate possible attraction between two metrics. In case of Stable Lexical Marker Analysis the attraction of the item as a keyword for one corpus and specifically not the other. Two measures are offered as options, they will almost always yield the same result. Only in edgecases with very differently sized corpora is there a chance that a significant difference exists.</p>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>Positive likelihood ratio</h1>
+		<p>The positive likelihood ratio is the sensitivity devided by one minus the specificity. Where the sensivitivy is the frequency of a word in the corpus over the total size of the corpus, and the specificity is the total size of the other corpus minus the number of times the selected word is present in that corpus devided by the total of the other corpus.</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>Odds ratio</h1>
+		<p>The odds ratio is the division of frequency of the word in both corpora devided by the division of the other items in the corpora.</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>Why no Fisher-Yates Exact?</h1>
+		<p>Fisher Exact hypotheses test calculation requires calculation of 9 different factorials including of to combined size of both corpora. As the combined corpora could easily contain over a million items, calculating just that factorial would be a very long process as well as result in a number that is very difficult to store (as it would be extremely large). Therefore, usage of Fisher Exact is too impractical for SLMA.</p>
+	</div>
+</div>

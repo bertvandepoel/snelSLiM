@@ -1,0 +1,141 @@
+<div class="page-header" id="banner">
+	<div class="row">
+		<div class="col-md-12">
+			<h1>Quick Stable Lexical Marker Analysis</h1>
+			<p class="lead">Please use the form below to specify which two corpora should be used to perform stable lexical marker analysis. If you upload a corpus here, it will be deleted after use. If you wish to save a corpus for extensive use, please upload it under <a href="?corpora">My Corpora</a>. You can view your previous reports under <a href="?reports">My SLM Reports</a>. If you have any questions, please have a look at the different items in the help menu.</p>
+		</div>
+	</div>
+</div>
+<form action="?" method="post" enctype="multipart/form-data">
+	<div class="row">
+		<div class="col-md-4">
+			<fieldset>
+				<legend>Corpus 1</legend>
+				<div class="form-group">
+					<label for="c1-select" class="control-label">Existing corpus</label>
+					<select class="form-control" id="c1-select" name="c1-select">
+						<option value="none">None</option>
+						%corpus%
+					</select>
+				</div>
+				<h4 class="form-or">OR</h4>
+				<div class="form-group">
+					<label for="c1-file" class="control-label">
+						New corpus (single use)
+						<a href="#" data-toggle="tooltip" class="formtooltip" title="Supply your corpus in the form of a zip or tar containing your texts or fragments directly or in a single level of subfolders">help</a>
+					</label>
+					<input class="form-control" id="c1-file" type="file" name="c1-file">
+				</div>
+				<div class="form-group">
+					<label for="c1-format" class="control-label">
+						Corpus format new corpus
+						<a href="?formats" data-toggle="tooltip" class="formtooltip" title="If you are not sure what to select, click here to go to the Corpus Formats help page">help</a>
+					</label>
+					<select class="form-control" id="c1-format" name="c1-format">
+						<option value="conll">CoNLL tab-seperated values, specify column index</option>
+						<option value="folia-text-fast">FoLiA XML - fast method: literal string</option>
+						<option value="folia-lemma-fast">FoLiA XML - fast method: lemma</option>
+						<option value="folia-text-xpath">FoLiA XML - slow method: literal string</option>
+						<option value="folia-lemma-xpath">FoLiA XML - slow method: lemma</option>
+						<option value="dcoi-text">DCOI XML: literal string</option>
+						<option value="dcoi-lemma">DCOI XML: lemma</option>
+						<option value="plain">Plain text (txt)</option>
+						<option value="alpino-text">Alpino XML: literal string</option>
+						<option value="alpino-lemma">Alpino XML: lemma</option>
+						<option value="bnc-text">TEI XML - BNC/Brown Corpus variant: literal string</option>
+						<option value="bnc-lemma">TEI XML - BNC/Brown Corpus variant: lemma</option>
+						<option value="eindhoven">Corpus Eindhoven format (literal string only)</option>
+						<option value="gysseling-text">Corpus Gysseling format: literal string</option>
+						<option value="gysseling-lemma">Corpus Gysseling format: lemma</option>
+						<option value="masc-text">OANC MASC XML: literal string</option>
+						<option value="masc-lemma">OANC MASC XML: lemma</option>
+						<option value="oanc">OANC XML (lemma only)</option>
+						<option value="xpath">XML, specify XPath</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="c1-extra" class="control-label">Extra format option (column index CoNLL or XPath query)</label>
+					<input class="form-control" id="c1-extra" type="text" name="c1-extra">
+				</div>
+			</fieldset>
+		</div>
+		<div class="col-md-4 col-md-offset-1">
+			<fieldset>
+				<legend>Corpus 2</legend>
+				<div class="form-group">
+					<label for="c2-select" class="control-label">Existing corpus</label>
+					<select class="form-control" id="c2-select" name="c2-select">
+						<option value="none">None</option>
+						%corpus%
+					</select>
+				</div>
+				<h4 class="form-or">OR</h4>
+				<div class="form-group">
+					<label for="c2-file" class="control-label">
+						New corpus (single use)
+						<a href="#" data-toggle="tooltip" class="formtooltip" title="Supply your corpus in the form of a zip or tar containing your texts or fragments directly or in a single level of subfolders">help</a>
+					</label>
+					<input class="form-control" id="c2-file" type="file" name="c2-file">
+				</div>
+				<div class="form-group">
+					<label for="c2-format" class="control-label">
+						Corpus format new corpus
+						<a href="?formats" data-toggle="tooltip" class="formtooltip" title="If you are not sure what to select, click here to go to the Corpus Formats help page">help</a>
+					</label>
+					<select class="form-control" id="c2-format" name="c2-format">
+						<option value="conll">CoNLL tab-seperated values, specify column index</option>
+						<option value="folia-text-fast">FoLiA XML - fast method: literal string</option>
+						<option value="folia-lemma-fast">FoLiA XML - fast method: lemma</option>
+						<option value="folia-text-xpath">FoLiA XML - slow method: literal string</option>
+						<option value="folia-lemma-xpath">FoLiA XML - slow method: lemma</option>
+						<option value="dcoi-text">DCOI XML: literal string</option>
+						<option value="dcoi-lemma">DCOI XML: lemma</option>
+						<option value="plain">Plain text (txt)</option>
+						<option value="alpino-text">Alpino XML: literal string</option>
+						<option value="alpino-lemma">Alpino XML: lemma</option>
+						<option value="bnc-text">TEI XML - BNC/Brown Corpus variant: literal string</option>
+						<option value="bnc-lemma">TEI XML - BNC/Brown Corpus variant: lemma</option>
+						<option value="eindhoven">Corpus Eindhoven format (literal string only)</option>
+						<option value="gysseling-text">Corpus Gysseling format: literal string</option>
+						<option value="gysseling-lemma">Corpus Gysseling format: lemma</option>
+						<option value="masc-text">OANC MASC XML: literal string</option>
+						<option value="masc-lemma">OANC MASC XML: lemma</option>
+						<option value="oanc">OANC XML (lemma only)</option>
+						<option value="xpath">XML, specify XPath</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="c2-extra" class="control-label">Extra format option (column index CoNLL or XPath query)</label>
+					<input class="form-control" id="c2-extra" type="text" name="c2-extra">
+				</div>
+			</fieldset>
+		</div>
+		<div class="col-md-2 col-md-offset-1">
+			<fieldset>
+				<legend>SLM settings</legend>
+				<div class="form-group">
+					<label for="freqnum" class="control-label">Number of frequent items to analyse per corpus</label>
+					<input class="form-control" id="freqnum" type="text" name="freqnum" value="200">
+				</div>
+				<div class="form-group">
+					<label for="am" class="control-label">
+						Association Measure
+						<a href="?am" data-toggle="tooltip" class="formtooltip" title="If you are not sure what to select, click here to go to the Association Measures help page">help</a>
+					</label>
+					<select class="form-control" id="am" name="am">
+						<option value="likelihood">Positive likelihood ratio</option>
+						<option value="odds">Odds Ratio</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="resultnum" class="control-label">Number of final items per corpus</label>
+					<input class="form-control" id="resultnum" type="text" name="resultnum" value="20">
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary" name="analyse">Analyse</button>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</form>
+
