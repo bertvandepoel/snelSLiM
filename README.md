@@ -6,6 +6,13 @@ A linguistic set of tools in Go and web interface in PHP to do quick Stable Lexi
 
 Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus, FoLiA XML, Gysseling corpus, OANC, OANC MASC, plain text and XML with XPath query.
 
+## Screenshots
+
+![screenshot main page](/screenshot1.png?raw=true)
+![screenshot corpora overview](/screenshot2.png?raw=true)
+![screenshot report overview](/screenshot3.png?raw=true)
+![screenshot report details](/screenshot4.png?raw=true)
+
 ## Getting Started
 
 ### Prerequisites
