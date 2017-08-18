@@ -10,6 +10,7 @@ Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus
 
 ### Prerequisites
 
+* Unix-style Operating system
 * Golang 1.8
 * PHP 5.5 (might work with older versions)
   * With no restrictions on the use of shell_exec
