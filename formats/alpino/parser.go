@@ -45,7 +45,7 @@ func main() {
 		for _, row := range rows {
 			if row != "" && row != " " {
 				value := strings.Split(row, "\"")
-				count[strings.ToLower(value[0])]++
+				count[strings.ToLower(html.UnescapeString(value[0]))]++
 			}
 		}
 	} else {
@@ -53,7 +53,7 @@ func main() {
 		for _, row := range rows {
 			if row != "" && row != " " {
 				value := strings.Split(row, "\"")
-				count[strings.ToLower(value[0])]++
+				count[strings.ToLower(html.UnescapeString(value[0]))]++
 			}
 		}
 	}
@@ -61,7 +61,7 @@ func main() {
 	var result bytes.Buffer
 
 	for key, value := range count {
-		result.WriteString(html.UnescapeString(key))
+		result.WriteString(key)
 		result.WriteString("\t")
 		valuestring := strconv.Itoa(value)
 		result.WriteString(valuestring)

@@ -67,13 +67,13 @@ func main() {
 					}
 					if lemma {
 						if !strings.HasPrefix(field, "-t:") {
-							count[strings.ToLower(field)]++
+							count[strings.ToLower(html.UnescapeString(field))]++
 							break
 						}
 					} else {
 						if strings.HasPrefix(field, "-t:") {
 							value := strings.Split(field, ":")
-							count[strings.ToLower(value[1])]++
+							count[strings.ToLower(html.UnescapeString(value[1]))]++
 						}
 					}
 				}
@@ -97,7 +97,7 @@ func main() {
 			for _, row := range rows {
 				if row != "" && row != " " {
 					value := strings.Split(row, "\"")
-					count[strings.ToLower(value[0])]++
+					count[strings.ToLower(html.UnescapeString(value[0]))]++
 				}
 			}
 		} else {
@@ -106,7 +106,7 @@ func main() {
 			for _, row := range rows {
 				if row != "" && row != " " {
 					value := strings.Split(row, ">")
-					count[strings.ToLower(value[1])]++
+					count[strings.ToLower(html.UnescapeString(value[1]))]++
 				}
 			}
 		}
@@ -115,7 +115,7 @@ func main() {
 	var result bytes.Buffer
 
 	for key, value := range count {
-		result.WriteString(html.UnescapeString(key))
+		result.WriteString(key)
 		result.WriteString("\t")
 		valuestring := strconv.Itoa(value)
 		result.WriteString(valuestring)

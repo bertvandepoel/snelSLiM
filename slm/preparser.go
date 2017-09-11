@@ -77,7 +77,7 @@ func main() {
 		} else if format == "oanc" {
 			output, err = exec.Command("../formats/OANC/parser", file, savedir+"/"+base+".snelslim").Output()
 		} else if format == "xpath" {
-			output, err = exec.Command("../formats/DCOI/parser", file, extra, savedir+"/"+base+".snelslim").Output()
+			output, err = exec.Command("../formats/xpath/parser", file, extra, savedir+"/"+base+".snelslim").Output()
 		} else {
 			err := ioutil.WriteFile(savedir+"error", []byte("error: unknown format"), 0644)
 			if err != nil {
