@@ -172,6 +172,6 @@ Sed vitae ante lorem. Proin ac aliquam massa. </pre>
 <div class="row">
 	<div class="col-md-12">
 		<h1>Other XML formats</h1>
-		<p>The vast amount of different XML formats used in linguistics makes it hard to make sure to support every relevant format. Specially when new formats could be around the corner. Therefore this application offers a generic XPath option. Do keep in mind that the XPath query needs to end in either the selection of a tag or an attribute (as in /tag or /@attr). Otherwise, output from the query might not get processed correctly.</p>
+		<p>The vast amount of different XML formats used in linguistics makes it hard to make sure to support every relevant format. Specially when new formats could be around the corner. Therefore this application offers a generic XPath option. Do keep in mind that the XPath query needs to end in either the selection of a tag or an attribute (as in /tag or /@attr). Otherwise, output from the query might not get processed correctly. The corpus itself should be XML without custom entities, containing only numeric style regular entities and no complex features such as includes, DTDs and XSLT. Also keep in mind to only supply XML files and make sure the XPath applies to all XML files. The parser will attempt to parse every files contained in the archive and will consider the corpus erroneous if any of the files do not return correct XPath query results.</p>
 	</div>
 </div>
