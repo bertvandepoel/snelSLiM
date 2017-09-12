@@ -141,7 +141,7 @@ Sed vitae ante lorem. Proin ac aliquam massa. </pre>
 <div class="row">
 	<div class="col-md-12">
 		<h1>OANC MASC XML</h1>
-		<p>MASC is a subcorpus of OANC with more annotations. It uses the XCES GrAF format instead of regular XCES. Words are structured within a-tags containing fs-tags containing f-tags with the string and annotations. It starts with a graph-tag and can be easily recognised by its structural elements.</p>
+		<p>MASC is a subcorpus of OANC with more annotations. It uses the XCES GrAF format instead of regular XCES. Words are structured within a-tags containing fs-tags containing f-tags with the string and annotations. It starts with a graph-tag and can be easily recognised by its structural elements. The literal word is extracted from the value of the f-tag with string as its name. We use the content of the value attribute in the f-tag that has base as its name. It is not strictly a lemma.</p>
 		<pre>&lt;graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/"&gt;
   &lt;graphHeader&gt;
     ...
