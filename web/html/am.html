@@ -2,25 +2,56 @@
 	<div class="row">
 		<div class="col-md-12">
 			<h1>Association Measures</h1>
-			<p class="lead">Association Measures are different ways to calculate possible attraction between two metrics. In case of Stable Lexical Marker Analysis the attraction of the item as a keyword for one corpus and specifically not the other. Two measures are offered as options, they will almost always yield the same result. Only in edgecases with very differently sized corpora is there a chance that a significant difference exists.</p>
+			<p class="lead">Association Measures are different ways to calculate possible attraction between two metrics. In case of Stable Lexical Marker Analysis the attraction of the item as a keyword for one corpus and specifically not the other. Two measures are offered as options, they will almost always yield the same result. Only in edgecases with very differently sized corpora is there a chance that a significant difference exists. Both methods use the following table for calculations. For each word that is selected from the frequency list of the selected corpus, these cels are calculated. </p>
 		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<table class="table">
+			<tr><th></th><th>Selected Corpus</th><th>Contrasted Corpus</th></tr>
+			<tr><th>Frequency of word/lemma</th><td>cel1</td><td>cel2</td></tr>
+			<tr><th>Frequency of all other words/lemmas</th><td>cel3</td><td>cel4</td></tr>
+		</table>
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-12">
 		<h1>Positive likelihood ratio</h1>
-		<p>The positive likelihood ratio is the sensitivity devided by one minus the specificity. Where the sensivitivy is the frequency of a word in the corpus over the total size of the corpus, and the specificity is the total size of the other corpus minus the number of times the selected word is present in that corpus devided by the total of the other corpus.</p>
+		<p>The positive likelihood ratio is the log of the sensitivity devided by one minus the specificity. Where the sensivitivy is the frequency of a word in the corpus over the total size of the corpus, and the specificity is the total size of the other corpus minus the number of times the selected word is present in that corpus devided by the total of the other corpus.</p>
+		<p>In terms of formula:</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-4">
+		<img src="images/sensitivity.png" style="width: 100%;">
+	</div>
+	<div class="col-md-4">
+		<img src="images/specificity.png" style="width: 100%;">
+	</div>
+	<div class="col-md-4">
+		<img src="images/ratio.png" style="width: 100%;">
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-4 col-md-offset-4">
+		<p>And when combined: </p><img src="images/total.png" style="width: 100%;">
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-12">
 		<h1>Odds ratio</h1>
-		<p>The odds ratio is the division of frequency of the word in both corpora devided by the division of the other items in the corpora.</p>
+		<p>The odds ratio is the division of frequency of the word in both corpora devided by the division of the other items in the corpora. It is important to keep in mind that it is possible that for certain words/lemmas cel2 is empty because it only occurs in the selected corpus. In that case the software presumes the frequency is one if you select Odds ratio. Do keep this in mind.</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-4 col-md-offset-4">
+		<p>As a formula: </p><img src="images/oddsratio.png" style="width: 100%;">
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-12">
 		<h1>Why no Fisher-Yates Exact?</h1>
-		<p>Fisher Exact hypotheses test calculation requires calculation of 9 different factorials including of to combined size of both corpora. As the combined corpora could easily contain over a million items, calculating just that factorial would be a very long process as well as result in a number that is very difficult to store (as it would be extremely large). Therefore, usage of Fisher Exact is too impractical for SLMA.</p>
+		<p>Fisher Exact hypotheses test calculation requires calculation of 9 different factorials including of the combined size of both corpora. As the combined corpora could easily contain over a million items, calculating just that factorial would be a very long process as well as result in a number that is very difficult to store (as it would be extremely large). Therefore, usage of Fisher Exact is too impractical for SLMA.</p>
 	</div>
 </div>
