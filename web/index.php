@@ -67,6 +67,9 @@ elseif(isset($_GET['formats'])) {
 elseif(isset($_GET['am'])) {
 	require('html/am.html');
 }
+elseif(isset($_GET['faq'])) {
+	require('html/faq.html');
+}
 elseif(isset($_GET['accounts'])) {
 	require('accounts.php');
 }

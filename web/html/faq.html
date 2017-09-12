@@ -1,0 +1,38 @@
+<div class="page-header" id="banner">
+	<div class="row">
+		<div class="col-md-12">
+			<h1>Frequently Asked Questions</h1>
+			<p class="lead">In case some things are not entirely clear, you can have a look at these questions for an answer. For specific questions about SLMA, Corpus Formats or Association Measure, make sure to also have a look at their respective help pages.</p>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1 id="encoding">How about the encoding of my corpus?</h1>
+		<p>This application supports and autodetects UTF-8 and ISO-8859-1. Other forms of encoding (such as other ISO-8859 encoding formats) might get recognized correctly.</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1 id="archive">What should the corpus archive I'm uploading look like?</h1>
+		<p>It should be a zip, tar, tar.gz or tar.bz2 containing your texts or fragments and nothing else in whatever directory structure is convenient to you. Be sure that all files are actually in the format you are defining for the corpus. If a single file fails to parse, the entire corpus will be discarded.</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1 id="freqnum">What should I enter in the field "Number of frequent items to analyse per corpus"?</h1>
+		<p>The default value for this field is 200. Simply put, after calculating the frequency of every word or lemma in each corpus, we have a very long list of frequencies. Calculating the positive likelihood ratio or odds ratio for every single item would take a long time and would be very wasteful for very large copora, as there is only scientific value in the actual keywords. Therefore we use a cut-off value specified in this field. If the value is 200, only the 200 most frequent items in corpus 1, and in corpus 2 as well, will be further investigated. Sometimes it can be useful to increase this number if your corpus happens to contains a large amount of similarly frequent words or if you decide to increase the number of results (a large amount of fully calculated items to select results from is preferable).</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1 id="resultnum">What should I enter in the field "Number of final items per corpus"?</h1>
+		<p>The default value for this field is 20. This value represents the number of keywords that will be displayed as part of the end result per corpus. What value to enter here mostly depends on how many keywords could be useful for your research. Of course, the more results you request, the more chance the attraction may be low. Also keep in mind that an increased number of results also requires an increased number of frequent items to analyse (see above).</p>
+	</div>
+</div>
+<!-- <div class="row">
+	<div class="col-md-12">
+		<h1 id=""></h1>
+		<p></p>
+	</div>
+</div> -->
