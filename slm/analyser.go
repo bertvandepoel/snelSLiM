@@ -264,7 +264,7 @@ func main() {
 		} else { //odds ratio
 			denominator := (cel3 / cel4)
 			if denominator == 0 {
-				denominator = math.SmallestNonzeroFloat64
+				denominator = 0.00001
 			}
 			ratio := (cel1 / cel2) / denominator
 			logratio := math.Log(ratio)
@@ -368,7 +368,7 @@ func main() {
 		} else { //odds ratio
 			denominator := (cel3 / cel4)
 			if denominator == 0 {
-				denominator = math.SmallestNonzeroFloat64
+				denominator = 0.00001
 			}
 			ratio := (cel1 / cel2) / denominator
 			logratio := math.Log(ratio)
