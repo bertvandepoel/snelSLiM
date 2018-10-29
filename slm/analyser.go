@@ -246,28 +246,29 @@ func main() {
 		}
 		i++
 		/*
-		 *     corpus1   corpus 2
-		 * W    cel1       cel2
-		 * !W   cel3       cel4
+		 *            W       !W
+		 * corpus1   cel1    cel2
+		 * corpus2   cel3    cel4
 		 *
 		 */
 		cel1 := float64(kv.Value)
-		cel2 := float64(c2globalcount[kv.Key])
-		cel3 := float64(c1total - kv.Value)
-		cel4 := float64(c2total - kv.Value)
+		cel2 := float64(c1total - kv.Value)
+		cel3 := float64(c2globalcount[kv.Key])
+		cel4 := float64(c2total - c2globalcount[kv.Key])
 		if am == "likelihood" {
 			sensitivity := cel1 / (cel1 + cel3)
 			specificity := cel4 / (cel4 + cel2)
 			ratio := sensitivity / (1 - specificity)
 			logratio := math.Log(ratio)
 			c1results = append(c1results, structresult{kv.Key, logratio})
-		} else { //odds
-			//hacky fix om gedeeld door 0 te voorkomen
-			if cel2 == 0 {
-				cel2 = float64(1)
+		} else { //odds ratio
+			denominator := (cel3 / cel4)
+			if denominator == 0 {
+				denominator = math.SmallestNonzeroFloat64
 			}
-			ratio := (cel1 / cel2) / (cel3 / cel4)
-			c1results = append(c1results, structresult{kv.Key, ratio})
+			ratio := (cel1 / cel2) / denominator
+			logratio := math.Log(ratio)
+			c1results = append(c1results, structresult{kv.Key, logratio})
 		}
 	}
 
@@ -349,28 +350,29 @@ func main() {
 		}
 		i++
 		/*
-		 *     corpus1   corpus 2
-		 * W    cel1       cel2
-		 * !W   cel3       cel4
+		 *            W       !W
+		 * corpus1   cel1    cel2
+		 * corpus2   cel3    cel4
 		 *
 		 */
 		cel1 := float64(kv.Value)
-		cel2 := float64(c1globalcount[kv.Key])
 		cel3 := float64(c2total - kv.Value)
-		cel4 := float64(c1total - kv.Value)
+		cel2 := float64(c1globalcount[kv.Key])
+		cel4 := float64(c1total - c1globalcount[kv.Key])
 		if am == "likelihood" {
 			sensitivity := cel1 / (cel1 + cel3)
 			specificity := cel4 / (cel4 + cel2)
 			ratio := sensitivity / (1 - specificity)
 			logratio := math.Log(ratio)
 			c2results = append(c2results, structresult{kv.Key, logratio})
-		} else { //odds
-			//hacky fix om gedeeld door 0 te voorkomen
-			if cel2 == 0 {
-				cel2 = float64(1)
+		} else { //odds ratio
+			denominator := (cel3 / cel4)
+			if denominator == 0 {
+				denominator = math.SmallestNonzeroFloat64
 			}
-			ratio := (cel1 / cel2) / (cel3 / cel4)
-			c2results = append(c2results, structresult{kv.Key, ratio})
+			ratio := (cel1 / cel2) / denominator
+			logratio := math.Log(ratio)
+			c2results = append(c2results, structresult{kv.Key, logratio})
 		}
 	}
 
