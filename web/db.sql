@@ -3,7 +3,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `accounts` (
   `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `admin` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -44,5 +45,5 @@ ALTER TABLE `corpora`
 ALTER TABLE `reports`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-INSERT INTO `accounts` (`email`, `hash`) VALUES
-('test@example.com', '$2y$10$d53lQJTJAn6EMuXsYf/NNeXjhkXWh.KorXcHCvBuYzkyQT1Pn84He');
+INSERT INTO `accounts` (`email`, `hash`, `admin`) VALUES
+('test@example.com', '$2y$10$d53lQJTJAn6EMuXsYf/NNeXjhkXWh.KorXcHCvBuYzkyQT1Pn84He', 1);

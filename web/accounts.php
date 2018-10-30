@@ -49,8 +49,14 @@ if(isset($_GET['delete'])) {
 	}
 }
 elseif(isset($_POST['create'])) {
-	$insert = $db->prepare('INSERT INTO accounts VALUES (?,?)');
-	$insert->execute(array($_POST['email'], password_hash($_POST['password'], PASSWORD_BCRYPT)));
+	if($_POST['isAdmin'] == 'yes') {
+		$isadmin = 1;
+	}
+	else {
+		$isadmin = 0;
+	}
+	$insert = $db->prepare('INSERT INTO accounts VALUES (?,?,?)');
+	$insert->execute(array($_POST['email'], password_hash($_POST['password'], PASSWORD_BCRYPT), $isadmin));
 }
 
 if(isset($_GET['add'])) {
@@ -67,6 +73,11 @@ if(isset($_GET['add'])) {
 					<div class="form-group">
 						<label for="inputPassword" class="control-label">Password</label>
 						<input class="form-control" id="inputPassword" placeholder="Password" type="password" name="password">
+					</div>
+					<div class="form-group">
+						<label class="control-label">Admin account?</label><br>
+						<label for="adminyes" class="radio-inline"><input type="radio" name="isAdmin" value="yes" id="adminyes">Yes</label>
+						<label for="adminno" class="radio-inline"><input type="radio" name="isAdmin" value="no" id="adminno" checked>No</label>
 					</div>
 					<div class="form-group">
 						<button type="submit" class="btn btn-primary" name="create">Create new account</button>

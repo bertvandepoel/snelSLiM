@@ -21,26 +21,35 @@
 ini_set('upload_max_filesize', '2G');
 ini_set('post_max_size', '2G');
 
-require('html/top.html');
+
 
 session_start();
 require('mysql.php');
 if(isset($_POST['login'])) {
-	$get_hash = $db->prepare('SELECT hash FROM accounts WHERE email=?');
-	$get_hash->execute(array($_POST['email']));
-	$hash = $get_hash->fetch(PDO::FETCH_ASSOC);
-	if( (!$hash) OR (!password_verify($_POST['password'], $hash['hash']))) {
+	$get_user = $db->prepare('SELECT hash, admin FROM accounts WHERE email=?');
+	$get_user->execute(array($_POST['email']));
+	$user = $get_user->fetch(PDO::FETCH_ASSOC);
+	if( (!$user) OR (!password_verify($_POST['password'], $user['hash']))) {
+		require('html/top.html');
 		require('html/loginerror.html');
 		require('html/login.html');
 		require('html/bottom.html');
 		exit;
 	}
-	if(password_needs_rehash($hash['hash'], PASSWORD_BCRYPT)) {
-		$update_hash = $db->prepare('UPDATE accounts SET hash=? WHERE email=?');
-		$update_hash->execute(array(password_hash($_POST['password'], PASSWORD_BCRYPT), $_POST['email']));
+	if(password_needs_rehash($user['hash'], PASSWORD_BCRYPT)) {
+		$update_user = $db->prepare('UPDATE accounts SET hash=? WHERE email=?');
+		$update_user->execute(array(password_hash($_POST['password'], PASSWORD_BCRYPT), $_POST['email']));
 	}
 	$_SESSION['loggedin'] = true;
 	$_SESSION['email'] = $_POST['email'];
+	$_SESSION['admin'] = $user['admin'];
+}
+
+if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
+	require('html/top_admin.html');
+}
+else {
+	require('html/top.html');
 }
 
 if(!isset($_SESSION['loggedin'])) {
@@ -71,7 +80,12 @@ elseif(isset($_GET['faq'])) {
 	require('html/faq.html');
 }
 elseif(isset($_GET['accounts'])) {
-	require('accounts.php');
+	if($_SESSION['admin']) {
+		require('accounts.php');
+	}
+	else {
+		require('html/permissionerror.html');
+	}
 }
 elseif(isset($_GET['pw'])) {
 	if(isset($_POST['change'])) {
