@@ -14,6 +14,16 @@ import (
 )
 
 func main() {
+	if len(os.Args) < 7 {
+		fmt.Println("The snelSLiM analyser requires 6 arguments:")
+		fmt.Println("1. the path to the first preparsed corpus")
+		fmt.Println("2. the path to the second preparsed corpus")
+		fmt.Println("3. the number of most frequent items to analyse for each corpus")
+		fmt.Println("4. the association measure (either odds or likelihood)")
+		fmt.Println("5. the number of desired markers for each corpus")
+		fmt.Println("6. the directory to write the results report to")
+		os.Exit(1)
+	}
 	c1 := os.Args[1] + "/"
 	c2 := os.Args[2] + "/"
 	reportdir := os.Args[6] + "/"
