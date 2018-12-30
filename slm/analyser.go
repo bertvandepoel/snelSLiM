@@ -256,11 +256,18 @@ func main() {
 		cel3 := float64(c2globalcount[kv.Key])
 		cel4 := float64(c2total - c2globalcount[kv.Key])
 		if am == "likelihood" {
-			sensitivity := cel1 / (cel1 + cel3)
-			specificity := cel4 / (cel4 + cel2)
-			ratio := sensitivity / (1 - specificity)
-			logratio := math.Log(ratio)
-			c1results = append(c1results, structresult{kv.Key, logratio})
+			// TODO: check this on possibilities of divide by zero
+			N := cel1 + cel2 + cel3 + cel4
+			R1 := cel1 + cel2
+			R2 := cel3 + cel4
+			C1 := cel1 + cel3
+			C2 := cel2 + cel4
+			Gcel1 := 2 * cel1 * math.Log(cel1/R1*C1/N)
+			Gcel2 := 2 * cel2 * math.Log(cel2/R1*C2/N)
+			Gcel3 := 2 * cel3 * math.Log(cel3/R2*C1/N)
+			Gcel4 := 2 * cel4 * math.Log(cel4/R2*C2/N)
+			Gsquared := Gcel1 + Gcel2 + Gcel3 + Gcel4
+			c1results = append(c1results, structresult{kv.Key, Gsquared})
 		} else { //odds ratio
 			denominator := (cel3 / cel4)
 			if denominator == 0 {
@@ -360,11 +367,18 @@ func main() {
 		cel2 := float64(c1globalcount[kv.Key])
 		cel4 := float64(c1total - c1globalcount[kv.Key])
 		if am == "likelihood" {
-			sensitivity := cel1 / (cel1 + cel3)
-			specificity := cel4 / (cel4 + cel2)
-			ratio := sensitivity / (1 - specificity)
-			logratio := math.Log(ratio)
-			c2results = append(c2results, structresult{kv.Key, logratio})
+			// TODO: check this on possibilities of divide by zero
+			N := cel1 + cel2 + cel3 + cel4
+			R1 := cel1 + cel2
+			R2 := cel3 + cel4
+			C1 := cel1 + cel3
+			C2 := cel2 + cel4
+			Gcel1 := 2 * cel1 * math.Log(cel1/R1*C1/N)
+			Gcel2 := 2 * cel2 * math.Log(cel2/R1*C2/N)
+			Gcel3 := 2 * cel3 * math.Log(cel3/R2*C1/N)
+			Gcel4 := 2 * cel4 * math.Log(cel4/R2*C2/N)
+			Gsquared := Gcel1 + Gcel2 + Gcel3 + Gcel4
+			c2results = append(c2results, structresult{kv.Key, Gsquared})
 		} else { //odds ratio
 			denominator := (cel3 / cel4)
 			if denominator == 0 {
