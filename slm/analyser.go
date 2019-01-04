@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 7 {
+	if len(os.Args) < 8 {
 		fmt.Println("The snelSLiM analyser requires 6 arguments:")
 		fmt.Println("1. the path to the first preparsed corpus")
 		fmt.Println("2. the path to the second preparsed corpus")
@@ -22,6 +22,7 @@ func main() {
 		fmt.Println("4. the association measure (either odds or likelihood)")
 		fmt.Println("5. the number of desired markers for each corpus")
 		fmt.Println("6. the directory to write the results report to")
+		fmt.Println("7. timeout value in seconds for each corpus, the analysis will fail if preparsing hasn't completed after waiting this amount of seconds")
 		os.Exit(1)
 	}
 	c1 := os.Args[1] + "/"
@@ -40,6 +41,15 @@ func main() {
 	resultnum, err := strconv.Atoi(os.Args[5])
 	if err != nil {
 		err = ioutil.WriteFile(reportdir+"error", []byte("error: Could not cast resultnum to integer"), 0644)
+		if err != nil {
+			fmt.Println("Could not write error")
+			panic(err)
+		}
+		panic(err)
+	}
+	timeout, err := strconv.Atoi(os.Args[7])
+	if err != nil {
+		err = ioutil.WriteFile(reportdir+"error", []byte("error: Could not cast timeout to integer"), 0644)
 		if err != nil {
 			fmt.Println("Could not write error")
 			panic(err)
@@ -81,8 +91,8 @@ func main() {
 		}
 		time.Sleep(5 * time.Second)
 		timer += 5
-		if timer > 120 {
-			err = ioutil.WriteFile(reportdir+"error", []byte("error: preparse of corpus 1 took more than 2 minutes, timeout reached"), 0644)
+		if timer > timeout {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: preparse of corpus 1 took more than "+strconv.Itoa(timeout)+" seconds, timeout reached"), 0644)
 			if err != nil {
 				fmt.Println("Could not write error")
 				panic(err)
@@ -107,8 +117,8 @@ func main() {
 		}
 		time.Sleep(5 * time.Second)
 		timer += 5
-		if timer > 120 {
-			err = ioutil.WriteFile(reportdir+"error", []byte("error: preparse of corpus 2 took more than 2 minutes, timeout reached"), 0644)
+		if timer > timeout {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: preparse of corpus 2 took more than "+strconv.Itoa(timeout)+" seconds, timeout reached"), 0644)
 			if err != nil {
 				fmt.Println("Could not write error")
 				panic(err)
