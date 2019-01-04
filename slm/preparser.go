@@ -10,6 +10,16 @@ import (
 )
 
 func main() {
+	if len(os.Args) < 7 {
+		fmt.Println("The snelSLiM prepraser requires 6 arguments:")
+		fmt.Println("1. the zip or tar file containing the corpus")
+		fmt.Println("2. the folder the corpus should be extracted to")
+		fmt.Println("3. the format of the corpus (conll, folia, dcoi, plain, alpino, bnc, eindhoven, gysseling, masc, oanc, xpath)")
+		fmt.Println("4. option for the relevant format (usually lemma or text), enter - if not using")
+		fmt.Println("5. extra option for very specific formats (e.g. fast or xpath for folia), enter - if not using")
+		fmt.Println("6. the directory to write the preparsed results to")
+		os.Exit(1)
+	}
 	filename := os.Args[1]
 	outdir := os.Args[2] + "/"
 	format := os.Args[3]
