@@ -275,8 +275,19 @@ func main() {
 		cel2 := float64(c1total - kv.Value)
 		cel3 := float64(c2globalcount[kv.Key])
 		cel4 := float64(c2total - c2globalcount[kv.Key])
+		if cel1 == 0 {
+			cel1 = 0.00001
+		}
+		if cel2 == 0 {
+			cel2 = 0.00001
+		}
+		if cel3 == 0 {
+			cel3 = 0.00001
+		}
+		if cel4 == 0 {
+			cel4 = 0.00001
+		}
 		if am == "likelihood" {
-			// TODO: check this on possibilities of divide by zero
 			N := cel1 + cel2 + cel3 + cel4
 			R1 := cel1 + cel2
 			R2 := cel3 + cel4
@@ -289,11 +300,7 @@ func main() {
 			Gsquared := Gcel1 + Gcel2 + Gcel3 + Gcel4
 			c1results = append(c1results, structresult{kv.Key, Gsquared})
 		} else { //odds ratio
-			denominator := (cel3 / cel4)
-			if denominator == 0 {
-				denominator = 0.00001
-			}
-			ratio := (cel1 / cel2) / denominator
+			ratio := (cel1 / cel2) / (cel3 / cel4)
 			logratio := math.Log(ratio)
 			c1results = append(c1results, structresult{kv.Key, logratio})
 		}
@@ -386,8 +393,19 @@ func main() {
 		cel3 := float64(c2total - kv.Value)
 		cel2 := float64(c1globalcount[kv.Key])
 		cel4 := float64(c1total - c1globalcount[kv.Key])
+		if cel1 == 0 {
+			cel1 = 0.00001
+		}
+		if cel2 == 0 {
+			cel2 = 0.00001
+		}
+		if cel3 == 0 {
+			cel3 = 0.00001
+		}
+		if cel4 == 0 {
+			cel4 = 0.00001
+		}
 		if am == "likelihood" {
-			// TODO: check this on possibilities of divide by zero
 			N := cel1 + cel2 + cel3 + cel4
 			R1 := cel1 + cel2
 			R2 := cel3 + cel4
@@ -400,11 +418,7 @@ func main() {
 			Gsquared := Gcel1 + Gcel2 + Gcel3 + Gcel4
 			c2results = append(c2results, structresult{kv.Key, Gsquared})
 		} else { //odds ratio
-			denominator := (cel3 / cel4)
-			if denominator == 0 {
-				denominator = 0.00001
-			}
-			ratio := (cel1 / cel2) / denominator
+			ratio := (cel1 / cel2) / (cel3 / cel4)
 			logratio := math.Log(ratio)
 			c2results = append(c2results, structresult{kv.Key, logratio})
 		}
