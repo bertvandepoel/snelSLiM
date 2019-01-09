@@ -165,6 +165,7 @@ func main() {
 			}
 
 			fragname := filepath.Base(file.Name())
+			// remove the .snelslim extension (9 chars)
 			fragname = fragname[0 : len(fragname)-9]
 			c1fragments = append(c1fragments, fragname)
 
@@ -211,6 +212,7 @@ func main() {
 			}
 
 			fragname := filepath.Base(file.Name())
+			// remove the .snelslim extension (9 chars)
 			fragname = fragname[0 : len(fragname)-9]
 			c2fragments = append(c2fragments, fragname)
 
