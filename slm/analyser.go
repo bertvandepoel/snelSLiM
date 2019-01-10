@@ -336,6 +336,12 @@ func main() {
 		normalised_score := float64(absolute_score) / combinations
 		lor_score := lortotal / combinations
 		lor_stddev := stdDev(lorlist)
+		if lormin == math.MaxFloat64 {
+			lormin = 0
+		}
+		if lormax == -math.MaxFloat64 {
+			lormax = 0
+		}
 
 		c1results = append(c1results, structresult{kv.Key, absolute_score, normalised_score, attraction, repulsion, lormin, lormax, lor_stddev, lor_score})
 	}
