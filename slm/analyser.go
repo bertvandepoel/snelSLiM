@@ -262,8 +262,8 @@ func main() {
 		attraction := 0
 		repulsion := 0
 		lortotal := float64(0)
-		lormin := float64(0)
-		lormax := float64(0)
+		lormin := math.MaxFloat64
+		lormax := -math.MaxFloat64
 		var lorlist []float64
 
 		for _, c1localcount := range c1fragmentcount {
@@ -281,7 +281,7 @@ func main() {
 			if cel2 == 0 {
 				cel2 = 0.00001
 			}
-			kw_freq_c1 := c1localcount[kv.Key] / c1localcount["total.snelslim"]
+			kw_freq_c1 := float64(c1localcount[kv.Key]) / float64(c1localcount["total.snelslim"])
 
 			for _, c2localcount := range c2fragmentcount {
 				cel3 := float64(c2localcount[kv.Key])
@@ -297,15 +297,15 @@ func main() {
 				R2 := cel3 + cel4
 				C1 := cel1 + cel3
 				C2 := cel2 + cel4
-				Gcel1 := 2 * cel1 * math.Log(cel1/R1*C1/N)
-				Gcel2 := 2 * cel2 * math.Log(cel2/R1*C2/N)
-				Gcel3 := 2 * cel3 * math.Log(cel3/R2*C1/N)
-				Gcel4 := 2 * cel4 * math.Log(cel4/R2*C2/N)
+				Gcel1 := 2 * cel1 * math.Log(cel1/((R1*C1)/N))
+				Gcel2 := 2 * cel2 * math.Log(cel2/((R1*C2)/N))
+				Gcel3 := 2 * cel3 * math.Log(cel3/((R2*C1)/N))
+				Gcel4 := 2 * cel4 * math.Log(cel4/((R2*C2)/N))
 				Gsquared := Gcel1 + Gcel2 + Gcel3 + Gcel4
 
 				// 3.841 is the cut-off point for significance of the keyword
 				if Gsquared > 3.841 {
-					kw_freq_c2 := c2localcount[kv.Key] / c2localcount["total.snelslim"]
+					kw_freq_c2 := float64(c2localcount[kv.Key]) / float64(c2localcount["total.snelslim"])
 					var sig float64
 					if kw_freq_c1 > kw_freq_c2 {
 						// this keyword is a stable lexical marker for corpus 1
