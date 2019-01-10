@@ -306,19 +306,15 @@ func main() {
 				// 3.841 is the cut-off point for significance of the keyword
 				if Gsquared > 3.841 {
 					kw_freq_c2 := float64(c2localcount[kv.Key]) / float64(c2localcount["total.snelslim"])
-					var sig float64
 					if kw_freq_c1 > kw_freq_c2 {
 						// this keyword is a stable lexical marker for corpus 1
-						sig = 1
 						attraction++
 					} else {
 						// this keyword is actually a stable lexical marker for corpus 2
-						sig = -1
 						repulsion++
-
 					}
 					ratio := (cel1 / cel2) / (cel3 / cel4)
-					logratio := sig * math.Log(ratio)
+					logratio := math.Log(ratio)
 					lortotal += logratio
 					if logratio < lormin {
 						lormin = logratio
