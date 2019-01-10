@@ -30,16 +30,12 @@ func main() {
 	datastring := string(data)
 	rows := strings.Split(datastring, "\n")
 
-	var result bytes.Buffer
 	count := make(map[string]int)
 
 	for _, row := range rows {
 		//ignore XML lines
 		if !strings.HasPrefix(row, "<") && row != "" {
 			fields := strings.Split(row, "\t")
-			//fmt.Println(fields[colnum])
-			//result.WriteString(fields[colnum])
-			//result.WriteString("\n")
 			if fields[colnum] != "." && fields[colnum] != "..." && fields[colnum] != "?" && fields[colnum] != "!" && fields[colnum] != ":" &&
 				fields[colnum] != ";" && fields[colnum] != "_" && fields[colnum] != "," && fields[colnum] != "?!" && fields[colnum] != "!?" &&
 				fields[colnum] != "???" && fields[colnum] != "!!!" && fields[colnum] != "!!" && fields[colnum] != "??" && fields[colnum] != "&" &&
@@ -52,13 +48,22 @@ func main() {
 		}
 	}
 
+	var result bytes.Buffer
+	filetotal := 0
+
 	for key, value := range count {
 		result.WriteString(key)
 		result.WriteString("\t")
 		valuestring := strconv.Itoa(value)
 		result.WriteString(valuestring)
 		result.WriteString("\n")
+		filetotal += value
 	}
+	result.WriteString("total.snelslim")
+	result.WriteString("\t")
+	valuestring := strconv.Itoa(filetotal)
+	result.WriteString(valuestring)
+	result.WriteString("\n")
 
 	err = ioutil.WriteFile(outfilename, result.Bytes(), 0644)
 	if err != nil {

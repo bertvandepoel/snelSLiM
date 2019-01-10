@@ -14,20 +14,18 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 8 {
+	if len(os.Args) < 6 {
 		fmt.Println("The snelSLiM analyser requires 6 arguments:")
 		fmt.Println("1. the path to the first preparsed corpus")
 		fmt.Println("2. the path to the second preparsed corpus")
-		fmt.Println("3. the number of most frequent items to analyse for each corpus")
-		fmt.Println("4. the association measure (either odds or likelihood)")
-		fmt.Println("5. the number of desired markers for each corpus")
-		fmt.Println("6. the directory to write the results report to")
-		fmt.Println("7. timeout value in seconds for each corpus, the analysis will fail if preparsing hasn't completed after waiting this amount of seconds")
+		fmt.Println("3. the number of most frequent items to analyse from the primary corpus")
+		fmt.Println("4. the directory to write the results report to")
+		fmt.Println("5. timeout value in seconds for each corpus, the analysis will fail if preparsing hasn't completed after waiting this amount of seconds")
 		os.Exit(1)
 	}
 	c1 := os.Args[1] + "/"
 	c2 := os.Args[2] + "/"
-	reportdir := os.Args[6] + "/"
+	reportdir := os.Args[4] + "/"
 	freqnum, err := strconv.Atoi(os.Args[3])
 	if err != nil {
 		err = ioutil.WriteFile(reportdir+"error", []byte("error: Could not cast freqnum to integer"), 0644)
@@ -37,17 +35,7 @@ func main() {
 		}
 		panic(err)
 	}
-	am := os.Args[4]
-	resultnum, err := strconv.Atoi(os.Args[5])
-	if err != nil {
-		err = ioutil.WriteFile(reportdir+"error", []byte("error: Could not cast resultnum to integer"), 0644)
-		if err != nil {
-			fmt.Println("Could not write error")
-			panic(err)
-		}
-		panic(err)
-	}
-	timeout, err := strconv.Atoi(os.Args[7])
+	timeout, err := strconv.Atoi(os.Args[5])
 	if err != nil {
 		err = ioutil.WriteFile(reportdir+"error", []byte("error: Could not cast timeout to integer"), 0644)
 		if err != nil {
@@ -149,7 +137,6 @@ func main() {
 
 	c1globalcount := make(map[string]int)
 	c1fragmentcount := make(map[string]map[string]int)
-	c1total := 0
 	var c1fragments []string
 
 	for _, file := range c1files {
@@ -186,17 +173,16 @@ func main() {
 						panic(err)
 					}
 					localcount[fields[0]] += count
-					c1globalcount[fields[0]] += count
-					c1total += count
+					if fields[0] != "total.snelslim" {
+						c1globalcount[fields[0]] += count
+					}
 				}
 			}
 			c1fragmentcount[fragname] = localcount
 		}
 	}
 
-	c2globalcount := make(map[string]int)
 	c2fragmentcount := make(map[string]map[string]int)
-	c2total := 0
 	var c2fragments []string
 
 	for _, file := range c2files {
@@ -233,8 +219,6 @@ func main() {
 						panic(err)
 					}
 					localcount[fields[0]] += count
-					c2globalcount[fields[0]] += count
-					c2total += count
 				}
 			}
 			c2fragmentcount[fragname] = localcount
@@ -247,8 +231,15 @@ func main() {
 	}
 
 	type structresult struct {
-		Key   string
-		Value float64
+		Keyword          string
+		Absolute_score   int
+		Normalised_score float64
+		Attraction       int
+		Repulsion        int
+		Lormin           float64
+		Lormax           float64
+		Lor_stddev       float64
+		Lor_score        float64
 	}
 
 	var sortedc1globalcount []structkeyvalue
@@ -267,67 +258,130 @@ func main() {
 			break
 		}
 		i++
-		/*
-		 *            W       !W
-		 * corpus1   cel1    cel2
-		 * corpus2   cel3    cel4
-		 *
-		 */
-		cel1 := float64(kv.Value)
-		cel2 := float64(c1total - kv.Value)
-		cel3 := float64(c2globalcount[kv.Key])
-		cel4 := float64(c2total - c2globalcount[kv.Key])
-		if cel1 == 0 {
-			cel1 = 0.00001
+
+		attraction := 0
+		repulsion := 0
+		lortotal := float64(0)
+		lormin := float64(0)
+		lormax := float64(0)
+		var lorlist []float64
+
+		for _, c1localcount := range c1fragmentcount {
+			/*
+			 *            W       !W
+			 * corpus1   cel1    cel2
+			 * corpus2   cel3    cel4
+			 *
+			 */
+			cel1 := float64(c1localcount[kv.Key])
+			cel2 := float64(c1localcount["total.snelslim"] - c1localcount[kv.Key])
+			if cel1 == 0 {
+				cel1 = 0.00001
+			}
+			if cel2 == 0 {
+				cel2 = 0.00001
+			}
+			kw_freq_c1 := c1localcount[kv.Key] / c1localcount["total.snelslim"]
+
+			for _, c2localcount := range c2fragmentcount {
+				cel3 := float64(c2localcount[kv.Key])
+				cel4 := float64(c2localcount["total.snelslim"] - c2localcount[kv.Key])
+				if cel3 == 0 {
+					cel3 = 0.00001
+				}
+				if cel4 == 0 {
+					cel4 = 0.00001
+				}
+				N := cel1 + cel2 + cel3 + cel4
+				R1 := cel1 + cel2
+				R2 := cel3 + cel4
+				C1 := cel1 + cel3
+				C2 := cel2 + cel4
+				Gcel1 := 2 * cel1 * math.Log(cel1/R1*C1/N)
+				Gcel2 := 2 * cel2 * math.Log(cel2/R1*C2/N)
+				Gcel3 := 2 * cel3 * math.Log(cel3/R2*C1/N)
+				Gcel4 := 2 * cel4 * math.Log(cel4/R2*C2/N)
+				Gsquared := Gcel1 + Gcel2 + Gcel3 + Gcel4
+
+				// 3.841 is the cut-off point for significance of the keyword
+				if Gsquared > 3.841 {
+					kw_freq_c2 := c2localcount[kv.Key] / c2localcount["total.snelslim"]
+					var sig float64
+					if kw_freq_c1 > kw_freq_c2 {
+						// this keyword is a stable lexical marker for corpus 1
+						sig = 1
+						attraction++
+					} else {
+						// this keyword is actually a stable lexical marker for corpus 2
+						sig = -1
+						repulsion++
+
+					}
+					ratio := (cel1 / cel2) / (cel3 / cel4)
+					logratio := sig * math.Log(ratio)
+					lortotal += logratio
+					if logratio < lormin {
+						lormin = logratio
+					}
+					if logratio > lormax {
+						lormax = logratio
+					}
+					lorlist = append(lorlist, logratio)
+				}
+			}
 		}
-		if cel2 == 0 {
-			cel2 = 0.00001
-		}
-		if cel3 == 0 {
-			cel3 = 0.00001
-		}
-		if cel4 == 0 {
-			cel4 = 0.00001
-		}
-		if am == "likelihood" {
-			N := cel1 + cel2 + cel3 + cel4
-			R1 := cel1 + cel2
-			R2 := cel3 + cel4
-			C1 := cel1 + cel3
-			C2 := cel2 + cel4
-			Gcel1 := 2 * cel1 * math.Log(cel1/R1*C1/N)
-			Gcel2 := 2 * cel2 * math.Log(cel2/R1*C2/N)
-			Gcel3 := 2 * cel3 * math.Log(cel3/R2*C1/N)
-			Gcel4 := 2 * cel4 * math.Log(cel4/R2*C2/N)
-			Gsquared := Gcel1 + Gcel2 + Gcel3 + Gcel4
-			c1results = append(c1results, structresult{kv.Key, Gsquared})
-		} else { //odds ratio
-			ratio := (cel1 / cel2) / (cel3 / cel4)
-			logratio := math.Log(ratio)
-			c1results = append(c1results, structresult{kv.Key, logratio})
-		}
+
+		combinations := float64(len(c1fragmentcount) * len(c2fragmentcount))
+		absolute_score := attraction - repulsion
+		normalised_score := float64(absolute_score) / combinations
+		lor_score := lortotal / combinations
+		lor_stddev := stdDev(lorlist)
+
+		c1results = append(c1results, structresult{kv.Key, absolute_score, normalised_score, attraction, repulsion, lormin, lormax, lor_stddev, lor_score})
 	}
 
 	sort.Slice(c1results, func(i, j int) bool {
-		return c1results[i].Value > c1results[j].Value
+		return c1results[i].Lor_score > c1results[j].Lor_score
 	})
 
-	i = 0
 	var c1buffer bytes.Buffer
 	c1fragresult := make(map[string]int)
+	c2fragresult := make(map[string]int)
 	for _, kv := range c1results {
-		if i == resultnum {
-			break
-		}
-		i++
-		c1buffer.WriteString(kv.Key)
+		var valuestring string
+
+		c1buffer.WriteString(kv.Keyword)
 		c1buffer.WriteString(" - ")
-		valuestring := strconv.FormatFloat(kv.Value, 'f', -1, 64)
+		valuestring = strconv.Itoa(kv.Absolute_score)
+		c1buffer.WriteString(valuestring)
+		c1buffer.WriteString(" - ")
+		valuestring = strconv.FormatFloat(kv.Normalised_score, 'f', -1, 64)
+		c1buffer.WriteString(valuestring)
+		c1buffer.WriteString(" - ")
+		valuestring = strconv.Itoa(kv.Attraction)
+		c1buffer.WriteString(valuestring)
+		c1buffer.WriteString(" - ")
+		valuestring = strconv.Itoa(kv.Repulsion)
+		c1buffer.WriteString(valuestring)
+		c1buffer.WriteString(" - ")
+		valuestring = strconv.FormatFloat(kv.Lormin, 'f', -1, 64)
+		c1buffer.WriteString(valuestring)
+		c1buffer.WriteString(" - ")
+		valuestring = strconv.FormatFloat(kv.Lormax, 'f', -1, 64)
+		c1buffer.WriteString(valuestring)
+		c1buffer.WriteString(" - ")
+		valuestring = strconv.FormatFloat(kv.Lor_stddev, 'f', -1, 64)
+		c1buffer.WriteString(valuestring)
+		c1buffer.WriteString(" - ")
+		valuestring = strconv.FormatFloat(kv.Lor_score, 'f', -1, 64)
 		c1buffer.WriteString(valuestring)
 		c1buffer.WriteString("\n")
 
 		for _, fragment := range c1fragments {
-			c1fragresult[fragment] += c1fragmentcount[fragment][kv.Key]
+			c1fragresult[fragment] += c1fragmentcount[fragment][kv.Keyword]
+		}
+		for _, fragment := range c2fragments {
+			c2fragresult[fragment] += c2fragmentcount[fragment][kv.Keyword]
 		}
 	}
 
@@ -340,6 +394,16 @@ func main() {
 		return sortedc1fragresult[i].Value > sortedc1fragresult[j].Value
 	})
 
+	err = ioutil.WriteFile(reportdir+"c1.report", c1buffer.Bytes(), 0644)
+	if err != nil {
+		err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write score report for corpus 1"), 0644)
+		if err != nil {
+			fmt.Println("Could not write error")
+			panic(err)
+		}
+		panic(err)
+	}
+
 	var c1fragbuffer bytes.Buffer
 	for _, kv := range sortedc1fragresult {
 		c1fragbuffer.WriteString(kv.Key)
@@ -349,135 +413,7 @@ func main() {
 		c1fragbuffer.WriteString("\n")
 	}
 
-	err = ioutil.WriteFile(reportdir+"c1.report", c1buffer.Bytes(), 0644)
-	if err != nil {
-		err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write report for corpus 1"), 0644)
-		if err != nil {
-			fmt.Println("Could not write error")
-			panic(err)
-		}
-		panic(err)
-	}
-
 	err = ioutil.WriteFile(reportdir+"c1frag.report", c1fragbuffer.Bytes(), 0644)
-	if err != nil {
-		err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write fragment report for corpus 1"), 0644)
-		if err != nil {
-			fmt.Println("Could not write error")
-			panic(err)
-		}
-		panic(err)
-	}
-
-	var sortedc2globalcount []structkeyvalue
-	for key, value := range c2globalcount {
-		sortedc2globalcount = append(sortedc2globalcount, structkeyvalue{key, value})
-	}
-
-	sort.Slice(sortedc2globalcount, func(i, j int) bool {
-		return sortedc2globalcount[i].Value > sortedc2globalcount[j].Value
-	})
-
-	i = 0
-	var c2results []structresult
-	for _, kv := range sortedc2globalcount {
-		if i == freqnum {
-			break
-		}
-		i++
-		/*
-		 *            W       !W
-		 * corpus1   cel1    cel2
-		 * corpus2   cel3    cel4
-		 *
-		 */
-		cel1 := float64(kv.Value)
-		cel3 := float64(c2total - kv.Value)
-		cel2 := float64(c1globalcount[kv.Key])
-		cel4 := float64(c1total - c1globalcount[kv.Key])
-		if cel1 == 0 {
-			cel1 = 0.00001
-		}
-		if cel2 == 0 {
-			cel2 = 0.00001
-		}
-		if cel3 == 0 {
-			cel3 = 0.00001
-		}
-		if cel4 == 0 {
-			cel4 = 0.00001
-		}
-		if am == "likelihood" {
-			N := cel1 + cel2 + cel3 + cel4
-			R1 := cel1 + cel2
-			R2 := cel3 + cel4
-			C1 := cel1 + cel3
-			C2 := cel2 + cel4
-			Gcel1 := 2 * cel1 * math.Log(cel1/R1*C1/N)
-			Gcel2 := 2 * cel2 * math.Log(cel2/R1*C2/N)
-			Gcel3 := 2 * cel3 * math.Log(cel3/R2*C1/N)
-			Gcel4 := 2 * cel4 * math.Log(cel4/R2*C2/N)
-			Gsquared := Gcel1 + Gcel2 + Gcel3 + Gcel4
-			c2results = append(c2results, structresult{kv.Key, Gsquared})
-		} else { //odds ratio
-			ratio := (cel1 / cel2) / (cel3 / cel4)
-			logratio := math.Log(ratio)
-			c2results = append(c2results, structresult{kv.Key, logratio})
-		}
-	}
-
-	sort.Slice(c2results, func(i, j int) bool {
-		return c2results[i].Value > c2results[j].Value
-	})
-
-	i = 0
-	var c2buffer bytes.Buffer
-	c2fragresult := make(map[string]int)
-	for _, kv := range c2results {
-		if i == resultnum {
-			break
-		}
-		i++
-		c2buffer.WriteString(kv.Key)
-		c2buffer.WriteString(" - ")
-		valuestring := strconv.FormatFloat(kv.Value, 'f', -1, 64)
-		c2buffer.WriteString(valuestring)
-		c2buffer.WriteString("\n")
-
-		for _, fragment := range c2fragments {
-			c2fragresult[fragment] += c2fragmentcount[fragment][kv.Key]
-		}
-	}
-
-	var sortedc2fragresult []structkeyvalue
-	for key, value := range c2fragresult {
-		sortedc2fragresult = append(sortedc2fragresult, structkeyvalue{key, value})
-	}
-
-	sort.Slice(sortedc2fragresult, func(i, j int) bool {
-		return sortedc2fragresult[i].Value > sortedc2fragresult[j].Value
-	})
-
-	var c2fragbuffer bytes.Buffer
-	for _, kv := range sortedc2fragresult {
-		c2fragbuffer.WriteString(kv.Key)
-		c2fragbuffer.WriteString(" - ")
-		valuestring := strconv.Itoa(kv.Value)
-		c2fragbuffer.WriteString(valuestring)
-		c2fragbuffer.WriteString("\n")
-	}
-
-	err = ioutil.WriteFile(reportdir+"c2.report", c2buffer.Bytes(), 0644)
-	if err != nil {
-		err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write report for corpus 1"), 0644)
-		if err != nil {
-			fmt.Println("Could not write error")
-			panic(err)
-		}
-		panic(err)
-	}
-
-	err = ioutil.WriteFile(reportdir+"c2frag.report", c2fragbuffer.Bytes(), 0644)
 	if err != nil {
 		err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write fragment report for corpus 1"), 0644)
 		if err != nil {
@@ -492,4 +428,18 @@ func main() {
 		fmt.Println("Could not write done signal")
 		panic(err)
 	}
+}
+
+func stdDev(list []float64) float64 {
+	total := 0.0
+	mean := float64(0)
+	for _, value := range list {
+		mean += value
+	}
+	mean = mean / float64(len(list))
+	for _, value := range list {
+		total += math.Pow(value-mean, 2)
+	}
+	variance := total / float64(len(list)-1)
+	return math.Sqrt(variance)
 }

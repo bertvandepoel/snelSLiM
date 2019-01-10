@@ -35,6 +35,7 @@ func main() {
 	}
 
 	var result bytes.Buffer
+	filetotal := 0
 
 	for key, value := range count {
 		result.WriteString(key)
@@ -42,7 +43,13 @@ func main() {
 		valuestring := strconv.Itoa(value)
 		result.WriteString(valuestring)
 		result.WriteString("\n")
+		filetotal += value
 	}
+	result.WriteString("total.snelslim")
+	result.WriteString("\t")
+	valuestring := strconv.Itoa(filetotal)
+	result.WriteString(valuestring)
+	result.WriteString("\n")
 
 	err = ioutil.WriteFile(outfilename, result.Bytes(), 0644)
 	if err != nil {
