@@ -307,10 +307,10 @@ func main() {
 				if Gsquared > 3.841 {
 					kw_freq_c2 := float64(c2localcount[kv.Key]) / float64(c2localcount["total.snelslim"])
 					if kw_freq_c1 > kw_freq_c2 {
-						// this keyword is a stable lexical marker for corpus 1
+						// this keyword is a stable lexical marker for corpus 1 for this text combination
 						attraction++
 					} else {
-						// this keyword is actually a stable lexical marker for corpus 2
+						// this keyword is actually a stable lexical marker for corpus 2 for this text combination
 						repulsion++
 					}
 					ratio := (cel1 / cel2) / (cel3 / cel4)
