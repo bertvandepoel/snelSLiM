@@ -25,6 +25,7 @@ ini_set('post_max_size', '2G');
 
 session_start();
 require('mysql.php');
+require('config.php');
 if(isset($_POST['login'])) {
 	$get_user = $db->prepare('SELECT hash, admin FROM accounts WHERE email=?');
 	$get_user->execute(array($_POST['email']));
@@ -181,7 +182,7 @@ else {
 			chdir('../slm');
 			mkdir($reportdir);
 			
-			shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['am'] . ' ' . intval($_POST['resultnum']) . ' ' . $reportdir . ' > /dev/null &');
+			shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $reportdir . ' ' . $timeout . ' > /dev/null &');
 			
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> We have successfully received your report request. You will be redirected to the report that is generating for you right now. </div></div></div>';
 			
