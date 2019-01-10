@@ -327,7 +327,7 @@ func main() {
 			}
 		}
 
-		// If none of the text combinations had a significant G test value, the lorlist will be empty since no log odss ratio will have been calculated
+		// If none of the text combinations had a significant G test value, the lorlist will be empty since no log odds ratio will have been calculated
 		if len(lorlist) > 0 {
 			combinations := float64(len(c1fragmentcount) * len(c2fragmentcount))
 			absolute_score := attraction - repulsion
