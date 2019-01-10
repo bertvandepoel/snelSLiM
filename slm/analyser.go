@@ -327,19 +327,15 @@ func main() {
 			}
 		}
 
-		combinations := float64(len(c1fragmentcount) * len(c2fragmentcount))
-		absolute_score := attraction - repulsion
-		normalised_score := float64(absolute_score) / combinations
-		lor_score := lortotal / combinations
-		lor_stddev := stdDev(lorlist)
-		if lormin == math.MaxFloat64 {
-			lormin = 0
+		// If none of the text combinations had a significant G test value, the lorlist will be empty since no log odss ratio will have been calculated
+		if len(lorlist) > 0 {
+			combinations := float64(len(c1fragmentcount) * len(c2fragmentcount))
+			absolute_score := attraction - repulsion
+			normalised_score := float64(absolute_score) / combinations
+			lor_score := lortotal / combinations
+			lor_stddev := stdDev(lorlist)
+			c1results = append(c1results, structresult{kv.Key, absolute_score, normalised_score, attraction, repulsion, lormin, lormax, lor_stddev, lor_score})
 		}
-		if lormax == -math.MaxFloat64 {
-			lormax = 0
-		}
-
-		c1results = append(c1results, structresult{kv.Key, absolute_score, normalised_score, attraction, repulsion, lormin, lormax, lor_stddev, lor_score})
 	}
 
 	sort.Slice(c1results, func(i, j int) bool {
