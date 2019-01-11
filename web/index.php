@@ -1,7 +1,7 @@
 <?php
 /*
  * snelSLiM - Interface for quick Stable Lexical Marker Analysis
- * Copyright (c) 2017 Bert Van de Poel
+ * Copyright (c) 2017-2019 Bert Van de Poel
  * Under superivison of Prof. Dr. Dirk Speelman
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -129,14 +129,8 @@ else {
 		elseif ( ($_POST['c2-select'] == 'none') AND ($_POST['c2-format'] == 'xpath') AND  (strlen($_POST['c2-extra']) < 2) ) {
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You have chosen XML with custom XPath as the format for your second corpus, but you have not specified your XPath query.</div></div></div>';
 		}
-		elseif ($_POST['freqnum'] < $_POST['resultnum']) {
-			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> We cannot supply more results than number of selected frequent items.</div></div></div>';
-		}
 		elseif ($_POST['freqnum'] < 10) {
-			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You want to select at least 10 frequent items.</div></div></div>';
-		}
-		elseif ($_POST['resultnum'] < 1) {
-			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You want to select at least 1 result.</div></div></div>';
+			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You want to select at least 10 frequent items and probably much more.</div></div></div>';
 		}
 		else {
 			// all paths must be relative to application/slm
@@ -174,8 +168,8 @@ else {
 				$corpus2 = 'preparsed/saved/' . $_POST['c2-select'];
 			}
 			
-			$insert_report = $db->prepare('INSERT INTO reports (owner, c1, c2, freqnum, am, resultnum, datetime) VALUES (?,?,?,?,?,?,NOW())');
-			$insert_report->execute(array($_SESSION['email'], $corpus1name, $corpus2name, intval($_POST['freqnum']), $_POST['am'], intval($_POST['resultnum'])));
+			$insert_report = $db->prepare('INSERT INTO reports (owner, c1, c2, freqnum, datetime) VALUES (?,?,?,?,NOW())');
+			$insert_report->execute(array($_SESSION['email'], $corpus1name, $corpus2name, intval($_POST['freqnum'])));
 			$reportid = $db->lastInsertId();
 			$reportdir = 'reports/' . $reportid;
 			

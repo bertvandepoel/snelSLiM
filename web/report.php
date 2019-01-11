@@ -1,7 +1,7 @@
 <?php
 /*
  * snelSLiM - Interface for quick Stable Lexical Marker Analysis
- * Copyright (c) 2017 Bert Van de Poel
+ * Copyright (c) 2017-2019 Bert Van de Poel
  * Under superivison of Prof. Dr. Dirk Speelman
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -33,27 +33,16 @@ elseif(!file_exists('../slm/reports/' . $_GET['report'] . '/done')) {
 }
 else {
 	// report is ready!
-	$get_report = $db->prepare('SELECT c1, c2, freqnum, am, resultnum FROM reports WHERE id=?');
+	$get_report = $db->prepare('SELECT c1, c2, freqnum, datetime FROM reports WHERE id=?');
 	$get_report->execute(array($_GET['report']));
 	$report = $get_report->fetch(PDO::FETCH_ASSOC);
 	
-	if($report['am'] == 'likelihood') {
-		$am = 'Positive likelihood ratio';
-	}
-	else {
-		$am = 'Odds ratio';
-	}
-	
 	$c1report = file_get_contents('../slm/reports/' . $_GET['report'] . '/c1.report');
-	$c2report = file_get_contents('../slm/reports/' . $_GET['report'] . '/c2.report');
 	$c1frag = file_get_contents('../slm/reports/' . $_GET['report'] . '/c1frag.report');
 	$c2frag = file_get_contents('../slm/reports/' . $_GET['report'] . '/c2frag.report');
 	
 	if(mb_detect_encoding($c1report, 'UTF-8, ISO-8859-1') === 'ISO-8859-1') {
 		$c1report = utf8_encode($c1report);
-	}
-	if(mb_detect_encoding($c2report, 'UTF-8, ISO-8859-1') === 'ISO-8859-1') {
-		$c2report = utf8_encode($c2report);
 	}
 	if(mb_detect_encoding($c1frag, 'UTF-8, ISO-8859-1') === 'ISO-8859-1') {
 		$c1frag = utf8_encode($c1frag);
@@ -68,27 +57,22 @@ else {
 	<div class="row">
 		<div class="col-md-12">
 			<h1>Your report is ready</h1>
-			<p class="lead">Your report was based on the <?php echo $am; ?> Association Measure and used <?php echo $report['freqnum']; ?> of the most frequent items per corpus to generate <?php echo $report['resultnum']; ?> results per corpus. These results were then used to mark potentially interesting fragments/texts.</p>
+			<p class="lead">You requested a snelSLiM report for <span class="emphasize">Corpus &quot;<?php echo $report['c1']; ?>&quot;</span> against <span class="emphasize">Corpus &quot;<?php echo $report['c2']; ?>&quot;</span> on <?php echo date("d M Y \a\\t H:i", strtotime($report['datetime'])); ?> using <?php echo $report['freqnum']; ?> of the most frequent items from the primary corpus to end up finding <span class="emphasize"><?php echo substr_count($c1report, "\n"); ?> stable lexical markers</span>. In the table you can see whether they were attracted to the first corpus or repulsed by it, and look into the effect size using the log odds ratio. For more information on these measures, please consult the help pages. In the bottommost table the results were then used to mark potentially interesting fragments/texts based on marker frequencies.</p>
 		</div>
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-5">
-		<h1>Corpus 1</h1>
-		<h4><?php echo $report['c1']; ?></h4>
-	</div>
-	<div class="col-md-5 col-md-offset-2">
-		<h1>Corpus 2</h1>
-		<h4><?php echo $report['c2']; ?></h4>
+	<div class="col-md-12">
+		<h1>SLMA results</h1>
 	</div>
 </div>
 
 <div class="row">
-	<div class="col-md-5">
+	<div class="col-md-12">
 		<h3>Stable Lexical Marker Analysis</h3>
 		<table class="table table-striped table-hover">
 			<thead>
-				<tr><th>#</th><th>Marker</th><th>Association</th></tr>
+				<tr><th>#</th><th>Marker</th><th>Absolute score</th><th>Normalised score</th><th>Attraction</th><th>Repulsion</th><th>Lowest Log Odds Ratio</th><th>Highest Log Odds Ratio</th><th>StdDev</th><th>Log Odds Ratio Score</th></tr>
 			</thead>
 			<tbody>
 <?php
@@ -97,29 +81,8 @@ else {
 		foreach($slm as $row) {
 			if($row !== '') {
 				$i++;
-				$fields = explode(' - ', $row);
-				echo '<tr><td>' . $i . '</td><td>' . $fields[0] . '</td><td>' . $fields[1] . '</td></tr>';
-			}
-		}
-?>
-			</tbody>
-		</table>
-	</div>
-	<div class="col-md-5 col-md-offset-2">
-		<h3>Stable Lexical Marker Analysis</h3>
-				<table class="table table-striped table-hover">
-			<thead>
-				<tr><th>#</th><th>Marker</th><th>Association</th></tr>
-			</thead>
-			<tbody>
-<?php
-		$slm = explode("\n", $c2report);
-		$i = 0;
-		foreach($slm as $row) {
-			if($row !== '') {
-				$i++;
-				$fields = explode(' - ', $row);
-				echo '<tr><td>' . $i . '</td><td>' . $fields[0] . '</td><td>' . $fields[1] . '</td></tr>';
+				$fields = explode("\t", $row);
+				echo '<tr><td>' . $i . '</td><td>' . $fields[0] . '</td><td>' . $fields[1] . '</td><td>' . $fields[2] . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . $fields[5] . '</td><td>' . $fields[6] . '</td><td>' . $fields[7] . '</td><td>' . $fields[8] . '</td></tr>';
 			}
 		}
 ?>
@@ -141,7 +104,7 @@ else {
 		$slm = explode("\n", $c1frag);
 		foreach($slm as $row) {
 			if($row !== '') {
-				$fields = explode(' - ', $row);
+				$fields = explode("\t", $row);
 				echo '<tr><td>' . $fields[0] . '</td><td>' . $fields[1] . '</td></tr>';
 			}
 		}
@@ -160,7 +123,7 @@ else {
 		$slm = explode("\n", $c2frag);
 		foreach($slm as $row) {
 			if($row !== '') {
-				$fields = explode(' - ', $row);
+				$fields = explode("\t", $row);
 				echo '<tr><td>' . $fields[0] . '</td><td>' . $fields[1] . '</td></tr>';
 			}
 		}

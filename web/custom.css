@@ -10,7 +10,39 @@
 	margin-left: 15px;
 }
 
+/*.form-or {
+	text-align: center;
+	font-style: italic;
+	font-size: 25px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}*/
+
 .form-or {
 	text-align: center;
 	font-style: italic;
+	font-size: 23px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.form-or:before,
+.form-or:after {
+    content: '';
+    border-top: 2px solid #DDD;
+    margin: 0 15px 0 0;
+    flex: 1 0 15px;
+}
+
+.form-or:after {
+    margin: 0 0 0 15px;
+}
+
+.emphasize {
+	font-weight: 600;
 }

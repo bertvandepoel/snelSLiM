@@ -137,7 +137,7 @@ else {
 	<div class="col-md-12">
 		<table class="table table-striped table-hover">
 			<thead>
-				<tr><th>Name</th><th>Format</th><th>Extra format option</th><th>ISO datetime</th><th>Status</th><th>Delete</th></tr>
+				<tr><th>Name</th><th>Format</th><th>Extra format option</th><th>Uploaded on</th><th>Status</th><th>Delete</th></tr>
 			</thead>
 			<tbody>
 <?php
@@ -154,7 +154,7 @@ else {
 					$status = '<span class="label label-default">processing</span>';
 				}
 				
-				echo '<tr><td>' . $corpus['name'] . '</td><td>' . $formats[$corpus['format']] . '</td><td>' . $corpus['extra'] . '</td><td>' . $corpus['datetime'] . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
+				echo '<tr><td>' . $corpus['name'] . '</td><td>' . $formats[$corpus['format']] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
 			}
 ?>
 			</tbody>

@@ -12,7 +12,7 @@
 			<fieldset>
 				<legend>Corpus 1</legend>
 				<div class="form-group">
-					<label for="c1-select" class="control-label">Existing corpus</label>
+					<label for="c1-select" class="control-label"><span class="emphasize">Existing</span> corpus</label>
 					<select class="form-control" id="c1-select" name="c1-select">
 						<option value="none">None</option>
 						%corpus%
@@ -21,7 +21,7 @@
 				<h4 class="form-or">OR</h4>
 				<div class="form-group">
 					<label for="c1-file" class="control-label">
-						New corpus (single use)
+						<span class="emphasize">New</span> corpus (single use)
 						<a href="#" data-toggle="tooltip" class="formtooltip" title="Supply your corpus in the form of a zip or tar containing your texts or fragments directly or in a single level of subfolders">help</a>
 					</label>
 					<input class="form-control" id="c1-file" type="file" name="c1-file">
@@ -63,16 +63,16 @@
 			<fieldset>
 				<legend>Corpus 2</legend>
 				<div class="form-group">
-					<label for="c2-select" class="control-label">Existing corpus</label>
+					<label for="c2-select" class="control-label"><span class="emphasize">Existing</span> corpus</label>
 					<select class="form-control" id="c2-select" name="c2-select">
 						<option value="none">None</option>
 						%corpus%
 					</select>
 				</div>
-				<h4 class="form-or">OR</h4>
+				<h4 class="form-or"><span>OR</span></h4>
 				<div class="form-group">
 					<label for="c2-file" class="control-label">
-						New corpus (single use)
+						<span class="emphasize">New</span> corpus (single use)
 						<a href="#" data-toggle="tooltip" class="formtooltip" title="Supply your corpus in the form of a zip or tar containing your texts or fragments directly or in a single level of subfolders">help</a>
 					</label>
 					<input class="form-control" id="c2-file" type="file" name="c2-file">
@@ -114,22 +114,11 @@
 			<fieldset>
 				<legend>SLM settings</legend>
 				<div class="form-group">
-					<label for="freqnum" class="control-label">Number of frequent items to analyse per corpus</label>
-					<input class="form-control" id="freqnum" type="text" name="freqnum" value="200">
+					<label for="freqnum" class="control-label">Number of most frequent items from Corpus 1 to analyse</label>
+					<input class="form-control" id="freqnum" type="text" name="freqnum" value="5000">
 				</div>
 				<div class="form-group">
-					<label for="am" class="control-label">
-						Association Measure
-						<a href="?am" data-toggle="tooltip" class="formtooltip" title="If you are not sure what to select, click here to go to the Association Measures help page">help</a>
-					</label>
-					<select class="form-control" id="am" name="am">
-						<option value="likelihood">Positive likelihood ratio</option>
-						<option value="odds">Odds Ratio</option>
-					</select>
-				</div>
-				<div class="form-group">
-					<label for="resultnum" class="control-label">Number of final items per corpus</label>
-					<input class="form-control" id="resultnum" type="text" name="resultnum" value="20">
+					<p>For more information about the statistics of the analysis please refer to the help pages.</p>
 				</div>
 				<div class="form-group">
 					<button type="submit" class="btn btn-primary" name="analyse">Analyse</button>
