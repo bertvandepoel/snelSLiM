@@ -421,6 +421,25 @@ func main() {
 		panic(err)
 	}
 
+	var c2fragbuffer bytes.Buffer
+	for _, kv := range sortedc2fragresult {
+		c2fragbuffer.WriteString(kv.Key)
+		c2fragbuffer.WriteString("\t")
+		valuestring := strconv.Itoa(kv.Value)
+		c2fragbuffer.WriteString(valuestring)
+		c2fragbuffer.WriteString("\n")
+	}
+
+	err = ioutil.WriteFile(reportdir+"c2frag.report", c2fragbuffer.Bytes(), 0644)
+	if err != nil {
+		err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write fragment report for corpus 2"), 0644)
+		if err != nil {
+			fmt.Println("Could not write error")
+			panic(err)
+		}
+		panic(err)
+	}
+
 	err = ioutil.WriteFile(reportdir+"done", []byte("done"), 0644)
 	if err != nil {
 		fmt.Println("Could not write done signal")
