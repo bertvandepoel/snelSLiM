@@ -421,6 +421,15 @@ func main() {
 		panic(err)
 	}
 
+	var sortedc2fragresult []structkeyvalue
+	for key, value := range c2fragresult {
+		sortedc2fragresult = append(sortedc2fragresult, structkeyvalue{key, value})
+	}
+
+	sort.Slice(sortedc2fragresult, func(i, j int) bool {
+		return sortedc2fragresult[i].Value > sortedc2fragresult[j].Value
+	})
+
 	var c2fragbuffer bytes.Buffer
 	for _, kv := range sortedc2fragresult {
 		c2fragbuffer.WriteString(kv.Key)
