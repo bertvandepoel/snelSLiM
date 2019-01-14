@@ -54,7 +54,7 @@ To test whether the application is working correctly, first try and upload a zip
 
 ## Contributing
 
-I will certainly accept pull requests for bug fixes, extra formats, code cleanup and extra association measures. I am however not looking at external rewrites.
+I will certainly accept pull requests for bug fixes, extra formats, code cleanup and extra association measures. I am however not looking at external rewrites. By submitting submitting a pull request, you agree to license your submission under the same license as this project, the AGPL.
 
 Feel free to report issues and file feature requests on GitHub.
 
