@@ -2,6 +2,11 @@
 
 A linguistic set of tools in Go and web interface in PHP to do quick Stable Lexical Marker Analysis.
 
+# Contact information
+
+If you have suggestions for features, feedback or a question, feel free to contact me about snelSLiM at bert.vandepoel AT student.kuleuven DOT be
+Having issues building or installing my software? I would love to have more users at different universities, so I don't mind if you email me for help or advice!
+
 ## Supported formats
 
 Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus, FoLiA XML, Gysseling corpus, OANC, OANC MASC, plain text and XML with XPath query.
@@ -17,12 +22,12 @@ Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus
 
 ### Prerequisites
 
-#### Build requirements ####
+#### Build requirements
 
 * gcc (for foliafolie)
 * Golang 1.8 or higher
 
-#### Hosting requirements ####
+#### Hosting requirements
 
 * Unix-style Operating system
   * Basic tools: unzip, tar, sed, bash (should be installed by default)
