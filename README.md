@@ -9,9 +9,9 @@ Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus
 ## Screenshots
 
 ![screenshot main page](/screenshots/overview.png?raw=true)
-![screenshot corpora overview](/screenshot2.png?raw=true)
-![screenshot report overview](/screenshot3.png?raw=true)
-![screenshot report details](/report.png?raw=true)
+![screenshot corpora overview](/screenshots/screenshot2.png?raw=true)
+![screenshot report overview](/screenshots/screenshot3.png?raw=true)
+![screenshot report details](/screenshots/report.png?raw=true)
 
 ## Getting Started
 
