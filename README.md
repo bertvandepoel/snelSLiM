@@ -2,7 +2,7 @@
 
 A linguistic set of tools in Go and web interface in PHP to do quick Stable Lexical Marker Analysis.
 
-# Contact information
+## Contact information
 
 If you have suggestions for features, feedback or a question, feel free to contact me about snelSLiM at bert.vandepoel AT student.kuleuven DOT be
 Having issues building or installing my software? I would love to have more users at different universities, so I don't mind if you email me for help or advice!
