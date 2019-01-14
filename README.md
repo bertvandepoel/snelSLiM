@@ -34,7 +34,6 @@ Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus
 
 
 ### Installing
-> We assume you go to the correct folder for these commands.
 
 If you are not supplied with a version of this software that includes binaries, you will have to build them. After clonen the repository, execute the build script.
 
