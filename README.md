@@ -66,6 +66,7 @@ This project is licensed under the AGPL license - see the [LICENSE](LICENSE) fil
 
 ## Acknowledgements
 
-* This project was developed as my Bachelorpaper for my Bachelor in Linguistics and Literature under the supervision of Prof. dr. Dirk Speelman
+* This project was initially developed as my Bachelor Paper for my Bachelor in Linguistics and Literature under the supervision of Prof. Dr. Dirk Speelman
+* I am currentl continuing its development as my Master Thesis for my Master in Linguistics under the supervision of Prof. Dr. Dirk Speelman
 * Further acknowledgements see the [ACKNOWLEDGEMENTS](ACKNOWLEDGEMENTS) file
 
