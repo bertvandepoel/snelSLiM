@@ -41,15 +41,15 @@ Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus
 
 ### Installing
 
-If you are not supplied with a version of this software that includes binaries, you will have to build them. After clonen the repository, execute the build script.
+If you are not supplied with a version of this software that includes binaries, you will have to build them. After cloning the repository, execute the build script:
 
 ```
 ./build.sh
 ```
 
-Upload all files including the binaries to your hosting.
+This will build the analyser, preparser and all format parsers.
 
-Import the database structure from db.sql using the mysql command line client or your favourite database administration tool. 
+Upload all files including the binaries to your hosting and import the database structure from db.sql using the mysql command line client or your favourite database administration tool. 
 
 Point your webserver documentroot to the web folder. You should be able to login using test@example.com with password test. Of course you will want to create new accounts and delete the test account.
 
