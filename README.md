@@ -8,51 +8,41 @@ Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus
 
 ## Screenshots
 
-![screenshot main page](/screenshot1.png?raw=true)
+![screenshot main page](/screenshots/overview.png?raw=true)
 ![screenshot corpora overview](/screenshot2.png?raw=true)
 ![screenshot report overview](/screenshot3.png?raw=true)
-![screenshot report details](/screenshot4.png?raw=true)
+![screenshot report details](/report.png?raw=true)
 
 ## Getting Started
 
 ### Prerequisites
 
+#### Build requirements ####
+
+* gcc (for foliafolie)
+* Golang 1.8 or higher
+
+#### Hosting requirements ####
+
 * Unix-style Operating system
-* Golang 1.8
-* PHP 5.5 (might work with older versions)
+  * Basic tools: unzip, tar, sed, bash (should be installed by default)
+* PHP 5.5 (or higher, including PHP 7.2)
   * With no restrictions on the use of shell_exec
   * Preferably the option to enlarge upload_max_filesize and post_max_size
 * MySQL
 * xmllint (usually part of libxml)
-* gcc (for foliafolie)
-* Basic tools: unzip, tar, sed, bash
+
 
 ### Installing
 > We assume you go to the correct folder for these commands.
 
-Compile every parser 
+If you are not supplied with a version of this software that includes binaries, you will have to build them. After clonen the repository, execute the build script.
 
 ```
-go build parser.go
+./build.sh
 ```
 
-Compile the preparser
-
-```
-go build preparser.go
-```
-
-Compile the analyzer
-
-```
-go build analyzer.go
-```
-
-It is highly advised you compile the most recent version of foliafolie from https://github.com/VincentVanlaer/foliafolie
-
-```
-gcc foliafolie.c -std=c99 -Ofast -o foliafolie
-```
+Upload all files including the binaries to your hosting.
 
 Import the database structure from db.sql using the mysql command line client or your favourite database administration tool. 
 
@@ -62,9 +52,6 @@ Point your webserver documentroot to the web folder. You should be able to login
 
 To test whether the application is working correctly, first try and upload a zip and a tar of plain text files from My Corpora. If those succeed move on to FoLiA fast and another XML format. Then try and generate a full report. When corpora or uploads fail, check your webserver's error logs as well as potential error files in the preparsed, reports and unpacked folders in the slm folder. 
 
-## Code quality
-
-This is my first project with elements in Go. I am quite aware my error handling is far from perfect and my handling of sorting in the analyzer is not as clean and readable as it could have been. I however look forward to learning more about go. 
 
 ## Contributing
 
