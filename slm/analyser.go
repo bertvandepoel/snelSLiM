@@ -275,22 +275,32 @@ func main() {
 			 */
 			cel1 := float64(c1localcount[kv.Key])
 			cel2 := float64(c1localcount["total.snelslim"] - c1localcount[kv.Key])
-			if cel1 == 0 {
-				cel1 = 0.00001
-			}
-			if cel2 == 0 {
-				cel2 = 0.00001
+			cA_zero := false
+			cB_zero := false
+			if cel1 == 0 || cel2 == 0 {
+				cA_zero = true
+				cel1 += 0.5
+				cel2 += 0.5
 			}
 			kw_freq_c1 := float64(c1localcount[kv.Key]) / float64(c1localcount["total.snelslim"])
 
 			for _, c2localcount := range c2fragmentcount {
 				cel3 := float64(c2localcount[kv.Key])
 				cel4 := float64(c2localcount["total.snelslim"] - c2localcount[kv.Key])
-				if cel3 == 0 {
-					cel3 = 0.00001
+				if cB_zero == true {
+					cel1 -= 0.5
+					cel2 -= 0.5
+					cB_zero = false
 				}
-				if cel4 == 0 {
-					cel4 = 0.00001
+				if cA_zero == true {
+					cel3 += 0.5
+					cel4 += 0.5
+				} else if cel3 == 0 || cel4 == 0 {
+					cB_zero = true
+					cel1 += 0.5
+					cel2 += 0.5
+					cel3 += 0.5
+					cel4 += 0.5
 				}
 				N := cel1 + cel2 + cel3 + cel4
 				R1 := cel1 + cel2
