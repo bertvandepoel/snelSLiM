@@ -50,3 +50,11 @@
 fieldset { 
 	margin-top: 15px;
 }
+
+#resultTable th, #AfragTable th, #BfragTable th {
+	border-right: 1px solid #e5e5e5;
+}
+
+#resultTable th:last-of-type, #AfragTable th:last-of-type, #BfragTable th:last-of-type {
+	border-right: none;
+}

@@ -4,13 +4,34 @@
 				<p class="text-muted">snelSLiM © 2017 Bert Van de Poel under supervision of Prof. Dr. Dirk Speelman. Openly available as free software under the <a href="http://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL License</a> and available on <a href="https://github.com/bertvandepoel/snelslim">GitHub</a>.</p>
 			</div>
 		</footer>
-		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<!-- <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script> -->
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 		<script src="lumen/bootstrap/bootstrap.min.js"></script>
 		<script src="lumen/bootstrap/usebootstrap.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$('[data-toggle="tooltip"]').tooltip();   
 			});
+		</script>
+		<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+		<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#resultTable').DataTable({
+					"paging":		false,
+					"searching":	false,
+				});
+				$('#AfragTable').DataTable({
+					"paging":		false,
+					"searching":	false,
+					"order": [[ 1, 'asc' ]]
+				});
+				$('#BfragTable').DataTable({
+					"paging":		false,
+					"searching":	false,
+					"order": [[ 1, 'asc' ]]
+				});
+			} );
 		</script>
 	</body>
 </html>

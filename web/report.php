@@ -69,10 +69,31 @@ else {
 
 <div class="row">
 	<div class="col-md-12">
-		<h3>Stable Lexical Marker Analysis</h3>
-		<table class="table table-striped table-hover">
+		<h3>Table of Contents</h3>
+		<h4><a href="#slmareport">Go to result table</a></h4>
+		<h4><a href="#freqreport">Go to frequency tables</a></h4>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-12">
+		<h3 id="slmareport">Stable Lexical Marker Analysis</h3>
+<?php
+		if(!isset($_GET['detailed'])) {
+			echo '<a href="?report='.  $_GET['report'] . '&detailed=" class="btn btn-default">Show detailed table</a>&nbsp;&nbsp;&nbsp;';
+		}
+		echo '<a href="?export='.  $_GET['report'] . '" class="btn btn-primary">Export results</a>';
+?>
+		<table id="resultTable" class="table table-striped table-hover">
 			<thead>
-				<tr><th>#</th><th>Marker</th><th>Absolute score</th><th>Normalised score</th><th>Attraction</th><th>Repulsion</th><th>Lowest Log Odds Ratio</th><th>Highest Log Odds Ratio</th><th>StdDev</th><th>Log Odds Ratio Score</th></tr>
+<?php
+				if(isset($_GET['detailed'])) {
+					echo '<tr><th>#</th><th>Marker</th><th>Absolute score</th><th>Normalised score</th><th>Attraction</th><th>Repulsion</th><th>Lowest Log Odds Ratio</th><th>Highest Log Odds Ratio</th><th>StdDev</th><th>Log Odds Ratio Score</th></tr>';
+				}
+				else {
+					echo '<tr><th>#</th><th>Marker</th><th>Absolute score</th><th>Normalised score</th><th>Log Odds Ratio Score</th></tr>';
+				}
+?>
 			</thead>
 			<tbody>
 <?php
@@ -82,7 +103,12 @@ else {
 			if($row !== '') {
 				$i++;
 				$fields = explode("\t", $row);
-				echo '<tr><td>' . $i . '</td><td>' . $fields[0] . '</td><td>' . $fields[1] . '</td><td>' . $fields[2] . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . $fields[5] . '</td><td>' . $fields[6] . '</td><td>' . $fields[7] . '</td><td>' . $fields[8] . '</td></tr>';
+				if(isset($_GET['detailed'])) {
+					echo '<tr><td>' . $i . '</td><td>' . $fields[0] . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . round($fields[5],3) . '</td><td>' . round($fields[6],3) . '</td><td>' . round($fields[7],3) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+				}
+				else {
+					echo '<tr><td>' . $i . '</td><td>' . $fields[0] . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+				}
 			}
 		}
 ?>
@@ -94,10 +120,10 @@ else {
 
 <div class="row">
 	<div class="col-md-5">
-		<h3>Frequency in Fragments/Texts</h3>
-		<table class="table table-striped table-hover">
+		<h3 id="freqreport">Frequency in Fragments/Texts</h3>
+		<table id="AfragTable" class="table table-striped table-hover">
 			<thead>
-				<tr><th>Filename</th><th>Frequency of SLMs</th></tr>
+				<tr><th>Filename</th><th>File extension</th><th>Frequency of SLMs</th></tr>
 			</thead>
 			<tbody>
 <?php
@@ -105,7 +131,8 @@ else {
 		foreach($slm as $row) {
 			if($row !== '') {
 				$fields = explode("\t", $row);
-				echo '<tr><td>' . $fields[0] . '</td><td>' . $fields[1] . '</td></tr>';
+				$pathinfo = pathinfo($fields[0]);
+				echo '<tr><td>' . $fields[0] . '</td><td>' . $pathinfo['extension'] . '</td><td>' . $fields[1] . '</td></tr>';
 			}
 		}
 ?>
@@ -114,9 +141,9 @@ else {
 	</div>
 	<div class="col-md-5 col-md-offset-2">
 		<h3>Frequency in Fragments/Texts</h3>
-		<table class="table table-striped table-hover">
+		<table id="BfragTable" class="table table-striped table-hover">
 			<thead>
-				<tr><th>Filename</th><th>Frequency of SLMs</th></tr>
+				<tr><th>Filename</th><th>File extension</th><th>Frequency of SLMs</th></tr>
 			</thead>
 			<tbody>
 <?php
@@ -124,7 +151,8 @@ else {
 		foreach($slm as $row) {
 			if($row !== '') {
 				$fields = explode("\t", $row);
-				echo '<tr><td>' . $fields[0] . '</td><td>' . $fields[1] . '</td></tr>';
+				$pathinfo = pathinfo($fields[0]);
+				echo '<tr><td>' . $fields[0] . '</td><td>' . $pathinfo['extension'] . '</td><td>' . $fields[1] . '</td></tr>';
 			}
 		}
 ?>
