@@ -71,13 +71,13 @@ function uploadparse($filepost, $format, $extra, $tmp = TRUE, $id = NULL) {
 		$arguments = 'alpino text -';
 	}
 	elseif($format == 'alpino-lemma') {
-		$arguments = 'alpino text -';
+		$arguments = 'alpino lemma -';
 	}
 	elseif($format == 'bnc-text') {
 		$arguments = 'bnc text -';
 	}
 	elseif($format == 'bnc-lemma') {
-		$arguments = 'bnc text -';
+		$arguments = 'bnc lemma -';
 	}
 	elseif($format == 'eindhoven') {
 		$arguments = 'eindhoven - -';
@@ -86,13 +86,13 @@ function uploadparse($filepost, $format, $extra, $tmp = TRUE, $id = NULL) {
 		$arguments = 'gysseling text -';
 	}
 	elseif($format == 'gysseling-lemma') {
-		$arguments = 'gysseling text -';
+		$arguments = 'gysseling lemma -';
 	}
 	elseif($format == 'masc-text') {
 		$arguments = 'masc text -';
 	}
 	elseif($format == 'masc-lemma') {
-		$arguments = 'masc text -';
+		$arguments = 'masc lemma -';
 	}
 	elseif($format == 'oanc') {
 		$arguments = 'oanc - -';
