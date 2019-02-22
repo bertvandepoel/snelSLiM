@@ -46,3 +46,7 @@
 .emphasize {
 	font-weight: 600;
 }
+
+fieldset { 
+	margin-top: 15px;
+}
