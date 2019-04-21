@@ -19,6 +19,6 @@
  */
 
 $timeout = "120";
-
+$from_email = "no-reply@example.com";
 
 ?>
