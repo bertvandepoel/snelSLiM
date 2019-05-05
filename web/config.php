@@ -19,6 +19,12 @@
  */
 
 $timeout = "120";
-$from_email = "no-reply@example.com";
+$email_from = "no-reply@example.com";
+$email_smtp = FALSE;
+$email_smtp_server = "";
+$email_smtp_port = "";
+$email_smtp_auth = FALSE;
+$email_smtp_username = "";
+$email_smtp_password = "";
 
 ?>

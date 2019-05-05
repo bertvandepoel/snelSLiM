@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math"
+	"net/http"
 	"os"
 	"path/filepath"
 	"sort"
@@ -21,6 +22,7 @@ func main() {
 		fmt.Println("3. the number of most frequent items to analyse from the primary corpus")
 		fmt.Println("4. the directory to write the results report to")
 		fmt.Println("5. timeout value in seconds for each corpus, the analysis will fail if preparsing hasn't completed after waiting this amount of seconds")
+		fmt.Println("6. the callback URL to signal successful completion to, optional")
 		os.Exit(1)
 	}
 	c1 := os.Args[1] + "/"
@@ -463,6 +465,11 @@ func main() {
 	if err != nil {
 		fmt.Println("Could not write done signal")
 		panic(err)
+	}
+
+	// if a callback URL is specified, trigger it
+	if len(os.Args) == 7 {
+		http.Get(os.Args[6])
 	}
 }
 

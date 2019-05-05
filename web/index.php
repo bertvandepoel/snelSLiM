@@ -176,7 +176,20 @@ else {
 			chdir('../slm');
 			mkdir($reportdir);
 			
-			shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $reportdir . ' ' . $timeout . ' > /dev/null &');
+			if(isset($_POST['mailresult']) AND $_POST['mailresult'] == 'on') {
+				$callback = '';
+				if(isset($_SERVER['HTTPS']) AND $_SERVER['HTTPS'] === 'on') {
+					$callback = 'https://';
+				}
+				else {
+					$callback = 'http://';
+				}
+				$callback .= $_SERVER['SERVER_NAME'] . substr($_SERVER['REQUEST_URI'], 0, -1) . 'callback.php?id=' . $reportid;
+				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $reportdir . ' ' . $timeout . ' ' .  $callback . ' > /dev/null &');
+			}
+			else {
+				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $reportdir . ' ' . $timeout . ' > /dev/null &');
+			}
 			
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> We have successfully received your report request. You will be redirected to the report that is generating for you right now. </div></div></div>';
 			
