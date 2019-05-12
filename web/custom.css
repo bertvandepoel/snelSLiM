@@ -58,3 +58,9 @@ fieldset {
 #resultTable th:last-of-type, #AfragTable th:last-of-type, #BfragTable th:last-of-type {
 	border-right: none;
 }
+
+#totopbutton {
+	position: fixed;
+	right: 4rem;
+	bottom: 2rem;
+}

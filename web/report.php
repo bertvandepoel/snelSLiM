@@ -75,6 +75,8 @@ else {
 	</div>
 </div>
 
+<a href="#banner" id="totopbutton" class="btn btn-primary"><span class="glyphicon glyphicon-arrow-up"></span><br>Back to the top</a>
+
 <div class="row">
 	<div class="col-md-12">
 		<h3 id="slmareport">Stable Lexical Marker Analysis</h3>
