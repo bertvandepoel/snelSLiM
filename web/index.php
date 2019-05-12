@@ -37,13 +37,14 @@ if(isset($_POST['login'])) {
 		require('html/bottom.html');
 		exit;
 	}
-	if(password_needs_rehash($user['hash'], PASSWORD_BCRYPT)) {
+	if(password_needs_rehash($user['hash'], PASSWORD_DEFAULT)) {
 		$update_user = $db->prepare('UPDATE accounts SET hash=? WHERE email=?');
-		$update_user->execute(array(password_hash($_POST['password'], PASSWORD_BCRYPT), $_POST['email']));
+		$update_user->execute(array(password_hash($_POST['password'], PASSWORD_DEFAULT), $_POST['email']));
 	}
 	$_SESSION['loggedin'] = true;
 	$_SESSION['email'] = $_POST['email'];
 	$_SESSION['admin'] = $user['admin'];
+	require('html/redirectlogin.html');
 }
 
 if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
@@ -97,7 +98,7 @@ elseif(isset($_GET['pw'])) {
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> Your password is too short, to keep your account secure please use a longer password. If you are out of ideas have a look at <a href="https://xkcd.com/936/" target="_blank">this xkcd</a>.</div></div></div>';
 		}
 		else {
-			$hash = password_hash($_POST['password'], PASSWORD_BCRYPT);
+			$hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
 			$update_hash = $db->prepare('UPDATE accounts SET hash=? WHERE email=?');
 			$update_hash->execute(array($hash, $_SESSION['email']));
 			
@@ -110,6 +111,7 @@ elseif(isset($_GET['logout'])) {
 	unset($_SESSION['loggedin']);
 	unset($_SESSION['email']);
 	require('html/login.html');
+	require('html/redirectlogout.html');
 }
 else {
 	if(isset($_POST['analyse'])) {

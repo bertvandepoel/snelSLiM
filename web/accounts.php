@@ -56,7 +56,7 @@ elseif(isset($_POST['create'])) {
 		$isadmin = 0;
 	}
 	$insert = $db->prepare('INSERT INTO accounts VALUES (?,?,?)');
-	$insert->execute(array($_POST['email'], password_hash($_POST['password'], PASSWORD_BCRYPT), $isadmin));
+	$insert->execute(array($_POST['email'], password_hash($_POST['password'], PASSWORD_DEFAULT), $isadmin));
 }
 
 if(isset($_GET['add'])) {
