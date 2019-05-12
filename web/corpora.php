@@ -68,14 +68,14 @@ if(isset($_GET['add'])) {
 				<div class="form-group">
 					<label for="c1-file" class="control-label">
 						Corpus file
-						<a href="#" data-toggle="tooltip" class="formtooltip" title="Supply your corpus in the form of a zip or tar containing your texts or fragments directly or in a single level of subfolders">help</a>
+						<a href="#" data-toggle="tooltip" class="formtooltip" title="Supply your corpus in the form of a zip or tar containing your texts or fragments directly or in a single level of subfolders"><span class="glyphicon glyphicon-question-sign"></span></a>
 					</label>
 					<input class="form-control" id="c1-file" type="file" name="c1-file">
 				</div>
 				<div class="form-group">
 					<label for="c1-format" class="control-label">
 						Corpus format new corpus
-						<a href="?formats" data-toggle="tooltip" class="formtooltip" title="If you are not sure what to select, click here to go to the Corpus Formats help page">help</a>
+						<a href="?formats" data-toggle="tooltip" class="formtooltip" title="If you are not sure what to select, click here to go to the Corpus Formats help page"><span class="glyphicon glyphicon-question-sign"></span></a>
 					</label>
 					<select class="form-control" id="c1-format" name="c1-format">
 						<option value="conll">CoNLL tab-seperated values, specify column index</option>
