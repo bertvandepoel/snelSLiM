@@ -134,6 +134,9 @@ else {
 		elseif ($_POST['freqnum'] < 10) {
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You want to select at least 10 frequent items and probably much more.</div></div></div>';
 		}
+		elseif ($_POST['freqnum'] > $max_freqnum) {
+			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> The admin has limited the amount of frequent items to a maximum of ' . $max_freqnum . ', please limit your chosen amount.</div></div></div>';
+		}
 		else {
 			// all paths must be relative to application/slm
 			require('uploadparse.php');
