@@ -117,16 +117,16 @@ else {
 			// comparing same saved corpus, revert to form
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You selected the same corpus twice. This would of course not work out.</div></div></div>';
 		}
-		elseif ( ($_POST['c1-select'] == 'none') AND ($_POST['c1-format'] == 'conll') AND  (intval($_POST['c1-extra']) < 1) ) {
+		elseif ( ($_POST['c1-select'] == 'none') AND ($_POST['c1-format'] == 'conll') AND (intval($_POST['c1-extra-conll']) < 1) ) {
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You have chosen CoNLL as the format for your first corpus, but you have not specified which column to select.</div></div></div>';
 		}
-		elseif ( ($_POST['c2-select'] == 'none') AND ($_POST['c2-format'] == 'conll') AND  (intval($_POST['c2-extra']) < 1) ) {
+		elseif ( ($_POST['c2-select'] == 'none') AND ($_POST['c2-format'] == 'conll') AND (intval($_POST['c2-extra-conll']) < 1) ) {
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You have chosen CoNLL as the format for your second corpus, but you have not specified which column to select.</div></div></div>';
 		}
-		elseif ( ($_POST['c1-select'] == 'none') AND ($_POST['c1-format'] == 'xpath') AND  (strlen($_POST['c1-extra']) < 2) ) {
+		elseif ( ($_POST['c1-select'] == 'none') AND ($_POST['c1-format'] == 'xpath') AND (strlen($_POST['c1-extra-xpath']) < 2) ) {
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You have chosen XML with custom XPath as the format for your first corpus, but you have not specified your XPath query.</div></div></div>';
 		}
-		elseif ( ($_POST['c2-select'] == 'none') AND ($_POST['c2-format'] == 'xpath') AND  (strlen($_POST['c2-extra']) < 2) ) {
+		elseif ( ($_POST['c2-select'] == 'none') AND ($_POST['c2-format'] == 'xpath') AND (strlen($_POST['c2-extra-xpath']) < 2) ) {
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You have chosen XML with custom XPath as the format for your second corpus, but you have not specified your XPath query.</div></div></div>';
 		}
 		elseif ($_POST['freqnum'] < 10) {
@@ -141,8 +141,15 @@ else {
 					require('html/bottom.html');
 					exit;
 				}
+				$extra = NULL;
+				if($_POST['c1-format'] == 'conll') {
+					$extra = $_POST['c1-extra-conll'];
+				}
+				elseif($_POST['c1-format'] == 'xpath') {
+					$extra = $_POST['c1-extra-xpath'];
+				}
 				$corpus1name = $_FILES['c1-file']['name'];
-				$corpus1 = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $_POST['c1-extra']);
+				$corpus1 = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra);
 			}
 			else {
 				$get_corpusname = $db->prepare('SELECT name FROM corpora WHERE id=?');
@@ -157,8 +164,15 @@ else {
 					require('html/bottom.html');
 					exit;
 				}
+				$extra = NULL;
+				if($_POST['c2-format'] == 'conll') {
+					$extra = $_POST['c2-extra-conll'];
+				}
+				elseif($_POST['c2-format'] == 'xpath') {
+					$extra = $_POST['c2-extra-xpath'];
+				}
 				$corpus2name = $_FILES['c2-file']['name'];
-				$corpus2 = uploadparse($_FILES['c2-file'], $_POST['c2-format'], $_POST['c2-extra']);
+				$corpus2 = uploadparse($_FILES['c2-file'], $_POST['c2-format'], $extra);
 			}
 			else {
 				$get_corpusname = $db->prepare('SELECT name FROM corpora WHERE id=?');

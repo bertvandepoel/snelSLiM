@@ -67,9 +67,13 @@
 							<option value="xpath">XML, specify XPath</option>
 						</select>
 					</div>
-					<div class="form-group collapse">
-						<label for="c1-extra" class="control-label">Extra format option (column index CoNLL or XPath query)</label>
-						<input class="form-control" id="c1-extra" type="text" name="c1-extra">
+					<div class="form-group collapse" id="c1-extra-conll-container">
+						<label for="c1-extra-conll" class="control-label">Index of column containing words or lemmas</label>
+						<input class="form-control" id="c1-extra-conll" type="text" name="c1-extra-conll">
+					</div>
+					<div class="form-group collapse" id="c1-extra-xpath-container">
+						<label for="c1-extra-xpath" class="control-label">XPath Query</label>
+						<input class="form-control" id="c1-extra-xpath" type="text" name="c1-extra-xpath">
 					</div>
 				</fieldset>
 			</div>
@@ -133,9 +137,13 @@
 							<option value="xpath">XML, specify XPath</option>
 						</select>
 					</div>
-					<div class="form-group collapse">
-						<label for="c2-extra" class="control-label">Extra format option (column index CoNLL or XPath query)</label>
-						<input class="form-control" id="c2-extra" type="text" name="c2-extra">
+					<div class="form-group collapse" id="c2-extra-conll-container">
+						<label for="c2-extra-conll" class="control-label">Index of column containing words or lemmas</label>
+						<input class="form-control" id="c2-extra-conll" type="text" name="c2-extra-conll">
+					</div>
+					<div class="form-group collapse" id="c2-extra-xpath-container">
+						<label for="c2-extra-xpath" class="control-label">XPath Query</label>
+						<input class="form-control" id="c2-extra-xpath" type="text" name="c2-extra-xpath">
 					</div>
 				</fieldset>
 			</div>
@@ -165,4 +173,3 @@
 		</div>
 	</div>
 </form>
-

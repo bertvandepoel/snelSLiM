@@ -4,10 +4,8 @@
 				<p class="text-muted">snelSLiM © 2017 Bert Van de Poel under supervision of Prof. Dr. Dirk Speelman. Openly available as free software under the <a href="http://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL License</a> and available on <a href="https://github.com/bertvandepoel/snelslim">GitHub</a>.</p>
 			</div>
 		</footer>
-		<!-- <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script> -->
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 		<script src="lumen/bootstrap/bootstrap.min.js"></script>
-		<script src="lumen/bootstrap/usebootstrap.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$('[data-toggle="tooltip"]').tooltip();   
@@ -32,6 +30,40 @@
 					"order": [[ 2, 'desc' ]]
 				});
 			} );
+		</script>
+		<script>
+			$( document ).ready(function() {
+				$("#c1-format").change(function(){
+					if($(this).val()=="xpath" ) {
+						$('#c1-extra-conll-container').collapse('hide');
+						$('#c1-extra-xpath-container').collapse('show');
+					}
+					else if($(this).val()=="conll" ) {
+						$('#c1-extra-conll-container').collapse('show');
+						$('#c1-extra-xpath-container').collapse('hide');
+					}
+					else{
+						$('#c1-extra-conll-container').collapse('hide');
+						$('#c1-extra-xpath-container').collapse('hide');
+					}
+				})
+			});
+			$( document ).ready(function() {
+				$("#c2-format").change(function(){
+					if($(this).val()=="xpath" ) {
+						$('#c2-extra-conll-container').collapse('hide');
+						$('#c2-extra-xpath-container').collapse('show');
+					}
+					else if($(this).val()=="conll" ) {
+						$('#c2-extra-conll-container').collapse('show');
+						$('#c2-extra-xpath-container').collapse('hide');
+					}
+					else{
+						$('#c2-extra-conll-container').collapse('hide');
+						$('#c2-extra-xpath-container').collapse('hide');
+					}
+				})
+			});
 		</script>
 	</body>
 </html>
