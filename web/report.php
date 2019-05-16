@@ -40,6 +40,10 @@ else {
 	$c1report = file_get_contents('../slm/reports/' . $_GET['report'] . '/c1.report');
 	$c1frag = file_get_contents('../slm/reports/' . $_GET['report'] . '/c1frag.report');
 	$c2frag = file_get_contents('../slm/reports/' . $_GET['report'] . '/c2frag.report');
+	$donetime = filectime('../slm/reports/' . $_GET['report'] . '/done');
+	$d1 = date_create($report['datetime']);
+	$d2 = date_create(date('Y-m-d H:i:s', $donetime));
+	$diff = date_diff($d1, $d2);
 	
 	if(mb_detect_encoding($c1report, 'UTF-8, ISO-8859-1') === 'ISO-8859-1') {
 		$c1report = utf8_encode($c1report);
@@ -57,7 +61,7 @@ else {
 	<div class="row">
 		<div class="col-md-12">
 			<h1>Your report is ready</h1>
-			<p class="lead">You requested a snelSLiM report for <span class="emphasize">Corpus &quot;<?php echo $report['c1']; ?>&quot;</span> against <span class="emphasize">Corpus &quot;<?php echo $report['c2']; ?>&quot;</span> on <?php echo date("d M Y \a\\t H:i", strtotime($report['datetime'])); ?> using <?php echo $report['freqnum']; ?> of the most frequent items from the primary corpus to end up finding <span class="emphasize"><?php echo substr_count($c1report, "\n"); ?> stable lexical markers</span>. In the table you can see whether they were attracted to the first corpus or repulsed by it, and look into the effect size using the log odds ratio. For more information on these measures, please consult the help pages. In the bottommost table the results were then used to mark potentially interesting fragments/texts based on marker frequencies.</p>
+			<p class="lead">You requested a snelSLiM report for <span class="emphasize">Corpus &quot;<?php echo $report['c1']; ?>&quot;</span> against <span class="emphasize">Corpus &quot;<?php echo $report['c2']; ?>&quot;</span> on <?php echo date("d M Y \a\\t H:i", strtotime($report['datetime'])); ?> (finished in <?php echo $diff->format('%hh%im%ss'); ?>) using <span class="emphasize"><?php echo $report['freqnum']; ?></span><a href="?faq#freqnum" target="_blank" data-toggle="tooltip" class="formtooltip" title="Click for more information about what number to select for number of frequent items"><span class="glyphicon glyphicon-question-sign"></span></a> of the most frequent items from the primary corpus to end up finding <span class="emphasize"><?php echo substr_count($c1report, "\n"); ?> stable lexical markers</span>. In the table you can see whether they were attracted to the first corpus or repulsed by it, and look into the effect size using the log odds ratio. For more information on these measures, please consult the help pages. In the bottommost table the results were then used to mark potentially interesting fragments/texts based on marker frequencies.</p>
 		</div>
 	</div>
 </div>
@@ -79,14 +83,20 @@ else {
 
 <div class="row">
 	<div class="col-md-12">
-		<h3 id="slmareport">Stable Lexical Marker Analysis</h3>
 <?php
+		if( !isset($_GET['allitems']) AND !isset($_GET['detailed']) ) {
+			echo '<h3 id="slmareport">Stable Lexical Marker Analysis - top 100 markers</h3>';
+			echo '<a href="?report='.  $_GET['report'] . '&allitems=" class="btn btn-default">Show all markers</a>&nbsp;&nbsp;&nbsp;';
+		}
+		else {
+			echo '<h3 id="slmareport">Stable Lexical Marker Analysis</h3>';
+		}
 		if(!isset($_GET['detailed'])) {
 			echo '<a href="?report='.  $_GET['report'] . '&detailed=" class="btn btn-default">Show detailed table</a>&nbsp;&nbsp;&nbsp;';
 		}
 		echo '<a href="?export='.  $_GET['report'] . '" class="btn btn-primary">Export results</a>';
 ?>
-		<table id="resultTable" class="table table-striped table-hover">
+		<table id="resultTable" class="table table-striped table-hover table-condensed">
 			<thead>
 <?php
 				if(isset($_GET['detailed'])) {
@@ -106,10 +116,13 @@ else {
 				$i++;
 				$fields = explode("\t", $row);
 				if(isset($_GET['detailed'])) {
-					echo '<tr><td>' . $i . '</td><td>' . $fields[0] . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . round($fields[5],3) . '</td><td>' . round($fields[6],3) . '</td><td>' . round($fields[7],3) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+					echo '<tr><td>' . $i . '</td><td class="breakwords">' . $fields[0] . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . round($fields[5],3) . '</td><td>' . round($fields[6],3) . '</td><td>' . round($fields[7],3) . '</td><td>' . round($fields[8],3) . '</td></tr>';
 				}
 				else {
-					echo '<tr><td>' . $i . '</td><td>' . $fields[0] . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+					echo '<tr><td>' . $i . '</td><td class="breakwords">' . $fields[0] . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+				}
+				if( !isset($_GET['allitems']) AND !isset($_GET['detailed']) AND $i == 100 ) {
+					break;
 				}
 			}
 		}
@@ -119,11 +132,19 @@ else {
 	</div>
 </div>
 
+<?php
+
+		if( !isset($_GET['allitems']) AND !isset($_GET['detailed']) ) {
+			echo '<h4>These are the top 100 markers <a href="?report='.  $_GET['report'] . '&allitems=" class="btn btn-primary">Show all markers</a></h4>';
+		}
+
+?>
+
 
 <div class="row">
 	<div class="col-md-5">
 		<h3 id="freqreport">Frequency in Fragments/Texts</h3>
-		<table id="AfragTable" class="table table-striped table-hover">
+		<table id="AfragTable" class="table table-striped table-hover table-condensed">
 			<thead>
 				<tr><th>Filename</th><th>File extension</th><th>Frequency of SLMs</th></tr>
 			</thead>
@@ -143,7 +164,7 @@ else {
 	</div>
 	<div class="col-md-5 col-md-offset-2">
 		<h3>Frequency in Fragments/Texts</h3>
-		<table id="BfragTable" class="table table-striped table-hover">
+		<table id="BfragTable" class="table table-striped table-hover table-condensed">
 			<thead>
 				<tr><th>Filename</th><th>File extension</th><th>Frequency of SLMs</th></tr>
 			</thead>

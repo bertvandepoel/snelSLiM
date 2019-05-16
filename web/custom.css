@@ -64,3 +64,8 @@ fieldset {
 	right: 4rem;
 	bottom: 2rem;
 }
+
+.breakwords {
+	overflow-wrap: break-word; 
+	word-break: break-all;
+}

@@ -48,19 +48,31 @@ $get_reports->execute(array($_SESSION['email']));
 	<div class="col-md-12">
 		<table class="table table-striped table-hover">
 			<thead>
-				<tr><th>#</th><th>Corpus 1</th><th>Corpus 2</th><th>Frequency</th><th># results</th><th>Requested on</th><th>Status</th><th>Delete</th></tr>
+				<tr><th>#</th><th>Corpus 1</th><th>Corpus 2</th><th>Frequency</th><th># results</th><th>Requested on</th><th>Ran for</th><th>Status</th><th>Delete</th></tr>
 			</thead>
 			<tbody>
 <?php
 			while($report = $get_reports->fetch(PDO::FETCH_ASSOC)) {
+				$diff = NULL;
 				if(file_exists('../slm/reports/' . $report['id'] . '/error')) {
 					$status = '<span class="label label-danger">error</span>';
+					$errortime = filectime('../slm/reports/' . $report['id'] . '/error');
+					$d1 = date_create($report['datetime']);
+					$d2 = date_create(date('Y-m-d H:i:s', $errortime));
+					$diff = date_diff($d1, $d2);
 				}
 				elseif(file_exists('../slm/reports/' . $report['id'] . '/done')) {
 					$status = '<span class="label label-success">done</span>';
+					$donetime = filectime('../slm/reports/' . $report['id'] . '/done');
+					$d1 = date_create($report['datetime']);
+					$d2 = date_create(date('Y-m-d H:i:s', $donetime));
+					$diff = date_diff($d1, $d2);
 				}
 				else {
 					$status = '<span class="label label-default">processing</span>';
+					$d1 = date_create($report['datetime']);
+					$d2 = date_create(date('Y-m-d H:i:s'));
+					$diff = date_diff($d1, $d2);
 				}
 				
 				if(file_exists('../slm/reports/' . $report['id'] . '/c1.report')) {
@@ -70,7 +82,7 @@ $get_reports->execute(array($_SESSION['email']));
 					$resultnum = "";
 				}
 				
-				echo '<tr><td><a href="?report=' . $report['id'] . '">' . $report['id'] . '</a></td><td>' . $report['c1'] . '</td><td>' . $report['c2'] . '</td><td>' . $report['freqnum'] . '</td><td>' . $resultnum . '</td><td>' . date("d M Y \a\\t H:i", strtotime($report['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?reports&delete=' . $report['id'] . '">Delete</a></td>';
+				echo '<tr><td><a href="?report=' . $report['id'] . '">' . $report['id'] . '</a></td><td>' . $report['c1'] . '</td><td>' . $report['c2'] . '</td><td>' . $report['freqnum'] . '</td><td>' . $resultnum . '</td><td>' . date("d M Y \a\\t H:i", strtotime($report['datetime'])) . '</td><td>' . $diff->format('%hh%im%ss') . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?reports&delete=' . $report['id'] . '">Delete</a></td>';
 			}
 ?>
 			</tbody>
