@@ -85,7 +85,7 @@ $get_reports->execute(array($_SESSION['email']));
 				$cutoff_transform = array('3.841459' => 0.05, '6.634897' => 0.01, '7.879439' => 0.005, '10.827570' => 0.001, '12.115670' => 0.0005, '15.136710' => 0.0001);
 				$cutoff = $cutoff_transform[$report['cutoff']] . ' (' . $report['cutoff'] . ')';
 				
-				echo '<tr><td><a href="?report=' . $report['id'] . '">' . $report['id'] . '</a></td><td>' . $report['c1'] . '</td><td>' . $report['c2'] . '</td><td>' . $cutoff . '</td><td>' . $report['freqnum'] . '</td><td>' . $resultnum . '</td><td>' . date("d M Y \a\\t H:i", strtotime($report['datetime'])) . '</td><td>' . $diff->format('%hh%im%ss') . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?reports&delete=' . $report['id'] . '">Delete</a></td>';
+				echo '<tr data-href="?report=' . $report['id'] . '"><td><a href="?report=' . $report['id'] . '">' . $report['id'] . '</a></td><td class="breakwords">' . $report['c1'] . '</td><td class="breakwords">' . $report['c2'] . '</td><td>' . $cutoff . '</td><td>' . $report['freqnum'] . '</td><td>' . $resultnum . '</td><td>' . date("d M Y \a\\t H:i", strtotime($report['datetime'])) . '</td><td>' . $diff->format('%hh%im%ss') . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?reports&delete=' . $report['id'] . '">Delete</a></td>';
 			}
 ?>
 			</tbody>
