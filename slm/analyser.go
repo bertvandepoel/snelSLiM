@@ -15,19 +15,20 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 6 {
+	if len(os.Args) < 7 {
 		fmt.Println("The snelSLiM analyser requires 6 arguments:")
 		fmt.Println("1. the path to the first preparsed corpus")
 		fmt.Println("2. the path to the second preparsed corpus")
 		fmt.Println("3. the number of most frequent items to analyse from the primary corpus")
-		fmt.Println("4. the directory to write the results report to")
-		fmt.Println("5. timeout value in seconds for each corpus, the analysis will fail if preparsing hasn't completed after waiting this amount of seconds")
-		fmt.Println("6. the callback URL to signal successful completion to, optional")
+		fmt.Println("4. the cut-off value for the G squared statics test (Chi squared PPF result)")
+		fmt.Println("5. the directory to write the results report to")
+		fmt.Println("6. timeout value in seconds for each corpus, the analysis will fail if preparsing hasn't completed after waiting this amount of seconds")
+		fmt.Println("7. the callback URL to signal successful completion to, optional")
 		os.Exit(1)
 	}
 	c1 := os.Args[1] + "/"
 	c2 := os.Args[2] + "/"
-	reportdir := os.Args[4] + "/"
+	reportdir := os.Args[5] + "/"
 	freqnum, err := strconv.Atoi(os.Args[3])
 	if err != nil {
 		err = ioutil.WriteFile(reportdir+"error", []byte("error: Could not cast freqnum to integer"), 0644)
@@ -37,7 +38,16 @@ func main() {
 		}
 		panic(err)
 	}
-	timeout, err := strconv.Atoi(os.Args[5])
+	cutoff, err := strconv.ParseFloat(os.Args[4], 64)
+	if err != nil {
+		err = ioutil.WriteFile(reportdir+"error", []byte("error: Could not cast cutoff to float"), 0644)
+		if err != nil {
+			fmt.Println("Could not write error")
+			panic(err)
+		}
+		panic(err)
+	}
+	timeout, err := strconv.Atoi(os.Args[6])
 	if err != nil {
 		err = ioutil.WriteFile(reportdir+"error", []byte("error: Could not cast timeout to integer"), 0644)
 		if err != nil {
@@ -315,8 +325,8 @@ func main() {
 				Gcel4 := 2 * cel4 * math.Log(cel4/((R2*C2)/N))
 				Gsquared := Gcel1 + Gcel2 + Gcel3 + Gcel4
 
-				// 3.841 is the cut-off point for significance of the keyword
-				if Gsquared > 3.841 {
+				// Check if the keyword is significant
+				if Gsquared > cutoff {
 					kw_freq_c2 := float64(c2localcount[kv.Key]) / float64(c2localcount["total.snelslim"])
 					if kw_freq_c1 > kw_freq_c2 {
 						// this keyword is a stable lexical marker for corpus 1 for this text combination
@@ -468,8 +478,8 @@ func main() {
 	}
 
 	// if a callback URL is specified, trigger it
-	if len(os.Args) == 7 {
-		http.Get(os.Args[6])
+	if len(os.Args) == 8 {
+		http.Get(os.Args[7])
 	}
 }
 

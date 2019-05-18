@@ -31,7 +31,7 @@ if(isset($_GET['delete'])) {
 	}
 }
 
-$get_reports = $db->prepare('SELECT id, c1, c2, freqnum, datetime FROM reports WHERE owner=?');
+$get_reports = $db->prepare('SELECT id, c1, c2, freqnum, cutoff, datetime FROM reports WHERE owner=?');
 $get_reports->execute(array($_SESSION['email']));
 
 ?>
@@ -48,7 +48,7 @@ $get_reports->execute(array($_SESSION['email']));
 	<div class="col-md-12">
 		<table class="table table-striped table-hover">
 			<thead>
-				<tr><th>#</th><th>Corpus 1</th><th>Corpus 2</th><th>Frequency</th><th># results</th><th>Requested on</th><th>Ran for</th><th>Status</th><th>Delete</th></tr>
+				<tr><th>#</th><th>Corpus 1</th><th>Corpus 2</th><th>Probability (cut-off)</th><th>Frequency</th><th># results</th><th>Requested on</th><th>Ran for</th><th>Status</th><th>Delete</th></tr>
 			</thead>
 			<tbody>
 <?php
@@ -82,7 +82,10 @@ $get_reports->execute(array($_SESSION['email']));
 					$resultnum = "";
 				}
 				
-				echo '<tr><td><a href="?report=' . $report['id'] . '">' . $report['id'] . '</a></td><td>' . $report['c1'] . '</td><td>' . $report['c2'] . '</td><td>' . $report['freqnum'] . '</td><td>' . $resultnum . '</td><td>' . date("d M Y \a\\t H:i", strtotime($report['datetime'])) . '</td><td>' . $diff->format('%hh%im%ss') . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?reports&delete=' . $report['id'] . '">Delete</a></td>';
+				$cutoff_transform = array('3.841459' => 0.05, '6.634897' => 0.01, '7.879439' => 0.005, '10.827570' => 0.001, '12.115670' => 0.0005, '15.136710' => 0.0001);
+				$cutoff = $cutoff_transform[$report['cutoff']] . ' (' . $report['cutoff'] . ')';
+				
+				echo '<tr><td><a href="?report=' . $report['id'] . '">' . $report['id'] . '</a></td><td>' . $report['c1'] . '</td><td>' . $report['c2'] . '</td><td>' . $cutoff . '</td><td>' . $report['freqnum'] . '</td><td>' . $resultnum . '</td><td>' . date("d M Y \a\\t H:i", strtotime($report['datetime'])) . '</td><td>' . $diff->format('%hh%im%ss') . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?reports&delete=' . $report['id'] . '">Delete</a></td>';
 			}
 ?>
 			</tbody>

@@ -187,8 +187,8 @@ else {
 				$corpus2 = 'preparsed/saved/' . $_POST['c2-select'];
 			}
 			
-			$insert_report = $db->prepare('INSERT INTO reports (owner, c1, c2, freqnum, datetime) VALUES (?,?,?,?,NOW())');
-			$insert_report->execute(array($_SESSION['email'], $corpus1name, $corpus2name, intval($_POST['freqnum'])));
+			$insert_report = $db->prepare('INSERT INTO reports (owner, c1, c2, freqnum, cutoff, datetime) VALUES (?,?,?,?,?,NOW())');
+			$insert_report->execute(array($_SESSION['email'], $corpus1name, $corpus2name, intval($_POST['freqnum']), $_POST['cutoff']));
 			$reportid = $db->lastInsertId();
 			$reportdir = 'reports/' . $reportid;
 			
@@ -204,10 +204,10 @@ else {
 					$callback = 'http://';
 				}
 				$callback .= $_SERVER['SERVER_NAME'] . substr($_SERVER['REQUEST_URI'], 0, -1) . 'callback.php?id=' . $reportid;
-				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $reportdir . ' ' . $timeout . ' ' .  $callback . ' > /dev/null &');
+				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' ' .  $callback . ' > /dev/null &');
 			}
 			else {
-				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $reportdir . ' ' . $timeout . ' > /dev/null &');
+				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' > /dev/null &');
 			}
 			
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> We have successfully received your report request. You will be redirected to the report that is generating for you right now. </div></div></div>';

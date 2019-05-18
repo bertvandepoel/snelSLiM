@@ -24,6 +24,7 @@ CREATE TABLE `reports` (
   `c1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `c2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `freqnum` int(11) NOT NULL,
+  `cutoff` decimal(8,6) NOT NULL,
   `datetime` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

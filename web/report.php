@@ -33,7 +33,7 @@ elseif(!file_exists('../slm/reports/' . $_GET['report'] . '/done')) {
 }
 else {
 	// report is ready!
-	$get_report = $db->prepare('SELECT c1, c2, freqnum, datetime FROM reports WHERE id=?');
+	$get_report = $db->prepare('SELECT c1, c2, freqnum, cutoff, datetime FROM reports WHERE id=?');
 	$get_report->execute(array($_GET['report']));
 	$report = $get_report->fetch(PDO::FETCH_ASSOC);
 	
@@ -44,6 +44,7 @@ else {
 	$d1 = date_create($report['datetime']);
 	$d2 = date_create(date('Y-m-d H:i:s', $donetime));
 	$diff = date_diff($d1, $d2);
+	$cutoff_transform = array('3.841459' => 0.05, '6.634897' => 0.01, '7.879439' => 0.005, '10.827570' => 0.001, '12.115670' => 0.0005, '15.136710' => 0.0001);
 	
 	if(mb_detect_encoding($c1report, 'UTF-8, ISO-8859-1') === 'ISO-8859-1') {
 		$c1report = utf8_encode($c1report);
@@ -61,7 +62,7 @@ else {
 	<div class="row">
 		<div class="col-md-12">
 			<h1>Your report is ready</h1>
-			<p class="lead">You requested a snelSLiM report for <span class="emphasize">Corpus &quot;<?php echo $report['c1']; ?>&quot;</span> against <span class="emphasize">Corpus &quot;<?php echo $report['c2']; ?>&quot;</span> on <?php echo date("d M Y \a\\t H:i", strtotime($report['datetime'])); ?> (finished in <?php echo $diff->format('%hh%im%ss'); ?>) using <span class="emphasize"><?php echo $report['freqnum']; ?></span><a href="?faq#freqnum" target="_blank" data-toggle="tooltip" class="formtooltip" title="Click for more information about what number to select for number of frequent items"><span class="glyphicon glyphicon-question-sign"></span></a> of the most frequent items from the primary corpus to end up finding <span class="emphasize"><?php echo substr_count($c1report, "\n"); ?> stable lexical markers</span>. In the table you can see whether they were attracted to the first corpus or repulsed by it, and look into the effect size using the log odds ratio. For more information on these measures, please consult the help pages. In the bottommost table the results were then used to mark potentially interesting fragments/texts based on marker frequencies.</p>
+			<p class="lead">You requested a snelSLiM report for <span class="emphasize">Corpus &quot;<?php echo $report['c1']; ?>&quot;</span> against <span class="emphasize">Corpus &quot;<?php echo $report['c2']; ?>&quot;</span> on <?php echo date("d M Y \a\\t H:i", strtotime($report['datetime'])); ?> (finished in <?php echo $diff->format('%hh%im%ss'); ?>) using a statistical probability cut-off of <span class="emphasize"><?php echo $cutoff_transform[$report['cutoff']] ?></span><a href="?faq#cutoff" target="_blank" data-toggle="tooltip" class="formtooltip" title="Click for more information about statistcal probability cut-off values"><span class="glyphicon glyphicon-question-sign"></span></a> and <span class="emphasize"><?php echo $report['freqnum']; ?></span><a href="?faq#freqnum" target="_blank" data-toggle="tooltip" class="formtooltip" title="Click for more information about what number to select for number of frequent items"><span class="glyphicon glyphicon-question-sign"></span></a> of the most frequent items from the primary corpus to end up finding <span class="emphasize"><?php echo substr_count($c1report, "\n"); ?> stable lexical markers</span>. In the table you can see whether they were attracted to the first corpus or repulsed by it, and look into the effect size using the log odds ratio. For more information on these measures, please consult the help pages. In the bottommost table the results were then used to mark potentially interesting fragments/texts based on marker frequencies.</p>
 		</div>
 	</div>
 </div>
