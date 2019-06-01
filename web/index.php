@@ -47,6 +47,15 @@ if(isset($_POST['login'])) {
 	require('html/redirectlogin.html');
 }
 
+if(isset($_GET['json'])) {
+	require('visualizations/json.php');
+	exit;
+}
+elseif(isset($_GET['fragvisimg'])) {
+	require('visualizations/fragvisimg.php');
+	exit;
+}
+
 if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 	require('html/top_admin.html');
 }
@@ -65,6 +74,9 @@ elseif(isset($_GET['reports'])) {
 }
 elseif(isset($_GET['report'])) {
 	require('report.php');
+}
+elseif(isset($_GET['fragvis'])) {
+	require('visualizations/fragvis.php');
 }
 elseif(isset($_GET['about'])) {
 	require('html/about.html');
@@ -195,6 +207,10 @@ else {
 			chdir('../slm');
 			mkdir($reportdir);
 			
+			$genviz = 0;
+			if(isset($_POST['genviz']) AND $_POST['genviz'] == 'on') {
+				$genviz = 1;
+			}
 			if(isset($_POST['mailresult']) AND $_POST['mailresult'] == 'on') {
 				$callback = '';
 				if(isset($_SERVER['HTTPS']) AND $_SERVER['HTTPS'] === 'on') {
@@ -204,10 +220,10 @@ else {
 					$callback = 'http://';
 				}
 				$callback .= $_SERVER['SERVER_NAME'] . substr($_SERVER['REQUEST_URI'], 0, -1) . 'callback.php?id=' . $reportid;
-				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' ' .  $callback . ' > /dev/null &');
+				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' ' . $genviz . ' ' .  $callback . ' > /dev/null &');
 			}
 			else {
-				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' > /dev/null &');
+				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' ' . $genviz . ' > /dev/null &');
 			}
 			
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> We have successfully received your report request. You will be redirected to the report that is generating for you right now. </div></div></div>';

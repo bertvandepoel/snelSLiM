@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"math"
@@ -23,7 +24,8 @@ func main() {
 		fmt.Println("4. the cut-off value for the G squared statics test (Chi squared PPF result)")
 		fmt.Println("5. the directory to write the results report to")
 		fmt.Println("6. timeout value in seconds for each corpus, the analysis will fail if preparsing hasn't completed after waiting this amount of seconds")
-		fmt.Println("7. the callback URL to signal successful completion to, optional")
+		fmt.Println("7. whether to export visualization data as part of the report, 1 for yes, 0 for no, optional (0 is then presumed)")
+		fmt.Println("8. the callback URL to signal successful completion to, optional")
 		os.Exit(1)
 	}
 	c1 := os.Args[1] + "/"
@@ -55,6 +57,21 @@ func main() {
 			panic(err)
 		}
 		panic(err)
+	}
+	exportviz := false
+	if len(os.Args) > 7 {
+		vizarg, err := strconv.Atoi(os.Args[7])
+		if err != nil {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: Could not cast vizarg to integer"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+		if vizarg == 1 {
+			exportviz = true
+		}
 	}
 
 	if _, err := os.Stat(c1 + "error"); !os.IsNotExist(err) {
@@ -360,6 +377,15 @@ func main() {
 		}
 	}
 
+	c1fragviz := make(map[string]map[string]int)
+	if exportviz {
+		for _, fragment := range c1fragments {
+			c1fragviz[fragment] = make(map[string]int)
+			c1fragviz[fragment]["total"] = c1fragmentcount[fragment]["total.snelslim"]
+		}
+	}
+	c1fileviz := make(map[string]string)
+
 	sort.Slice(c1results, func(i, j int) bool {
 		return c1results[i].Lor_score > c1results[j].Lor_score
 	})
@@ -399,9 +425,75 @@ func main() {
 
 		for _, fragment := range c1fragments {
 			c1fragresult[fragment] += c1fragmentcount[fragment][kv.Keyword]
+			if exportviz {
+				if c1fragmentcount[fragment][kv.Keyword] > 0 {
+					c1fragviz[fragment]["keyword_total"] += c1fragmentcount[fragment][kv.Keyword]
+					c1fragviz[fragment]["keyword_unique"] += 1
+					if kv.Absolute_score < 0 {
+						c1fragviz[fragment]["repulsion_total"] += c1fragmentcount[fragment][kv.Keyword]
+						c1fragviz[fragment]["repulsion_unique"] += 1
+						c1fileviz[fragment] = c1fileviz[fragment] + "r"
+					} else if kv.Absolute_score > 0 {
+						c1fragviz[fragment]["attraction_total"] += c1fragmentcount[fragment][kv.Keyword]
+						c1fragviz[fragment]["attraction_unique"] += 1
+						c1fileviz[fragment] = c1fileviz[fragment] + "a"
+					} else {
+						c1fragviz[fragment]["balanced_total"] += c1fragmentcount[fragment][kv.Keyword]
+						c1fragviz[fragment]["balanced_unique"] += 1
+						c1fileviz[fragment] = c1fileviz[fragment] + "b"
+					}
+				} else {
+					c1fileviz[fragment] = c1fileviz[fragment] + "x"
+				}
+			}
 		}
 		for _, fragment := range c2fragments {
 			c2fragresult[fragment] += c2fragmentcount[fragment][kv.Keyword]
+		}
+	}
+
+	type viznode struct {
+		Id                             int     `json:"id"`
+		Name                           string  `json:"name"`
+		Size_total                     int     `json:"size_total,omitempty"`
+		Size_keyword_total             int     `json:"size_keyword_total,omitempty"`
+		Size_keyword_unique            int     `json:"size_keyword_unique,omitempty"`
+		Size_keyword_percentage_total  float64 `json:"size_keyword_percentage_total,omitempty"`
+		Size_keyword_percentage_unique float64 `json:"size_keyword_percentage_unique,omitempty"`
+		Parent_total                   int     `json:"parent_total,omitempty"`
+		Parent_unique                  int     `json:"parent_unique,omitempty"`
+	}
+
+	var vizfraglist []viznode
+	if exportviz {
+		vizfraglist = append(vizfraglist, viznode{Id: 1, Name: "corpus"})
+		vizfraglist = append(vizfraglist, viznode{Id: 2, Name: "attracted", Parent_total: 1, Parent_unique: 1})
+		vizfraglist = append(vizfraglist, viznode{Id: 3, Name: "repulsed", Parent_total: 1, Parent_unique: 1})
+		vizfraglist = append(vizfraglist, viznode{Id: 4, Name: "balanced", Parent_total: 1, Parent_unique: 1})
+		i = 5
+		for fragname, vizdata := range c1fragviz {
+			if vizdata["total"] > 0 {
+				var parent_total int
+				if vizdata["attraction_total"] > vizdata["repulsion_total"] && vizdata["attraction_total"] > vizdata["balanced_total"] {
+					parent_total = 2
+				} else if vizdata["repulsion_total"] > vizdata["attraction_total"] && vizdata["repulsion_total"] > vizdata["balanced_total"] {
+					parent_total = 3
+				} else {
+					parent_total = 4
+				}
+				var parent_unique int
+				if vizdata["attraction_unique"] > vizdata["repulsion_unique"] && vizdata["attraction_unique"] > vizdata["balanced_unique"] {
+					parent_unique = 2
+				} else if vizdata["repulsion_unique"] > vizdata["attraction_unique"] && vizdata["repulsion_unique"] > vizdata["balanced_unique"] {
+					parent_unique = 3
+				} else {
+					parent_unique = 4
+				}
+				perc_total := float64(vizdata["keyword_total"]) / float64(vizdata["total"])
+				perc_unique := float64(vizdata["keyword_unique"]) / float64(vizdata["total"])
+				vizfraglist = append(vizfraglist, viznode{i, fragname, vizdata["total"], vizdata["keyword_total"], vizdata["keyword_unique"], perc_total, perc_unique, parent_total, parent_unique})
+				i++
+			}
 		}
 	}
 
@@ -471,6 +563,39 @@ func main() {
 		panic(err)
 	}
 
+	if exportviz {
+		exportjson, err := json.Marshal(vizfraglist)
+		if err != nil {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: could convert visualisation data to correct format"+err.Error()), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+		err = os.Mkdir(reportdir+"visuals", 0755)
+		if err != nil {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: could not create visuals folder in the report folder"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+		err = ioutil.WriteFile(reportdir+"visuals/treemap.json", exportjson, 0644)
+		if err != nil {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write treemap json data for visualisations"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+		for fragment, charlist := range c1fileviz {
+			err = ioutil.WriteFile(reportdir+"visuals/"+fragment+".snelvis", []byte(charlist), 0644)
+		}
+	}
+
 	err = ioutil.WriteFile(reportdir+"done", []byte("done"), 0644)
 	if err != nil {
 		fmt.Println("Could not write done signal")
@@ -478,8 +603,8 @@ func main() {
 	}
 
 	// if a callback URL is specified, trigger it
-	if len(os.Args) == 8 {
-		http.Get(os.Args[7])
+	if len(os.Args) == 9 {
+		http.Get(os.Args[8])
 	}
 }
 

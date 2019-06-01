@@ -40,6 +40,10 @@ else {
 	$c1report = file_get_contents('../slm/reports/' . $_GET['report'] . '/c1.report');
 	$c1frag = file_get_contents('../slm/reports/' . $_GET['report'] . '/c1frag.report');
 	$c2frag = file_get_contents('../slm/reports/' . $_GET['report'] . '/c2frag.report');
+	$visualjson = FALSE;
+	if(file_exists('../slm/reports/' . $_GET['report'] . '/visuals')) {
+		$visualjson = TRUE;
+	}
 	$donetime = filectime('../slm/reports/' . $_GET['report'] . '/done');
 	$d1 = date_create($report['datetime']);
 	$d2 = date_create(date('Y-m-d H:i:s', $donetime));
@@ -76,6 +80,7 @@ else {
 	<div class="col-md-12">
 		<h3>Table of Contents</h3>
 		<h4><a href="#slmareport">Go to result table</a></h4>
+		<?php if($visualjson){ echo '<h4><a href="#vis">Go to visualization</a></h4>'; } ?>
 		<h4><a href="#freqreport">Go to frequency tables</a></h4>
 	</div>
 </div>
@@ -139,24 +144,43 @@ else {
 			echo '<h4>These are the top 100 markers <a href="?report='.  $_GET['report'] . '&allitems=" class="btn btn-primary">Show all markers</a></h4>';
 		}
 
+		if($visualjson) {
 ?>
-
+			<div class="row">
+				<div class="col-md-12">
+					<h3 id="vis">Visualization</h3>
+					<?php require('visualizations/treemap.php'); ?>
+				</div>
+			</div>
+<?php
+		}
+?>
 
 <div class="row">
 	<div class="col-md-5">
 		<h3 id="freqreport">Frequency in Fragments/Texts</h3>
 		<table id="AfragTable" class="table table-striped table-hover table-condensed">
 			<thead>
-				<tr><th>Filename</th><th>File extension</th><th>Frequency of SLMs</th></tr>
-			</thead>
-			<tbody>
-<?php
+<?php	
+		if($visualjson) {
+			echo '<tr><th>Filename</th><th>File extension</th><th>Frequency of SLMs</th><th><span class="glyphicon glyphicon-stats"></span></th></tr>';
+		}
+		else {
+			echo '<tr><th>Filename</th><th>File extension</th><th>Frequency of SLMs</th></tr>';
+		}
+		echo '</thead><tbody>';
+		
 		$slm = explode("\n", $c1frag);
 		foreach($slm as $row) {
 			if($row !== '') {
 				$fields = explode("\t", $row);
 				$pathinfo = pathinfo($fields[0]);
-				echo '<tr><td>' . $fields[0] . '</td><td>' . $pathinfo['extension'] . '</td><td>' . $fields[1] . '</td></tr>';
+				if($visualjson) {
+					echo '<tr><td>' . $fields[0] . '</td><td>' . $pathinfo['extension'] . '</td><td>' . $fields[1] . '</td><td><a href="?reportid=' . $_GET['report'] . '&fragvis=' . $fields[0] . '" target="_blank"><span class="glyphicon glyphicon-stats"></span></a></td></tr>';
+				}
+				else {
+					echo '<tr><td>' . $fields[0] . '</td><td>' . $pathinfo['extension'] . '</td><td>' . $fields[1] . '</td></tr>';
+				}
 			}
 		}
 ?>
@@ -186,7 +210,11 @@ else {
 	</div>
 </div>
 
-
+<script>
+var shiftWindow = function() { scrollBy(0, -70) };
+if (location.hash) shiftWindow();
+window.addEventListener("hashchange", shiftWindow);
+</script>
 
 <?php
 }
