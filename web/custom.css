@@ -69,3 +69,11 @@ fieldset {
 	overflow-wrap: break-word; 
 	word-break: break-all;
 }
+
+.repulsion.odd {
+	background-color: #ffd5d5 !important;
+}
+
+.repulsion.even {
+	background-color: #ffe9e9;
+}
