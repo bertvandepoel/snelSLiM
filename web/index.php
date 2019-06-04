@@ -55,6 +55,10 @@ elseif(isset($_GET['fragvisimg'])) {
 	require('visualizations/fragvisimg.php');
 	exit;
 }
+elseif(isset($_GET['export']) && isset($_GET['format'])) {
+	require('export.php');
+	exit;
+}
 
 if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 	require('html/top_admin.html');
@@ -74,6 +78,9 @@ elseif(isset($_GET['reports'])) {
 }
 elseif(isset($_GET['report'])) {
 	require('report.php');
+}
+elseif(isset($_GET['export'])) {
+	require('export.php');
 }
 elseif(isset($_GET['fragvis'])) {
 	require('visualizations/fragvis.php');
