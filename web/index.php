@@ -67,7 +67,18 @@ else {
 	require('html/top.html');
 }
 
-if(!isset($_SESSION['loggedin'])) {
+if(!isset($_SESSION['loggedin']) && isset($_GET['reset'])) {
+	if(isset($_POST['reset']) && !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> please enter a valid email address.</div></div></div>';
+	}
+	elseif(isset($_POST['reset'])) {
+		require('mail.php');
+		email_reset($_POST['email']);
+		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> if an account for that address exists, you will receive an email with a new password.</div></div></div>';
+	}
+	require('html/resetpassword.html');
+}
+elseif(!isset($_SESSION['loggedin'])) {
 	require('html/login.html');
 }
 elseif(isset($_GET['corpora'])) {

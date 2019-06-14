@@ -49,6 +49,7 @@ if(isset($_GET['delete'])) {
 	}
 }
 elseif(isset($_POST['create'])) {
+	require('mail.php');
 	if($_POST['isAdmin'] == 'yes') {
 		$isadmin = 1;
 	}
@@ -57,6 +58,7 @@ elseif(isset($_POST['create'])) {
 	}
 	$insert = $db->prepare('INSERT INTO accounts VALUES (?,?,?)');
 	$insert->execute(array($_POST['email'], password_hash($_POST['password'], PASSWORD_DEFAULT), $isadmin));
+	email_new_account($_POST['email'], $_POST['password']);
 }
 
 if(isset($_GET['add'])) {
