@@ -47,9 +47,6 @@ if(isset($_POST['add'])) {
 			require('html/bottom.html');
 			exit;
 		}
-		$insert_corpus = $db->prepare('INSERT INTO corpora (name, format, extra, owner, datetime) VALUES (?,?,?,?,NOW())');
-		$insert_corpus->execute(array($_POST['c1-name'], $_POST['c1-format'], $_POST['c1-extra'], $_SESSION['email']));
-		$id = $db->lastInsertId();
 		$extra = NULL;
 		if($_POST['c1-format'] == 'conll') {
 			$extra = $_POST['c1-extra-conll'];
@@ -57,6 +54,9 @@ if(isset($_POST['add'])) {
 		elseif($_POST['c1-format'] == 'xpath') {
 			$extra = $_POST['c1-extra-xpath'];
 		}
+		$insert_corpus = $db->prepare('INSERT INTO corpora (name, format, extra, owner, datetime) VALUES (?,?,?,?,NOW())');
+		$insert_corpus->execute(array($_POST['c1-name'], $_POST['c1-format'], $extra, $_SESSION['email']));
+		$id = $db->lastInsertId();
 		$corpus = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra, false, $id);
 	}
 }
@@ -152,7 +152,7 @@ else {
 			</thead>
 			<tbody>
 <?php
-			$formats = array('conll' => 'CoNLL tab-seperated values, specify column index', 'folia-text-fast' => 'FoLiA XML - fast method: literal string', 'folia-lemma-fast' => 'FoLiA XML - fast method: lemma', 'folia-text-xpath' => 'FoLiA XML - slow method: literal string', 'folia-lemma-xpath' => 'FoLiA XML - slow method: lemma', 'dcoi-text' => 'DCOI XML: literal string', 'dcoi-lemma' => 'DCOI XML: lemma', 'plain' => 'Plain text (txt)', 'alpino-text' => 'Alpino XML: literal string', 'alpino-lemma' => 'Alpino XML: lemma', 'bnc-text' => 'TEI XML - BNC/Brown Corpus variant: literal string', 'bnc-lemma' => 'TEI XML - BNC/Brown Corpus variant: lemma', 'eindhoven' => 'Corpus Eindhoven format (literal string only)', 'gysseling-text' => 'Corpus Gysseling format: literal string', 'gysseling-lemma' => 'Corpus Gysseling format: lemma', 'masc-text' => 'OANC MASC XML: literal string', 'masc-lemma' => 'OANC MASC XML: base', 'oanc' => 'OANC XML (base only)', 'xpath' => 'XML, specify XPath');
+			$formats = array('conll' => 'CoNLL tab-seperated values (specified column index as extra)', 'folia-text-fast' => 'FoLiA XML - fast method: literal string', 'folia-lemma-fast' => 'FoLiA XML - fast method: lemma', 'folia-text-xpath' => 'FoLiA XML - slow method: literal string', 'folia-lemma-xpath' => 'FoLiA XML - slow method: lemma', 'dcoi-text' => 'DCOI XML: literal string', 'dcoi-lemma' => 'DCOI XML: lemma', 'plain' => 'Plain text (txt)', 'alpino-text' => 'Alpino XML: literal string', 'alpino-lemma' => 'Alpino XML: lemma', 'bnc-text' => 'TEI XML - BNC/Brown Corpus variant: literal string', 'bnc-lemma' => 'TEI XML - BNC/Brown Corpus variant: lemma', 'eindhoven' => 'Corpus Eindhoven format (literal string only)', 'gysseling-text' => 'Corpus Gysseling format: literal string', 'gysseling-lemma' => 'Corpus Gysseling format: lemma', 'masc-text' => 'OANC MASC XML: literal string', 'masc-lemma' => 'OANC MASC XML: base', 'oanc' => 'OANC XML (base only)', 'xpath' => 'XML (specified XPath as extra)');
 			
 			while($corpus = $get_corpora->fetch(PDO::FETCH_ASSOC)) {
 				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/error')) {
