@@ -31,10 +31,10 @@ if(isset($_GET['delete'])) {
 }
 
 if(isset($_POST['add'])) {
-	if ( ($_POST['c1-format'] == 'conll') AND  (intval($_POST['c1-extra']) < 1) ) {
+	if ( ($_POST['c1-format'] == 'conll') AND  (intval($_POST['c1-extra-conll']) < 1) ) {
 		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You have chosen CoNLL as the format for your corpus, but you have not specified which column to select.</div></div></div>';
 	}
-	elseif ( ($_POST['c1-format'] == 'xpath') AND  (strlen($_POST['c1-extra']) < 2) ) {
+	elseif ( ($_POST['c1-format'] == 'xpath') AND  (strlen($_POST['c1-extra-xpath']) < 2) ) {
 		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You have chosen XML with custom XPath as the format for your corpus, but you have not specified your XPath query.</div></div></div>';
 	}
 	elseif (strlen($_POST['c1-name']) < 2) {
@@ -49,8 +49,15 @@ if(isset($_POST['add'])) {
 		}
 		$insert_corpus = $db->prepare('INSERT INTO corpora (name, format, extra, owner, datetime) VALUES (?,?,?,?,NOW())');
 		$insert_corpus->execute(array($_POST['c1-name'], $_POST['c1-format'], $_POST['c1-extra'], $_SESSION['email']));
-		$id = $db->lastInsertId();	
-		$corpus = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $_POST['c1-extra'], false, $id);
+		$id = $db->lastInsertId();
+		$extra = NULL;
+		if($_POST['c1-format'] == 'conll') {
+			$extra = $_POST['c1-extra-conll'];
+		}
+		elseif($_POST['c1-format'] == 'xpath') {
+			$extra = $_POST['c1-extra-xpath'];
+		}
+		$corpus = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra, false, $id);
 	}
 }
 
@@ -78,6 +85,7 @@ if(isset($_GET['add'])) {
 						<a href="?formats" data-toggle="tooltip" class="formtooltip" title="If you are not sure what to select, click here to go to the Corpus Formats help page"><span class="glyphicon glyphicon-question-sign"></span></a>
 					</label>
 					<select class="form-control" id="c1-format" name="c1-format">
+						<option value="plain">Plain text (txt)</option>
 						<option value="conll">CoNLL tab-seperated values, specify column index</option>
 						<option value="folia-text-fast">FoLiA XML - fast method: literal string</option>
 						<option value="folia-lemma-fast">FoLiA XML - fast method: lemma</option>
@@ -85,7 +93,6 @@ if(isset($_GET['add'])) {
 						<option value="folia-lemma-xpath">FoLiA XML - slow method: lemma</option>
 						<option value="dcoi-text">DCOI XML: literal string</option>
 						<option value="dcoi-lemma">DCOI XML: lemma</option>
-						<option value="plain">Plain text (txt)</option>
 						<option value="alpino-text">Alpino XML: literal string</option>
 						<option value="alpino-lemma">Alpino XML: lemma</option>
 						<option value="bnc-text">TEI XML - BNC/Brown Corpus variant: literal string</option>
@@ -99,9 +106,13 @@ if(isset($_GET['add'])) {
 						<option value="xpath">XML, specify XPath</option>
 					</select>
 				</div>
-				<div class="form-group">
-					<label for="c1-extra" class="control-label">Extra format option (column index CoNLL or XPath query)</label>
-					<input class="form-control" id="c1-extra" type="text" name="c1-extra">
+				<div class="form-group collapse" id="c1-extra-conll-container">
+					<label for="c1-extra-conll" class="control-label">Index of column containing words or lemmas</label>
+					<input class="form-control" id="c1-extra-conll" type="text" name="c1-extra-conll">
+				</div>
+				<div class="form-group collapse" id="c1-extra-xpath-container">
+					<label for="c1-extra-xpath" class="control-label">XPath Query</label>
+					<input class="form-control" id="c1-extra-xpath" type="text" name="c1-extra-xpath">
 				</div>
 				<div class="form-group">
 					<button type="submit" class="btn btn-primary" name="add">Add Corpus</button>
