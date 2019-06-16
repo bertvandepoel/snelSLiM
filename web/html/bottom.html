@@ -85,5 +85,35 @@
 			$('[name="sizefield"]').addClass('form-control');
 			$('[name="association"]').addClass('form-control');
 		</script>
+		<script src="bootstrap-list-filter/bootstrap-list-filter.min.js"></script>
+		<script>
+		$('#c1searchlist').btsListFilter('#c1searchinput', {
+			resetOnBlur: false,
+			initial: false,
+		});
+		$('.c1click').click(function() {
+			$('.c1click').removeClass('active');
+			$(this).addClass('active');
+			$('#c1-select').val($(this).attr('data-href'));
+		});
+		$('#c1back').click(function() {
+			$('.c1click').removeClass('active');
+			$('#c1-select').val('none');
+		});
+		
+		$('#c2searchlist').btsListFilter('#c2searchinput', {
+			resetOnBlur: false,
+			initial: false,
+		});
+		$('.c2click').click(function() {
+			$('.c2click').removeClass('active');
+			$(this).addClass('active');
+			$('#c2-select').val($(this).attr('data-href'));
+		});
+		$('#c2back').click(function() {
+			$('.c2click').removeClass('active');
+			$('#c2-select').val('none');
+		});
+		</script>
 	</body>
 </html>

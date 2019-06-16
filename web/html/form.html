@@ -12,20 +12,24 @@
 			<legend>Corpus A (target)</legend>
 			
 			<div id="corpusA-choice" class="collapse in">
-				<p style="text-align: center;"><a href="#" class="btn btn-default btn-lg" data-target="#corpusA-existing,#corpusA-choice" data-toggle="collapse">Use a existing saved corpus</a></p>
+				<p style="text-align: center;"><a href="#" class="btn btn-default btn-lg" data-target="#corpusA-existing,#corpusA-choice" data-toggle="collapse">Use an existing saved corpus</a></p>
 				<h4 class="form-or"><span>OR</span></h4>
 				<p style="text-align: center;"><a href="#" class="btn btn-default btn-lg" data-target="#corpusA-new,#corpusA-choice" data-toggle="collapse">Upload a new temporary corpus</a></p>
 			</div>
 			
 			<div id="corpusA-existing" class="collapse">
-				<a href="#" class="btn btn-default btn-xs" data-target="#corpusA-existing,#corpusA-choice" data-toggle="collapse"><span class="glyphicon glyphicon-chevron-left"></span> back</a>
+				<a href="#" class="btn btn-default btn-xs" id="c1back" data-target="#corpusA-existing,#corpusA-choice" data-toggle="collapse"><span class="glyphicon glyphicon-chevron-left"></span> back</a>
 				<fieldset>
+					<select class="form-control" id="c1-select" name="c1-select">
+						<option value="none">None</option>
+						%corpus_dropdown%
+					</select>
 					<div class="form-group">
 						<label for="c1-select" class="control-label">Select an existing saved corpus</label>
-						<select class="form-control" id="c1-select" name="c1-select">
-							<option value="none">None</option>
-							%corpus%
-						</select>
+						<input class="form-control" id="c1searchinput" type="search" placeholder="Search..." />
+					</div>
+					<div id="c1searchlist" class="list-group">
+						%corpus_c1search%
 					</div>
 				</fieldset>
 			</div>
@@ -82,20 +86,24 @@
 			<legend>Corpus B (reference)</legend>
 			
 			<div id="corpusB-choice" class="collapse in">
-				<p style="text-align: center;"><a href="#" class="btn btn-default btn-lg" data-target="#corpusB-existing,#corpusB-choice" data-toggle="collapse">Use a existing saved corpus</a></p>
+				<p style="text-align: center;"><a href="#" class="btn btn-default btn-lg" data-target="#corpusB-existing,#corpusB-choice" data-toggle="collapse">Use an existing saved corpus</a></p>
 				<h4 class="form-or"><span>OR</span></h4>
 				<p style="text-align: center;"><a href="#" class="btn btn-default btn-lg" data-target="#corpusB-new,#corpusB-choice" data-toggle="collapse">Upload a new temporary corpus</a></p>
 			</div>
 			
 			<div id="corpusB-existing" class="collapse">
-				<a href="#" class="btn btn-default btn-xs" data-target="#corpusB-existing,#corpusB-choice" data-toggle="collapse"><span class="glyphicon glyphicon-chevron-left"></span> back</a>
+				<a href="#" class="btn btn-default btn-xs" id="c2back" data-target="#corpusB-existing,#corpusB-choice" data-toggle="collapse"><span class="glyphicon glyphicon-chevron-left"></span> back</a>
 				<fieldset>
+					<select class="form-control" id="c2-select" name="c2-select">
+						<option value="none">None</option>
+						%corpus_dropdown%
+					</select>
 					<div class="form-group">
 						<label for="c2-select" class="control-label">Select an existing saved corpus</label>
-						<select class="form-control" id="c2-select" name="c2-select">
-							<option value="none">None</option>
-							%corpus%
-						</select>
+						<input class="form-control" id="c2searchinput" type="search" placeholder="Search..." />
+					</div>
+					<div id="c2searchlist" class="list-group">
+						%corpus_c2search%
 					</div>
 				</fieldset>
 			</div>
