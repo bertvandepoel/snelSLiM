@@ -13,7 +13,7 @@ CREATE TABLE `corpora` (
   `name` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
   `format` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
   `extra` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `owner` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `owner` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `datetime` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

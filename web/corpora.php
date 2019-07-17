@@ -28,6 +28,26 @@ if(isset($_GET['delete'])) {
 		}
 		rmdir('../slm/preparsed/saved/' . $_GET['delete']);
 	}
+	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> The corpus was removed.</div></div></div>';
+}
+
+if(isset($_GET['deleteglobal'])) {
+	$delete = $db->prepare('DELETE FROM corpora WHERE id=? AND owner IS NULL');
+	$delete->execute(array($_GET['deleteglobal']));
+	if($delete->rowCount() > 0) {
+		foreach(scandir('../slm/preparsed/saved/' . $_GET['deleteglobal']) as $file) {
+			// no folders here, so no need to check
+			unlink('../slm/preparsed/saved/' . $_GET['deleteglobal'] . '/' . $file);
+		}
+		rmdir('../slm/preparsed/saved/' . $_GET['deleteglobal']);
+	}
+	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> The corpus was removed.</div></div></div>';
+}
+
+if( isset($_GET['castglobal']) && isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
+	$update = $db->prepare('UPDATE corpora SET owner=NULL WHERE id=? AND owner=?');
+	$update->execute(array($_GET['castglobal'], $_SESSION['email']));
+	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> Your corpus is now global.</div></div></div>';
 }
 
 if(isset($_POST['add'])) {
@@ -58,6 +78,8 @@ if(isset($_POST['add'])) {
 		$insert_corpus->execute(array($_POST['c1-name'], $_POST['c1-format'], $extra, $_SESSION['email']));
 		$id = $db->lastInsertId();
 		$corpus = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra, false, $id);
+		
+		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> Your corpus has been saved correctly and is being processed.</div></div></div>';
 	}
 }
 
@@ -129,6 +151,8 @@ if(isset($_GET['add'])) {
 else {
 	$get_corpora = $db->prepare('SELECT id, name, format, extra, datetime FROM corpora WHERE owner=?');
 	$get_corpora->execute(array($_SESSION['email']));
+	
+	$formats = array('conll' => 'CoNLL tab-seperated values (specified column index as extra)', 'folia-text-fast' => 'FoLiA XML - fast method: literal string', 'folia-lemma-fast' => 'FoLiA XML - fast method: lemma', 'folia-text-xpath' => 'FoLiA XML - slow method: literal string', 'folia-lemma-xpath' => 'FoLiA XML - slow method: lemma', 'dcoi-text' => 'DCOI XML: literal string', 'dcoi-lemma' => 'DCOI XML: lemma', 'plain' => 'Plain text (txt)', 'alpino-text' => 'Alpino XML: literal string', 'alpino-lemma' => 'Alpino XML: lemma', 'bnc-text' => 'TEI XML - BNC/Brown Corpus variant: literal string', 'bnc-lemma' => 'TEI XML - BNC/Brown Corpus variant: lemma', 'eindhoven' => 'Corpus Eindhoven format (literal string only)', 'gysseling-text' => 'Corpus Gysseling format: literal string', 'gysseling-lemma' => 'Corpus Gysseling format: lemma', 'masc-text' => 'OANC MASC XML: literal string', 'masc-lemma' => 'OANC MASC XML: base', 'oanc' => 'OANC XML (base only)', 'xpath' => 'XML (specified XPath as extra)');
 ?>
 
 <div class="page-header" id="banner">
@@ -139,11 +163,24 @@ else {
 		</div>
 	</div>
 </div>
+<?php
+if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
+	$get_global_corpora = $db->prepare('SELECT id, name, format, extra, datetime FROM corpora WHERE owner IS NULL');
+	$get_global_corpora->execute(array());
+?>
+
 <div class="row">
-	<div class="col-md-12" style="margin-bottom: 10px;">
-		<a href="?corpora&add" class="btn btn-primary" role="button">Add new corpus</a>
+	<div class="col-md-12">
+		<div class="alert alert-warning alert-dismissible"><button type="button" class="close" data-dismiss="alert">×</button>As an admin, you are able to upgrade your personal corpora to global corpora. Beware that those corpora are then available for any user to generate reports based on. An admin can also delete global corpora, this deletion affects all users.</div>
 	</div>
 </div>
+
+<div class="row">
+	<div class="col-md-12">
+		<h2>Global corpora</h2>
+	</div>
+</div>
+
 <div class="row">
 	<div class="col-md-12">
 		<table class="table table-striped table-hover">
@@ -152,8 +189,54 @@ else {
 			</thead>
 			<tbody>
 <?php
-			$formats = array('conll' => 'CoNLL tab-seperated values (specified column index as extra)', 'folia-text-fast' => 'FoLiA XML - fast method: literal string', 'folia-lemma-fast' => 'FoLiA XML - fast method: lemma', 'folia-text-xpath' => 'FoLiA XML - slow method: literal string', 'folia-lemma-xpath' => 'FoLiA XML - slow method: lemma', 'dcoi-text' => 'DCOI XML: literal string', 'dcoi-lemma' => 'DCOI XML: lemma', 'plain' => 'Plain text (txt)', 'alpino-text' => 'Alpino XML: literal string', 'alpino-lemma' => 'Alpino XML: lemma', 'bnc-text' => 'TEI XML - BNC/Brown Corpus variant: literal string', 'bnc-lemma' => 'TEI XML - BNC/Brown Corpus variant: lemma', 'eindhoven' => 'Corpus Eindhoven format (literal string only)', 'gysseling-text' => 'Corpus Gysseling format: literal string', 'gysseling-lemma' => 'Corpus Gysseling format: lemma', 'masc-text' => 'OANC MASC XML: literal string', 'masc-lemma' => 'OANC MASC XML: base', 'oanc' => 'OANC XML (base only)', 'xpath' => 'XML (specified XPath as extra)');
-			
+			while($corpus = $get_global_corpora->fetch(PDO::FETCH_ASSOC)) {
+				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/error')) {
+					$status = '<span class="label label-danger">error</span>';
+				}
+				elseif(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/done')) {
+					$status = '<span class="label label-success">done</span>';
+				}
+				else {
+					$status = '<span class="label label-default">processing</span>';
+				}
+				
+				echo '<tr><td>' . $corpus['name'] . '</td><td>' . $formats[$corpus['format']] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&deleteglobal=' . $corpus['id'] . '">Delete</a></td>';
+			}
+?>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-12">
+		<h2>Personal corpora</h2>
+	</div>
+</div>
+
+<?php
+}
+?>
+<div class="row">
+	<div class="col-md-12">
+		<a href="?corpora&add" class="btn btn-primary" role="button">Add new corpus</a>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<table class="table table-striped table-hover">
+			<thead>
+<?php
+			if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) { 
+				echo '<tr><th>Name</th><th>Format</th><th>Extra format option</th><th>Uploaded on</th><th>Status</th><th>Make corpus global</th><th>Delete</th></tr>';
+			}
+			else {
+				echo '<tr><th>Name</th><th>Format</th><th>Extra format option</th><th>Uploaded on</th><th>Status</th><th>Delete</th></tr>';
+			}
+?>
+			</thead>
+			<tbody>
+<?php
 			while($corpus = $get_corpora->fetch(PDO::FETCH_ASSOC)) {
 				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/error')) {
 					$status = '<span class="label label-danger">error</span>';
@@ -165,7 +248,12 @@ else {
 					$status = '<span class="label label-default">processing</span>';
 				}
 				
-				echo '<tr><td>' . $corpus['name'] . '</td><td>' . $formats[$corpus['format']] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
+				if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
+				echo '<tr><td>' . $corpus['name'] . '</td><td>' . $formats[$corpus['format']] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&castglobal=' . $corpus['id'] . '">Make corpus global</a></td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
+				}
+				else {				
+					echo '<tr><td>' . $corpus['name'] . '</td><td>' . $formats[$corpus['format']] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
+				}
 			}
 ?>
 			</tbody>

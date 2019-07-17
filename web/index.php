@@ -252,16 +252,33 @@ else {
 		}
 	}
 	
-	$get_corpora = $db->prepare('SELECT id, name FROM corpora WHERE owner=?');
-	$get_corpora->execute(array($_SESSION['email']));
+	$get_global_corpora = $db->prepare('SELECT id, name FROM corpora WHERE owner IS NULL');
+	$get_global_corpora->execute(array());
 	$corpora_dropdown = '';
 	$corpora_c1search = '';
 	$corpora_c2search = '';
+	$first = true;
+	while($corpus = $get_global_corpora->fetch(PDO::FETCH_ASSOC)) {
+		if($first) {
+			$corpora_c1search = '<a class="list-group-item disabled" href="#">Global corpora</a>';
+			$corpora_c2search = '<a class="list-group-item disabled" href="#">Global corpora</a>';
+			$first = false;
+		}
+		$corpora_dropdown .= '<option value="' . $corpus['id'] . '">' . $corpus['name'] . '</option>';
+		$corpora_c1search .= '<a class="list-group-item searchitem c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . '</a>';
+		$corpora_c2search .= '<a class="list-group-item searchitem c2click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . '</a>';
+	}
+	
+	$get_corpora = $db->prepare('SELECT id, name FROM corpora WHERE owner=?');
+	$get_corpora->execute(array($_SESSION['email']));
+	$corpora_c1search .= '<a class="list-group-item disabled" href="#">Your personal corpora</a>';
+	$corpora_c2search .= '<a class="list-group-item disabled" href="#">Your personal corpora</a>';
 	while($corpus = $get_corpora->fetch(PDO::FETCH_ASSOC)) {
 		$corpora_dropdown .= '<option value="' . $corpus['id'] . '">' . $corpus['name'] . '</option>';
-		$corpora_c1search .= '<a class="list-group-item c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . '</a>';
-		$corpora_c2search .= '<a class="list-group-item c2click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . '</a>';
+		$corpora_c1search .= '<a class="list-group-item searchitem c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . '</a>';
+		$corpora_c2search .= '<a class="list-group-item searchitem c2click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . '</a>';
 	}
+	
 	$form = file_get_contents('html/form.html');
 	$form = str_replace('%corpus_dropdown%', $corpora_dropdown, $form);
 	$form = str_replace('%corpus_c1search%', $corpora_c1search, $form);
