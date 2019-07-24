@@ -34,6 +34,9 @@ func main() {
 			if strings.HasPrefix(row, "[") {
 				fields := strings.Split(row, "<")
 				field := strings.Split(fields[1], ">")
+				if strings.Contains(field[0], "/") {
+					field[0] = strings.Replace(field[0], "/", "_", -1)
+				}
 				outfilename = outdir + "/" + field[0] + ".snelslim"
 			} else {
 				fields := strings.Split(row, " ")
