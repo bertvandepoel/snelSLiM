@@ -37,7 +37,11 @@ func main() {
 	for _, row := range rows {
 		if strings.Contains(row, "<C ") {
 			fields := strings.Split(row, "<C")
-			for _, field := range fields {
+			for i, field := range fields {
+				if i == 0 {
+					// don't process information before the first <C
+					continue
+				}
 				if strings.Contains(field, "_") {
 					// only split into 2 items, to accomodate for <A>-tags with unabbreviations
 					items := strings.SplitN(field, ">", 2)
@@ -45,7 +49,9 @@ func main() {
 						subs := strings.Split(items[0], "_")
 						count[strings.ToLower(subs[1])]++
 					} else {
-						text := strings.Trim(strings.ToLower(items[1]), " ")
+						qfree := strings.Split(items[1], "<q")
+						vnfree := strings.Split(qfree[0], "<VN")
+						text := strings.Trim(strings.ToLower(vnfree[0]), " ")
 						count[text]++
 					}
 				}
