@@ -123,18 +123,18 @@ else {
 				$fields = explode("\t", $row);
 				if(isset($_GET['detailed'])) {
 					if($fields[1] < 0) {
-						echo '<tr class="repulsion"><td>' . $i . '</td><td class="breakwords">' . $fields[0] . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . round($fields[5],3) . '</td><td>' . round($fields[6],3) . '</td><td>' . round($fields[7],3) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+						echo '<tr class="repulsion"><td>' . $i . '</td><td class="breakwords">' . htmlentities($fields[0]) . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . round($fields[5],3) . '</td><td>' . round($fields[6],3) . '</td><td>' . round($fields[7],3) . '</td><td>' . round($fields[8],3) . '</td></tr>';
 					}
 					else {
-						echo '<tr><td>' . $i . '</td><td class="breakwords">' . $fields[0] . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . round($fields[5],3) . '</td><td>' . round($fields[6],3) . '</td><td>' . round($fields[7],3) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+						echo '<tr><td>' . $i . '</td><td class="breakwords">' . htmlentities($fields[0]) . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . round($fields[5],3) . '</td><td>' . round($fields[6],3) . '</td><td>' . round($fields[7],3) . '</td><td>' . round($fields[8],3) . '</td></tr>';
 					}
 				}
 				else {
 					if($fields[1] < 0) {
-						echo '<tr class="repulsion"><td>' . $i . '</td><td class="breakwords">' . $fields[0] . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+						echo '<tr class="repulsion"><td>' . $i . '</td><td class="breakwords">' . htmlentities($fields[0]) . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . round($fields[8],3) . '</td></tr>';
 					}
 					else {
-						echo '<tr><td>' . $i . '</td><td class="breakwords">' . $fields[0] . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+						echo '<tr><td>' . $i . '</td><td class="breakwords">' . htmlentities($fields[0]) . '</td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . round($fields[8],3) . '</td></tr>';
 					}
 				}
 				if( !isset($_GET['allitems']) AND !isset($_GET['detailed']) AND $i == 100 ) {
