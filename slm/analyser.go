@@ -74,24 +74,6 @@ func main() {
 		}
 	}
 
-	if _, err := os.Stat(c1 + "error"); !os.IsNotExist(err) {
-		err = ioutil.WriteFile(reportdir+"error", []byte("error: preparse of corpus 1 errored"), 0644)
-		if err != nil {
-			fmt.Println("Could not write error")
-			panic(err)
-		}
-		panic(err)
-	}
-
-	if _, err := os.Stat(c2 + "error"); !os.IsNotExist(err) {
-		err = ioutil.WriteFile(reportdir+"error", []byte("error: preparse of corpus 2 errored"), 0644)
-		if err != nil {
-			fmt.Println("Could not write error")
-			panic(err)
-		}
-		panic(err)
-	}
-
 	timer := 0
 	for {
 		_, err := os.Stat(c1 + "done")
@@ -100,6 +82,24 @@ func main() {
 		}
 		if !os.IsNotExist(err) {
 			err = ioutil.WriteFile(reportdir+"error", []byte("error: could not check if preparse of corpus 1 is done"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+		_, err = os.Stat(c1 + "error")
+		if err == nil {
+			c1error, err := ioutil.ReadFile(c1 + "error")
+			if err != nil {
+				err = ioutil.WriteFile(reportdir+"error", []byte("Error: could not read corpus 1 error message"), 0644)
+				if err != nil {
+					fmt.Println("Could not write error")
+					panic(err)
+				}
+				panic(err)
+			}
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: corpus 1 could not be parsed correctly and reported the following error: "+string(c1error)), 0644)
 			if err != nil {
 				fmt.Println("Could not write error")
 				panic(err)
@@ -126,6 +126,24 @@ func main() {
 		}
 		if !os.IsNotExist(err) {
 			err = ioutil.WriteFile(reportdir+"error", []byte("error: could not check if preparse of corpus 2 is done"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+		_, err = os.Stat(c2 + "error")
+		if err == nil {
+			c2error, err := ioutil.ReadFile(c2 + "error")
+			if err != nil {
+				err = ioutil.WriteFile(reportdir+"error", []byte("Error: could not read corpus 2 error message"), 0644)
+				if err != nil {
+					fmt.Println("Could not write error")
+					panic(err)
+				}
+				panic(err)
+			}
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: corpus 2 could not be parsed correctly and reported the following error: "+string(c2error)), 0644)
 			if err != nil {
 				fmt.Println("Could not write error")
 				panic(err)
