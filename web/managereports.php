@@ -55,7 +55,8 @@ $get_reports->execute(array($_SESSION['email']));
 			while($report = $get_reports->fetch(PDO::FETCH_ASSOC)) {
 				$diff = NULL;
 				if(file_exists('../slm/reports/' . $report['id'] . '/error')) {
-					$status = '<span class="label label-danger">error</span>';
+					$error = file_get_contents('../slm/reports/' . $report['id'] . '/error');
+					$status = '<span class="label label-danger" data-toggle="tooltip" title="' . $error . '">error</span>';
 					$errortime = filectime('../slm/reports/' . $report['id'] . '/error');
 					$d1 = date_create($report['datetime']);
 					$d2 = date_create(date('Y-m-d H:i:s', $errortime));

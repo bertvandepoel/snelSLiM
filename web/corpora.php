@@ -300,7 +300,8 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					$corpus['format'] = $formats[$corpus['format']];
 				}
 				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/error')) {
-					$status = '<span class="label label-danger">error</span>';
+					$error = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/error');
+					$status = '<span class="label label-danger" data-toggle="tooltip" title="' . $error . '">error</span>';
 				}
 				elseif(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/done')) {
 					$status = '<span class="label label-success">done</span>';
