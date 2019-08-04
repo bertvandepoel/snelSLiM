@@ -107,6 +107,7 @@ if(isset($_GET['add'])) {
 						<a href="?formats" data-toggle="tooltip" class="formtooltip" title="If you are not sure what to select, click here to go to the Corpus Formats help page"><span class="glyphicon glyphicon-question-sign"></span></a>
 					</label>
 					<select class="form-control" id="c1-format" name="c1-format">
+						<option value="autodetect">Autodetect format</option>
 						<option value="plain">Plain text (txt)</option>
 						<option value="conll">CoNLL tab-seperated values, specify column index</option>
 						<option value="folia-text-fast">FoLiA XML - fast method: literal string</option>
@@ -190,6 +191,36 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 			<tbody>
 <?php
 			while($corpus = $get_global_corpora->fetch(PDO::FETCH_ASSOC)) {
+				if($corpus['format'] == 'autodetect') {
+					$autodetect = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/autodetect');
+					if($autodetect == 'unknown') {
+						$corpus['format'] = 'Autodetect: unknown format';
+					}
+					elseif($autodetect == 'partknown') {
+						$corpus['format'] = 'Autodetect: some files are an unknown format';
+					}
+					elseif($autodetect == 'mixed') {
+						$corpus['format'] = 'Autodetect: several different formats';
+					}
+					elseif($autodetect == 'xml') {
+						$corpus['format'] = 'Autodetect: unknown XML format';
+					}
+					elseif($autodetect == 'tabs') {
+						$corpus['format'] = 'Autodetect: CoNLL tsv format, column number required';
+					}
+					elseif($autodetect == 'oanc' || $autodetect == 'eindhoven') {
+						$corpus['format'] = 'Autodetect: ' . $formats[$autodetect];
+					}
+					elseif($autodetect == 'folia') {
+						$corpus['format'] = 'Autodetect: ' . $formats['folia-lemma-fast'];
+					}
+					else {
+						$corpus['format'] = 'Autodetect: ' . $formats[$autodetect . '-lemma'];
+					}
+				}
+				else {
+					$corpus['format'] = $formats[$corpus['format']];
+				}
 				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/error')) {
 					$status = '<span class="label label-danger">error</span>';
 				}
@@ -200,7 +231,7 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					$status = '<span class="label label-default">processing</span>';
 				}
 				
-				echo '<tr><td>' . $corpus['name'] . '</td><td>' . $formats[$corpus['format']] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&deleteglobal=' . $corpus['id'] . '">Delete</a></td>';
+				echo '<tr><td>' . $corpus['name'] . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&deleteglobal=' . $corpus['id'] . '">Delete</a></td>';
 			}
 ?>
 			</tbody>
@@ -238,6 +269,36 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 			<tbody>
 <?php
 			while($corpus = $get_corpora->fetch(PDO::FETCH_ASSOC)) {
+				if($corpus['format'] == 'autodetect') {
+					$autodetect = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/autodetect');
+					if($autodetect == 'unknown') {
+						$corpus['format'] = 'Autodetect: unknown format';
+					}
+					elseif($autodetect == 'partknown') {
+						$corpus['format'] = 'Autodetect: some files are an unknown format';
+					}
+					elseif($autodetect == 'mixed') {
+						$corpus['format'] = 'Autodetect: several different formats';
+					}
+					elseif($autodetect == 'xml') {
+						$corpus['format'] = 'Autodetect: unknown XML format';
+					}
+					elseif($autodetect == 'tabs') {
+						$corpus['format'] = 'Autodetect: CoNLL tsv format, column number required';
+					}
+					elseif($autodetect == 'oanc' || $autodetect == 'eindhoven') {
+						$corpus['format'] = 'Autodetect: ' . $formats[$autodetect];
+					}
+					elseif($autodetect == 'folia') {
+						$corpus['format'] = 'Autodetect: ' . $formats['folia-lemma-fast'];
+					}
+					else {
+						$corpus['format'] = 'Autodetect: ' . $formats[$autodetect . '-lemma'];
+					}
+				}
+				else {
+					$corpus['format'] = $formats[$corpus['format']];
+				}
 				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/error')) {
 					$status = '<span class="label label-danger">error</span>';
 				}
@@ -249,10 +310,10 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 				}
 				
 				if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
-				echo '<tr><td>' . $corpus['name'] . '</td><td>' . $formats[$corpus['format']] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&castglobal=' . $corpus['id'] . '">Make corpus global</a></td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
+				echo '<tr><td>' . $corpus['name'] . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&castglobal=' . $corpus['id'] . '">Make corpus global</a></td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
 				}
-				else {				
-					echo '<tr><td>' . $corpus['name'] . '</td><td>' . $formats[$corpus['format']] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
+				else {		
+					echo '<tr><td>' . $corpus['name'] . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
 				}
 			}
 ?>

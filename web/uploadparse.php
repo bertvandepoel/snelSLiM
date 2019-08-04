@@ -43,7 +43,10 @@ function uploadparse($filepost, $format, $extra, $tmp = TRUE, $id = NULL) {
 		$savedir = 'preparsed/saved/' . $id;
 	}
 	
-	if($format == 'conll') {
+	if($format == 'autodetect') {
+		$arguments = 'autodetect - -';
+	}
+	elseif($format == 'conll') {
 		$arguments = 'conll - ' . intval($extra);
 	}
 	elseif($format == 'folia-text-fast') {

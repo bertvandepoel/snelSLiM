@@ -62,6 +62,72 @@ func main() {
 		return nil
 	})
 
+	if format == "autodetect" {
+		autodetect, err := exec.Command("../formats/autodetect", outdir).Output()
+		if err != nil {
+			err = ioutil.WriteFile(savedir+"error", []byte("error: "+err.Error()), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+		format = string(autodetect)
+		err = ioutil.WriteFile(savedir+"autodetect", autodetect, 0644)
+		if err != nil {
+			fmt.Println("Could not write done signal")
+			panic(err)
+		}
+		if format == "unknown" {
+			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection was unable to detect the format of your corpus. Please refer to help page for more information."), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		} else if format == "partknown" {
+			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection detected some known and some unknown formats. You may have to clean up your corpus files."), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		} else if format == "mixed" {
+			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection detected files in several corpus formats. You may have to clean up your corpus files."), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		} else if format == "xml" {
+			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection detected files an unknown XML format. Please refer to help page for more information."), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		} else if format == "tabs" {
+			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection detected files that might be tab seperated (CoNLL) but does not know which column to use."), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		} else if format != "oanc" && format != "masc" && format != "alpino" && format != "bnc" &&
+			format != "dcoi" && format != "folia" && format != "gysseling" && format != "eindhoven" {
+
+			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection did not return a valid response"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		} else {
+			option = "lemma"
+			extra = "fast"
+		}
+	}
+
 	for _, file := range files {
 		var output []byte
 		var err error
@@ -97,7 +163,7 @@ func main() {
 			panic(err)
 		}
 		if err != nil || string(output) != "OK\n" {
-			err := ioutil.WriteFile(savedir+"error", []byte("error executing parser"), 0644)
+			err := ioutil.WriteFile(savedir+"error", []byte("error executing parser: "+string(output)), 0644)
 			if err != nil {
 				fmt.Println("Could not write error")
 				panic(err)
