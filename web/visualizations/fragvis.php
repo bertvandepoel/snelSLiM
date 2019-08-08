@@ -19,7 +19,7 @@
  */
 
 
-$get_report = $db->prepare('SELECT c1, c2, freqnum, cutoff, datetime FROM reports WHERE id=?');
+$get_report = $db->prepare('SELECT c1, c2 FROM reports WHERE id=?');
 $get_report->execute(array($_GET['reportid']));
 $report = $get_report->fetch(PDO::FETCH_ASSOC);
 
