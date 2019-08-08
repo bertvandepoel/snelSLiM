@@ -49,7 +49,7 @@ Hi there,
 
 This is an email to confirm that your snelSLiM report from $report_start is now available on $url
 
-Kind reards,
+Kind regards,
 snelSLiM
 EOT;
 	
