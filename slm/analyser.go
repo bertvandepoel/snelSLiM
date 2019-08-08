@@ -780,8 +780,8 @@ func main() {
 	}
 
 	// if a callback URL is specified, trigger it
-	if len(os.Args) == 10 {
-		http.Get(os.Args[9])
+	if len(os.Args) == 11 {
+		http.Get(os.Args[10])
 	}
 }
 
