@@ -12,6 +12,11 @@ import (
 func main() {
 	filename := os.Args[1]
 	outfilename := os.Args[2]
+	outplainwords := os.Args[3]
+	plainwords := false
+	if outplainwords != "-" {
+		plainwords = true
+	}
 
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -49,10 +54,14 @@ func main() {
 
 	fields := strings.Split(datastring, " ")
 	count := make(map[string]int)
+	plainwordsstring := ""
 
 	for _, field := range fields {
 		if field != "" {
 			count[strings.ToLower(field)]++
+			if plainwords {
+				plainwordsstring += strings.ToLower(field) + "\t"
+			}
 		}
 	}
 
@@ -78,5 +87,14 @@ func main() {
 		fmt.Println("Could not write result")
 		panic(err)
 	}
+
+	if plainwords {
+		err = ioutil.WriteFile(outplainwords, []byte(plainwordsstring), 0644)
+		if err != nil {
+			fmt.Println("Could not write plainwords for collocational analysis")
+			panic(err)
+		}
+	}
+
 	fmt.Println("OK")
 }

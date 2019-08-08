@@ -15,6 +15,11 @@ func main() {
 	filename := os.Args[1]
 	xpath := os.Args[2]
 	outfilename := os.Args[3]
+	outplainwords := os.Args[4]
+	plainwords := false
+	if outplainwords != "-" {
+		plainwords = true
+	}
 
 	count := make(map[string]int)
 
@@ -29,6 +34,7 @@ func main() {
 
 	component := strings.Split(xpath, "/")
 	last := component[len(component)-1]
+	plainwordsstring := ""
 
 	if strings.Contains(last, "@") {
 		attr := strings.Split(last, "@")
@@ -37,6 +43,9 @@ func main() {
 			if row != "" && row != " " {
 				value := strings.Split(row, "\"")
 				count[strings.ToLower(html.UnescapeString(value[0]))]++
+				if plainwords {
+					plainwordsstring += strings.ToLower(html.UnescapeString(value[0])) + "\t"
+				}
 			}
 		}
 	} else {
@@ -46,6 +55,9 @@ func main() {
 			if row != "" && row != " " {
 				value := strings.Split(row, ">")
 				count[strings.ToLower(html.UnescapeString(value[1]))]++
+				if plainwords {
+					plainwordsstring += strings.ToLower(html.UnescapeString(value[1])) + "\t"
+				}
 			}
 		}
 	}
@@ -72,5 +84,14 @@ func main() {
 		fmt.Println("Could not write result")
 		panic(err)
 	}
+
+	if plainwords {
+		err = ioutil.WriteFile(outplainwords, []byte(plainwordsstring), 0644)
+		if err != nil {
+			fmt.Println("Could not write plainwords for collocational analysis")
+			panic(err)
+		}
+	}
+
 	fmt.Println("OK")
 }

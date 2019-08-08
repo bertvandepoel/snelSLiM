@@ -25,6 +25,11 @@ func main() {
 		panic("Please define whether to filter lemmas or text elements as the second argument")
 	}
 	outfilename := os.Args[3]
+	outplainwords := os.Args[4]
+	plainwords := false
+	if outplainwords != "-" {
+		plainwords = true
+	}
 
 	count := make(map[string]int)
 
@@ -40,12 +45,16 @@ func main() {
 		panic(err)
 	}
 	datastring := string(output)
+	plainwordsstring := ""
 	if lemma {
 		rows := strings.Split(datastring, "hw=\"")
 		for _, row := range rows {
 			if row != "" && row != " " {
 				value := strings.Split(row, "\"")
 				count[strings.ToLower(html.UnescapeString(value[0]))]++
+				if plainwords {
+					plainwordsstring += strings.ToLower(html.UnescapeString(value[0])) + "\t"
+				}
 			}
 		}
 	} else {
@@ -55,6 +64,9 @@ func main() {
 			if row != "" && row != " " {
 				value := strings.Split(row, ">")
 				count[strings.ToLower(html.UnescapeString(value[1]))]++
+				if plainwords {
+					plainwordsstring += strings.ToLower(html.UnescapeString(value[1])) + "\t"
+				}
 			}
 		}
 	}
@@ -81,5 +93,14 @@ func main() {
 		fmt.Println("Could not write result")
 		panic(err)
 	}
+
+	if plainwords {
+		err = ioutil.WriteFile(outplainwords, []byte(plainwordsstring), 0644)
+		if err != nil {
+			fmt.Println("Could not write plainwords for collocational analysis")
+			panic(err)
+		}
+	}
+
 	fmt.Println("OK")
 }

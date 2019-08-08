@@ -17,6 +17,11 @@ func main() {
 		panic(err)
 	}
 	outfilename := os.Args[3]
+	outplainwords := os.Args[4]
+	plainwords := false
+	if outplainwords != "-" {
+		plainwords = true
+	}
 
 	//regular users will start counting cols from 1
 	colnum--
@@ -31,6 +36,7 @@ func main() {
 	rows := strings.Split(datastring, "\n")
 
 	count := make(map[string]int)
+	plainwordsstring := ""
 
 	for _, row := range rows {
 		//ignore XML lines
@@ -44,6 +50,9 @@ func main() {
 				fields[colnum] != "[" && fields[colnum] != "]" && fields[colnum] != "{" && fields[colnum] != "}" && fields[colnum] != "<" &&
 				fields[colnum] != ">" && fields[colnum] != "-" {
 				count[strings.ToLower(fields[colnum])]++
+				if plainwords {
+					plainwordsstring += strings.ToLower(fields[colnum]) + "\t"
+				}
 			}
 		}
 	}
@@ -70,5 +79,14 @@ func main() {
 		fmt.Println("Could not write result")
 		panic(err)
 	}
+
+	if plainwords {
+		err = ioutil.WriteFile(outplainwords, []byte(plainwordsstring), 0644)
+		if err != nil {
+			fmt.Println("Could not write plainwords for collocational analysis")
+			panic(err)
+		}
+	}
+
 	fmt.Println("OK")
 }

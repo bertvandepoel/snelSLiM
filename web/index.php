@@ -27,7 +27,7 @@ session_start();
 require('mysql.php');
 require('config.php');
 if(isset($_POST['login'])) {
-	$get_user = $db->prepare('SELECT hash, admin FROM accounts WHERE email=?');
+	$get_user = $db->prepare('SELECT hash, poweruser, admin FROM accounts WHERE email=?');
 	$get_user->execute(array($_POST['email']));
 	$user = $get_user->fetch(PDO::FETCH_ASSOC);
 	if( (!$user) OR (!password_verify($_POST['password'], $user['hash']))) {
@@ -43,6 +43,7 @@ if(isset($_POST['login'])) {
 	}
 	$_SESSION['loggedin'] = true;
 	$_SESSION['email'] = $_POST['email'];
+	$_SESSION['poweruser'] = $user['poweruser'];
 	$_SESSION['admin'] = $user['admin'];
 	require('html/redirectlogin.html');
 }
@@ -95,6 +96,9 @@ elseif(isset($_GET['export'])) {
 }
 elseif(isset($_GET['fragvis'])) {
 	require('visualizations/fragvis.php');
+}
+elseif(isset($_GET['keydetail'])) {
+	require('keydetail.php');
 }
 elseif(isset($_GET['about'])) {
 	require('html/about.html');
@@ -168,11 +172,28 @@ else {
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> The admin has limited the amount of frequent items to a maximum of ' . $max_freqnum . ', please limit your chosen amount.</div></div></div>';
 		}
 		else {
+			$collocleft = 0;
+			$collocright = 0;
+			$colloc = FALSE;
+			if(isset($_POST['colloc']) AND $_POST['colloc'] == 'on') {
+				$collocleft = intval($_POST['collocleft']);
+				$collocright = intval($_POST['collocright']);
+				$colloc = TRUE;
+			}
+			$nonpowercolloc = FALSE;
+			if($_SESSION['poweruser'] != 1 && $colloc) {
+				$nonpowercolloc = TRUE;
+			}
 			// all paths must be relative to application/slm
 			require('uploadparse.php');
 			if($_POST['c1-select'] == 'none') {
 				if($_FILES['c1-file']['error'] !== UPLOAD_ERR_OK) {
 					echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> Corpus one generated an upload error.</div></div></div>';
+					require('html/bottom.html');
+					exit;
+				}
+				elseif($nonpowercolloc) {
+					echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You do not have the right permissions to request collocational analysis on a temporary corpus.</div></div></div>';
 					require('html/bottom.html');
 					exit;
 				}
@@ -184,7 +205,12 @@ else {
 					$extra = $_POST['c1-extra-xpath'];
 				}
 				$corpus1name = $_FILES['c1-file']['name'];
-				$corpus1 = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra);
+				if($colloc) {
+					$corpus1 = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra, TRUE);
+				}
+				else {
+					$corpus1 = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra);
+				}
 			}
 			else {
 				$get_corpusname = $db->prepare('SELECT name FROM corpora WHERE id=?');
@@ -192,6 +218,11 @@ else {
 				$row = $get_corpusname->fetch(PDO::FETCH_ASSOC);
 				$corpus1name = $row['name'];
 				$corpus1 = 'preparsed/saved/' . $_POST['c1-select'];
+				if($colloc && !file_exists('../slm/' . $corpus1 . '/plainwords')) {
+					echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> The corpus A you selected was not prepared for collocational analyse. Please either disable this additional analysis or select or supply a prepared corpus.</div></div></div>';
+					require('html/bottom.html');
+					exit;
+				}
 			}
 			if($_POST['c2-select'] == 'none') {
 				if($_FILES['c2-file']['error'] !== UPLOAD_ERR_OK) {
@@ -238,10 +269,10 @@ else {
 					$callback = 'http://';
 				}
 				$callback .= $_SERVER['SERVER_NAME'] . substr($_SERVER['REQUEST_URI'], 0, -1) . 'callback.php?id=' . $reportid;
-				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' ' . $genviz . ' ' .  $callback . ' > /dev/null &');
+				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' ' . $genviz . ' ' . $collocleft . ' ' . $collocright . ' ' .  $callback . ' > /dev/null &');
 			}
 			else {
-				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' ' . $genviz . ' > /dev/null &');
+				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' ' . $genviz . ' ' . $collocleft . ' ' . $collocright . ' > /dev/null &');
 			}
 			
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> We have successfully received your report request. You will be redirected to the report that is generating for you right now. </div></div></div>';
@@ -264,9 +295,13 @@ else {
 			$corpora_c2search = '<a class="list-group-item disabled" href="#">Global corpora</a>';
 			$first = false;
 		}
+		$corpuslabel = '';
+		if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
+			$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
+		}
 		$corpora_dropdown .= '<option value="' . $corpus['id'] . '">' . $corpus['name'] . '</option>';
-		$corpora_c1search .= '<a class="list-group-item searchitem c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . '</a>';
-		$corpora_c2search .= '<a class="list-group-item searchitem c2click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . '</a>';
+		$corpora_c1search .= '<a class="list-group-item searchitem c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . $corpuslabel . '</a>';
+		$corpora_c2search .= '<a class="list-group-item searchitem c2click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . $corpuslabel . '</a>';
 	}
 	
 	$get_corpora = $db->prepare('SELECT id, name FROM corpora WHERE owner=?');
@@ -274,9 +309,13 @@ else {
 	$corpora_c1search .= '<a class="list-group-item disabled" href="#">Your personal corpora</a>';
 	$corpora_c2search .= '<a class="list-group-item disabled" href="#">Your personal corpora</a>';
 	while($corpus = $get_corpora->fetch(PDO::FETCH_ASSOC)) {
+		$corpuslabel = '';
+		if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
+			$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
+		}
 		$corpora_dropdown .= '<option value="' . $corpus['id'] . '">' . $corpus['name'] . '</option>';
-		$corpora_c1search .= '<a class="list-group-item searchitem c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . '</a>';
-		$corpora_c2search .= '<a class="list-group-item searchitem c2click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . '</a>';
+		$corpora_c1search .= '<a class="list-group-item searchitem c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . $corpuslabel . '</a>';
+		$corpora_c2search .= '<a class="list-group-item searchitem c2click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . $corpuslabel . '</a>';
 	}
 	
 	$form = file_get_contents('html/form.html');

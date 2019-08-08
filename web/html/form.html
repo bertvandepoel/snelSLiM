@@ -186,6 +186,49 @@
 					<div class="form-group">
 						<label for="genviz" class="control-label"><input id="genviz" type="checkbox" name="genviz" checked> Generate visualizations as part of this report</label>
 					</div>
+					<div class="form-group">
+						<label for="colloc" class="control-label"><input id="colloc" type="checkbox" name="colloc"> Do a collocational analysis for each marker using the following context:</label>
+						<div class="row form-horizontal">
+							<div class="col-sm-4">
+								<label for="collocleft" class="control-label">Left:</label>
+							</div>
+							<div class="col-sm-8">
+								<select class="form-control" id="collocleft" name="collocleft">
+									<option>0</option>
+									<option>1</option>
+									<option>2</option>
+									<option selected>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10</option>
+								</select>
+							</div>
+						</div>
+						<div class="row form-horizontal">
+							<div class="col-sm-4">
+								<label for="collocright" class="control-label">Right:</label>
+							</div>
+							<div class="col-sm-8">
+								<select class="form-control" id="collocright" name="collocright">
+									<option>0</option>
+									<option>1</option>
+									<option>2</option>
+									<option selected>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10</option>
+								</select>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="form-group">
 					<label for="mailresult" class="control-label"><input id="mailresult" type="checkbox" name="mailresult"> Email me when my report is done</label>

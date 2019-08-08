@@ -4,6 +4,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `accounts` (
   `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `poweruser` tinyint(1) NOT NULL,
   `admin` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

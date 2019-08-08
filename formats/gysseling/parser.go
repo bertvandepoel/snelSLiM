@@ -23,6 +23,11 @@ func main() {
 		panic("Please define whether to filter lemmas or text elements as the second argument")
 	}
 	outfilename := os.Args[3]
+	outplainwords := os.Args[4]
+	plainwords := false
+	if outplainwords != "-" {
+		plainwords = true
+	}
 
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -31,6 +36,7 @@ func main() {
 	}
 
 	datastring := string(data)
+	plainwordsstring := ""
 	count := make(map[string]int)
 
 	rows := strings.Split(datastring, "\n")
@@ -48,11 +54,17 @@ func main() {
 					if lemma {
 						subs := strings.Split(items[0], "_")
 						count[strings.ToLower(subs[1])]++
+						if plainwords {
+							plainwordsstring += strings.ToLower(subs[1]) + "\t"
+						}
 					} else {
 						qfree := strings.Split(items[1], "<q")
 						vnfree := strings.Split(qfree[0], "<VN")
 						text := strings.Trim(strings.ToLower(vnfree[0]), " ")
 						count[text]++
+						if plainwords {
+							plainwordsstring += text + "\t"
+						}
 					}
 				}
 			}
@@ -81,5 +93,14 @@ func main() {
 		fmt.Println("Could not write result")
 		panic(err)
 	}
+
+	if plainwords {
+		err = ioutil.WriteFile(outplainwords, []byte(plainwordsstring), 0644)
+		if err != nil {
+			fmt.Println("Could not write plainwords for collocational analysis")
+			panic(err)
+		}
+	}
+
 	fmt.Println("OK")
 }

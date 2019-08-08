@@ -74,10 +74,14 @@ if(isset($_POST['add'])) {
 		elseif($_POST['c1-format'] == 'xpath') {
 			$extra = $_POST['c1-extra-xpath'];
 		}
+		$plainwords = FALSE;
+		if($_SESSION['poweruser'] == 1 && isset($_POST['c1-plainwords']) && $_POST['c1-plainwords'] == 'on') {
+			$plainwords = TRUE;
+		}
 		$insert_corpus = $db->prepare('INSERT INTO corpora (name, format, extra, owner, datetime) VALUES (?,?,?,?,NOW())');
 		$insert_corpus->execute(array($_POST['c1-name'], $_POST['c1-format'], $extra, $_SESSION['email']));
 		$id = $db->lastInsertId();
-		$corpus = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra, false, $id);
+		$corpus = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra, $plainwords, false, $id);
 		
 		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> Your corpus has been saved correctly and is being processed.</div></div></div>';
 	}
@@ -137,6 +141,11 @@ if(isset($_GET['add'])) {
 					<label for="c1-extra-xpath" class="control-label">XPath Query</label>
 					<input class="form-control" id="c1-extra-xpath" type="text" name="c1-extra-xpath">
 				</div>
+				<?php if($_SESSION['poweruser'] == 1) { ?>
+				<div class="form-group">
+					<label for="c1-plainwords" class="control-label"><input id="c1-plainwords" type="checkbox" name="c1-plainwords"> Enable collocational analysis for this corpus <span class="emphasize">(beware: this option can use a lot of disk space and slows processing)</span></label> 
+				</div>
+				<?php } ?>
 				<div class="form-group">
 					<button type="submit" class="btn btn-primary" name="add">Add Corpus</button>
 				</div>
@@ -172,7 +181,7 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 
 <div class="row">
 	<div class="col-md-12">
-		<div class="alert alert-warning alert-dismissible"><button type="button" class="close" data-dismiss="alert">×</button>As an admin, you are able to upgrade your personal corpora to global corpora. Beware that those corpora are then available for any user to generate reports based on. An admin can also delete global corpora, this deletion affects all users.</div>
+		<div class="alert alert-info alert-dismissible"><button type="button" class="close" data-dismiss="alert">×</button>As an admin, you are able to upgrade your personal corpora to global corpora. Beware that those corpora are then available for any user to generate reports based on. An admin can also delete global corpora, this deletion affects all users.</div>
 	</div>
 </div>
 
@@ -231,7 +240,12 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					$status = '<span class="label label-default">processing</span>';
 				}
 				
-				echo '<tr><td>' . $corpus['name'] . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&deleteglobal=' . $corpus['id'] . '">Delete</a></td>';
+				$corpuslabel = '';
+				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
+					$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
+				}
+				
+				echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&deleteglobal=' . $corpus['id'] . '">Delete</a></td>';
 			}
 ?>
 			</tbody>
@@ -310,11 +324,16 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					$status = '<span class="label label-default">processing</span>';
 				}
 				
+				$corpuslabel = '';
+				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
+					$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
+				}
+				
 				if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
-				echo '<tr><td>' . $corpus['name'] . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&castglobal=' . $corpus['id'] . '">Make corpus global</a></td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
+				echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&castglobal=' . $corpus['id'] . '">Make corpus global</a></td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
 				}
 				else {		
-					echo '<tr><td>' . $corpus['name'] . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
+					echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
 				}
 			}
 ?>

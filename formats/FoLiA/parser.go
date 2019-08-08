@@ -38,8 +38,14 @@ func main() {
 		panic("Please define whether to use fast or xpath method as the third argument")
 	}
 	outfilename := os.Args[4]
+	outplainwords := os.Args[5]
+	plainwords := false
+	if outplainwords != "-" {
+		plainwords = true
+	}
 
 	count := make(map[string]int)
+	plainwordsstring := ""
 
 	if folie {
 		currentexec, err := os.Executable()
@@ -68,12 +74,18 @@ func main() {
 					if lemma {
 						if !strings.HasPrefix(field, "-t:") {
 							count[strings.ToLower(html.UnescapeString(field))]++
+							if plainwords {
+								plainwordsstring += strings.ToLower(html.UnescapeString(field)) + "\t"
+							}
 							break
 						}
 					} else {
 						if strings.HasPrefix(field, "-t:") {
 							value := strings.Split(field, ":")
 							count[strings.ToLower(html.UnescapeString(value[1]))]++
+							if plainwords {
+								plainwordsstring += strings.ToLower(html.UnescapeString(value[1])) + "\t"
+							}
 						}
 					}
 				}
@@ -98,6 +110,9 @@ func main() {
 				if row != "" && row != " " {
 					value := strings.Split(row, "\"")
 					count[strings.ToLower(html.UnescapeString(value[0]))]++
+					if plainwords {
+						plainwordsstring += strings.ToLower(html.UnescapeString(value[0])) + "\t"
+					}
 				}
 			}
 		} else {
@@ -107,6 +122,9 @@ func main() {
 				if row != "" && row != " " {
 					value := strings.Split(row, ">")
 					count[strings.ToLower(html.UnescapeString(value[1]))]++
+					if plainwords {
+						plainwordsstring += strings.ToLower(html.UnescapeString(value[1])) + "\t"
+					}
 				}
 			}
 		}
@@ -134,5 +152,14 @@ func main() {
 		fmt.Println("Could not write result")
 		panic(err)
 	}
+
+	if plainwords {
+		err = ioutil.WriteFile(outplainwords, []byte(plainwordsstring), 0644)
+		if err != nil {
+			fmt.Println("Could not write plainwords for collocational analysis")
+			panic(err)
+		}
+	}
+
 	fmt.Println("OK")
 }

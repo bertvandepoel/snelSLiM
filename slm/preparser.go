@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -18,6 +19,7 @@ func main() {
 		fmt.Println("4. option for the relevant format (usually lemma or text), enter - if not using")
 		fmt.Println("5. extra option for very specific formats (e.g. fast or xpath for folia), enter - if not using")
 		fmt.Println("6. the directory to write the preparsed results to")
+		fmt.Println("7. whether to write plaintext wordlists, 1 for yes, 0 for no, optional (0 is then presumed)")
 		os.Exit(1)
 	}
 	filename := os.Args[1]
@@ -26,6 +28,21 @@ func main() {
 	option := os.Args[4]
 	extra := os.Args[5]
 	savedir := os.Args[6] + "/"
+	plainwords := false
+	if len(os.Args) > 7 {
+		plainwordsarg, err := strconv.Atoi(os.Args[7])
+		if err != nil {
+			err = ioutil.WriteFile(savedir+"error", []byte("error: Could not cast plainwordsarg to integer"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+		if plainwordsarg == 1 {
+			plainwords = true
+		}
+	}
 
 	if strings.HasSuffix(filename, "zip") {
 		err := exec.Command("/usr/bin/unzip", filename, "-d", outdir).Run()
@@ -132,28 +149,32 @@ func main() {
 		var output []byte
 		var err error
 		base := filepath.Base(file)
+		plainwordsfile := "-"
+		if plainwords {
+			plainwordsfile = savedir + "/" + base + ".plainwords"
+		}
 		if format == "conll" {
-			output, err = exec.Command("../formats/CoNLL/parser", file, extra, savedir+"/"+base+".snelslim").Output()
+			output, err = exec.Command("../formats/CoNLL/parser", file, extra, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "folia" {
-			output, err = exec.Command("../formats/FoLiA/parser", file, option, extra, savedir+"/"+base+".snelslim").Output()
+			output, err = exec.Command("../formats/FoLiA/parser", file, option, extra, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "dcoi" {
-			output, err = exec.Command("../formats/DCOI/parser", file, option, savedir+"/"+base+".snelslim").Output()
+			output, err = exec.Command("../formats/DCOI/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "plain" {
-			output, err = exec.Command("../formats/plain/parser", file, savedir+"/"+base+".snelslim").Output()
+			output, err = exec.Command("../formats/plain/parser", file, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "alpino" {
-			output, err = exec.Command("../formats/alpino/parser", file, option, savedir+"/"+base+".snelslim").Output()
+			output, err = exec.Command("../formats/alpino/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "bnc" {
-			output, err = exec.Command("../formats/BNC/parser", file, option, savedir+"/"+base+".snelslim").Output()
+			output, err = exec.Command("../formats/BNC/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "eindhoven" {
-			output, err = exec.Command("../formats/eindhoven/parser", file, savedir+"/").Output()
+			output, err = exec.Command("../formats/eindhoven/parser", file, savedir+"/", plainwordsfile).Output()
 		} else if format == "gysseling" {
-			output, err = exec.Command("../formats/gysseling/parser", file, option, savedir+"/"+base+".snelslim").Output()
+			output, err = exec.Command("../formats/gysseling/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "masc" {
-			output, err = exec.Command("../formats/MASC/parser", file, option, savedir+"/"+base+".snelslim").Output()
+			output, err = exec.Command("../formats/MASC/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "oanc" {
-			output, err = exec.Command("../formats/OANC/parser", file, savedir+"/"+base+".snelslim").Output()
+			output, err = exec.Command("../formats/OANC/parser", file, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "xpath" {
-			output, err = exec.Command("../formats/xpath/parser", file, extra, savedir+"/"+base+".snelslim").Output()
+			output, err = exec.Command("../formats/xpath/parser", file, extra, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else {
 			err := ioutil.WriteFile(savedir+"error", []byte("error: unknown format"), 0644)
 			if err != nil {
@@ -171,6 +192,15 @@ func main() {
 			panic(err)
 		}
 	}
+
+	if plainwords {
+		err := ioutil.WriteFile(savedir+"plainwords", []byte("active"), 0644)
+		if err != nil {
+			fmt.Println("Could not write plainwords signal")
+			panic(err)
+		}
+	}
+
 	err := ioutil.WriteFile(savedir+"done", []byte("done"), 0644)
 	if err != nil {
 		fmt.Println("Could not write done signal")

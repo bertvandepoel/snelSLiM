@@ -25,7 +25,9 @@ func main() {
 		fmt.Println("5. the directory to write the results report to")
 		fmt.Println("6. timeout value in seconds for each corpus, the analysis will fail if preparsing hasn't completed after waiting this amount of seconds")
 		fmt.Println("7. whether to export visualization data as part of the report, 1 for yes, 0 for no, optional (0 is then presumed)")
-		fmt.Println("8. the callback URL to signal successful completion to, optional")
+		fmt.Println("8. left lookup space to perform collocational analysis on for each keyword, if both left and right are 0, no CA is performed, optional (0 is then presumed)")
+		fmt.Println("9. right lookup space to perform collocational analysis on for each keyword, if both left and right are 0, no CA is performed, optional (0 is then presumed)")
+		fmt.Println("10. the callback URL to signal successful completion to, optional")
 		os.Exit(1)
 	}
 	c1 := os.Args[1] + "/"
@@ -71,6 +73,35 @@ func main() {
 		}
 		if vizarg == 1 {
 			exportviz = true
+		}
+	}
+	colloc := false
+	collocleft := 0
+	collocright := 0
+	if len(os.Args) > 8 {
+		collocleft, err := strconv.Atoi(os.Args[8])
+		if err != nil {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: Could not cast collocleft to integer"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+		if len(os.Args) > 9 {
+			collocright, err = strconv.Atoi(os.Args[9])
+			if err != nil {
+				err = ioutil.WriteFile(reportdir+"error", []byte("error: Could not cast collocright to integer"), 0644)
+				if err != nil {
+					fmt.Println("Could not write error")
+					panic(err)
+				}
+				panic(err)
+			}
+		}
+
+		if collocleft > 0 || collocleft > 0 {
+			colloc = true
 		}
 	}
 
@@ -185,6 +216,8 @@ func main() {
 	c1globalcount := make(map[string]int)
 	c1fragmentcount := make(map[string]map[string]int)
 	var c1fragments []string
+	var collocwords [][]string
+	c1totalsize := 0
 
 	for _, file := range c1files {
 		if strings.HasSuffix(file.Name(), "snelslim") {
@@ -222,10 +255,25 @@ func main() {
 					localcount[fields[0]] += count
 					if fields[0] != "total.snelslim" {
 						c1globalcount[fields[0]] += count
+					} else {
+						c1totalsize += count
 					}
 				}
 			}
 			c1fragmentcount[fragname] = localcount
+		} else if colloc && strings.HasSuffix(file.Name(), "plainwords") {
+			data, err := ioutil.ReadFile(c1 + file.Name())
+			if err != nil {
+				err = ioutil.WriteFile(reportdir+"error", []byte("Error: Could not read corpus 1 fragment collocation plain words file"), 0644)
+				if err != nil {
+					fmt.Println("Could not write error")
+					panic(err)
+				}
+				panic(err)
+			}
+			datastring := string(data)
+			wordlist := strings.Split(datastring, "\t")
+			collocwords = append(collocwords, wordlist)
 		}
 	}
 
@@ -277,6 +325,11 @@ func main() {
 		Value int
 	}
 
+	type structkeyfloat struct {
+		Key   string
+		Value float64
+	}
+
 	type structresult struct {
 		Keyword          string
 		Absolute_score   int
@@ -299,12 +352,14 @@ func main() {
 	})
 
 	i := 0
+	freqposition := make(map[string]int)
 	var c1results []structresult
 	for _, kv := range sortedc1globalcount {
 		if i == freqnum {
 			break
 		}
 		i++
+		freqposition[kv.Key] = i
 
 		attraction := 0
 		repulsion := 0
@@ -411,6 +466,8 @@ func main() {
 	var c1buffer bytes.Buffer
 	c1fragresult := make(map[string]int)
 	c2fragresult := make(map[string]int)
+	c1keyfrags := make(map[string]map[string]int)
+	colloccounts := make(map[string]map[string]int)
 	for _, kv := range c1results {
 		var valuestring string
 
@@ -441,8 +498,12 @@ func main() {
 		c1buffer.WriteString(valuestring)
 		c1buffer.WriteString("\n")
 
+		c1keyfrags[kv.Keyword] = make(map[string]int)
 		for _, fragment := range c1fragments {
 			c1fragresult[fragment] += c1fragmentcount[fragment][kv.Keyword]
+			if c1fragmentcount[fragment][kv.Keyword] > 0 {
+				c1keyfrags[kv.Keyword][fragment] = c1fragmentcount[fragment][kv.Keyword]
+			}
 			if exportviz {
 				if c1fragmentcount[fragment][kv.Keyword] > 0 {
 					c1fragviz[fragment]["keyword_total"] += c1fragmentcount[fragment][kv.Keyword]
@@ -467,6 +528,70 @@ func main() {
 		}
 		for _, fragment := range c2fragments {
 			c2fragresult[fragment] += c2fragmentcount[fragment][kv.Keyword]
+		}
+
+		if colloc {
+			colloccounts[kv.Keyword] = make(map[string]int)
+			for _, wordlist := range collocwords {
+				max := len(wordlist) - 1
+				for index, word := range wordlist {
+					if word == kv.Keyword {
+						for i := 1; i <= collocleft; i++ {
+							newindex := index - i
+							if newindex < 0 {
+								break
+							}
+							colloccounts[kv.Keyword][wordlist[newindex]]++
+						}
+						for i := 1; i <= collocright; i++ {
+							newindex := index + i
+							if newindex > max {
+								break
+							}
+							colloccounts[kv.Keyword][wordlist[newindex]]++
+						}
+					}
+				}
+			}
+		}
+	}
+
+	var collocbuffer bytes.Buffer
+	if colloc {
+		for keyword, wordlist := range colloccounts {
+			collocbuffer.WriteString(keyword)
+			collocbuffer.WriteString("\n")
+			var collocates []structkeyfloat
+			for word, count := range wordlist {
+				var dice float64
+				var logdice float64
+				dice = float64(2) * float64(count)
+				dice = dice / (float64(c1globalcount[keyword]) + float64(c1globalcount[word]))
+				logdice = float64(14) + math.Log2(dice)
+				if logdice > 0 {
+					collocates = append(collocates, structkeyfloat{word, logdice})
+				}
+			}
+			sort.Slice(collocates, func(i, j int) bool {
+				return collocates[i].Value > collocates[j].Value
+			})
+			for _, row := range collocates {
+				collocbuffer.WriteString(row.Key)
+				collocbuffer.WriteString("\t")
+				valuestring := strconv.FormatFloat(row.Value, 'f', -1, 64)
+				collocbuffer.WriteString(valuestring)
+				collocbuffer.WriteString("\n")
+			}
+			collocbuffer.WriteString("\n")
+		}
+		err = ioutil.WriteFile(reportdir+"collocates.report", collocbuffer.Bytes(), 0644)
+		if err != nil {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write collocational analysis results"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
 		}
 	}
 
@@ -581,6 +706,40 @@ func main() {
 		panic(err)
 	}
 
+	var c1keybuffer bytes.Buffer
+	for keyword, frags := range c1keyfrags {
+		c1keybuffer.WriteString(keyword)
+		c1keybuffer.WriteString("\t")
+		valuestring := strconv.Itoa(freqposition[keyword])
+		c1keybuffer.WriteString(valuestring)
+		c1keybuffer.WriteString("\t")
+		valuestring = strconv.Itoa(c1globalcount[keyword])
+		c1keybuffer.WriteString(valuestring)
+		c1keybuffer.WriteString("\t")
+		percentage := float64(c1globalcount[keyword]) / float64(c1totalsize)
+		valuestring = strconv.FormatFloat(percentage, 'f', -1, 64)
+		c1keybuffer.WriteString(valuestring)
+		c1keybuffer.WriteString("\n")
+		for frag, count := range frags {
+			c1keybuffer.WriteString(frag)
+			c1keybuffer.WriteString("\t")
+			valuestring = strconv.Itoa(count)
+			c1keybuffer.WriteString(valuestring)
+			c1keybuffer.WriteString("\n")
+		}
+		c1keybuffer.WriteString("\n")
+	}
+
+	err = ioutil.WriteFile(reportdir+"keyword_details.report", c1keybuffer.Bytes(), 0644)
+	if err != nil {
+		err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write keyword details"), 0644)
+		if err != nil {
+			fmt.Println("Could not write error")
+			panic(err)
+		}
+		panic(err)
+	}
+
 	if exportviz {
 		exportjson, err := json.Marshal(vizfraglist)
 		if err != nil {
@@ -621,8 +780,8 @@ func main() {
 	}
 
 	// if a callback URL is specified, trigger it
-	if len(os.Args) == 9 {
-		http.Get(os.Args[8])
+	if len(os.Args) == 10 {
+		http.Get(os.Args[9])
 	}
 }
 
