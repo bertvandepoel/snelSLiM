@@ -1,7 +1,7 @@
 <?php
 /*
  * snelSLiM - Interface for quick Stable Lexical Marker Analysis
- * Copyright (c) 2017 Bert Van de Poel
+ * Copyright (c) 2017-2019 Bert Van de Poel
  * Under superivison of Prof. Dr. Dirk Speelman
  * 
  * This program is free software: you can redistribute it and/or modify
