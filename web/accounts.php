@@ -73,7 +73,7 @@ elseif(isset($_POST['editpermissions'])) {
 	if($_POST['poweruser'] == 'yes') {
 		$poweruser = 1;
 	}
-	$update = $db->prepare('UPDATE accounts SET poweruser=? AND admin=? WHERE email=?');
+	$update = $db->prepare('UPDATE accounts SET poweruser=?, admin=? WHERE email=?');
 	$update->execute(array($poweruser, $isadmin, $_POST['email']));
 	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> The changed permissions have been applied. They will only take effect after the user has logged in again.</div></div></div>';
 }
