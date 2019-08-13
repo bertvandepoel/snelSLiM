@@ -109,8 +109,8 @@ elseif(isset($_GET['what'])) {
 elseif(isset($_GET['formats'])) {
 	require('html/formats.html');
 }
-elseif(isset($_GET['am'])) {
-	require('html/am.html');
+elseif(isset($_GET['statistics'])) {
+	require('html/statistics.html');
 }
 elseif(isset($_GET['faq'])) {
 	require('html/faq.html');

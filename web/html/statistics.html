@@ -1,0 +1,113 @@
+<div class="page-header" id="banner">
+	<div class="row">
+		<div class="col-md-12">
+			<h1>Statistics behind snelSLiM</h1>
+			<p class="lead">A few statistical measures are used within snelSLiM to make sure results are scientifically sound and there is a high probability of correct results. On this page the individual statistical tests and tools are discussed, including their formula's, for each type of analysis.</p>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>Stable Lexical Marker Analysis</h1>
+		<p>The main analysis performed by snelSLiM, Stable Lexical Marker Analysis (SLMA), uses a central table to calculate all of its scores. This table contains the frequency of the word/lemma that's being statistically tested in the selected text from the target corpus and in selected text from the reference corpus (cels 1 and 3), as well as the frequency of all other words those texts (cel 2 and 4). R1 and R2 are the sums of the rows, meaning R<sub>1</sub> = cel1 + cel2 and R<sub>2</sub> = cel3 + cel4. C1 and C2 represent the sums of the columns, meaning C<sub>1</sub> = cel1 + cel3 and C<sub>2</sub> = cel2 + cel4. N is the sum of all four cells.</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-8 col-md-offset-2">
+		<table class="table">
+			<tr><th></th><th>Frequency of word/lemma</th><th>Frequency of other words/lemmas</th><td style="font-style: italic;">horizontal sum</td></tr>
+			<tr><th>Selected text from Target Corpus</th><td>cel1</td><td>cel2</td><td style="font-style: italic;">R<sub>1</sub></td></tr>
+			<tr><th>Selected text from Reference Corpus</th><td>cel3</td><td>cel4</td><td style="font-style: italic;">R<sub>2</sub></td></tr>
+			<tr><td style="font-style: italic;">vertical sum</td><td style="font-style: italic;">C<sub>2</sub></td><td style="font-style: italic;">C<sub>2</sub></td><td style="font-style: italic;">N</td></tr>
+		</table>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<p>For each word that's being investigated, every possible text combination from the target corpus against the reference corpus is plugged into the table above. Then the following statistics are applied.</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h2>G squared (log likelihood)</h2>
+		<p>G squared, also known as G or log likelihood, is the main statistical test for SLMA. Based on the table above, it uses the following formula combined with a cut-off point to decide if the word/lemma being investigated is a marker for the current text combination</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-4 col-md-offset-1">
+		<img src="images/Gsquared_G1.png" style="width: 100%;">
+	</div>
+	<div class="col-md-4 col-md-offset-2">
+		<img src="images/Gsquared_G2.png" style="width: 100%;">
+	</div>
+</div>
+<div class="row" style="margin-top: 25px;">
+	<div class="col-md-4 col-md-offset-1">
+		<img src="images/Gsquared_G3.png" style="width: 100%;">
+	</div>
+	<div class="col-md-4 col-md-offset-2">
+		<img src="images/Gsquared_G4.png" style="width: 100%;">
+	</div>
+</div>
+<div class="row" style="margin-top: 35px;">
+	<div class="col-md-4 col-md-offset-4">
+		<img src="images/Gsquared_total.png" style="width: 100%;">
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12" style="margin-top: 25px;">
+		<p>The resulting value is compared to a cut-off value. If the result is higher than the cut-off, the word is a marker for this text combination, otherwise it's not. The cut-off value is based on the quantile function of the chi-squared distribution with a degree of freedom of 1 and a probability based on the user's preference.</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-4 col-md-offset-4">
+		<table class="table table-striped">
+			<tr><th>Probability</th><th>Cut-off value</th></tr>
+			<tr><td>95% (0.05)</td><td>3.841459</td></tr>
+			<tr><td>99% (0.01)</td><td>6.634897</td></tr>
+			<tr><td>99.5% (0.005)</td><td>7.879439</td></tr>
+			<tr><td>99.9% (0.001)</td><td>10.827570</td></tr>
+			<tr><td>99.95% (0.0005)</td><td>12.115670</td></tr>
+			<tr><td>99.99% (0.0001)</td><td>15.136710</td></tr>
+		</table>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12" style="margin-top: 25px;">
+		<p>If the result is smaller than the cut-off value (based on the user preference), snelSLiM moves on to the next text combination. If the result is statistically significant by being larger than the cut-off value, the word/lemma is a marker for either the target or the reference corpus. To decide, the frequency relative to the entire text is compared between the selected text from the target and the selected text from the reference. If the target text has a higher relative frequency, the keyword is attracted to the target corpus for that text combination, otherwise it's repulsed.<br>For each text combination where a potential marker yields a positive result (G squared larger than the cut-off value), snelSLiM then moves on the calculate the Log odds ratio (see the next section).</p> 
+		<p>After finishing calculation for each text combination, it's possible to calculate the absolute score by subtracting the amount of text combination where the marker is repulsed from the amount of combinations where the marker is attracted. A normalised score can then be derived by dividing the absolute score by the amount of possible combinations. The normalised score can be considered a decimal where 1 means all text combinations are attracted and -1 means that all text combinations are repulsed for this marker. In most realistic cases, this number will be a decimal, since the corpora will contain many text, where some will not feature certain markers. <br>If the resulting absolute score is positive, the word/lemma is a marker for the target corpus. In case it is negative, the word/lemma is actually a marker for the reference corpus. These repulsed markers are highlighted with a red background in the user interface.
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h2>Log odds ratio</h2>
+		<p>After using the G squared test to verify whether a word/lemma is a marker for a certain text combination, the log odds ratio is calculated. The odds ratio is the division of frequency of the word/lemma in both texts (cel1 and cel2) divided by the division of the other words/lemmas in both texts. Afterwards, its nutural logarithm is taken, which results in the following formula:</p>
+	</div>
+</div>
+<div class="row" style="margin-top: 25px; margin-bottom: 25px;">
+	<div class="col-md-4 col-md-offset-4">
+		<img src="images/oddsratio.png" style="width: 100%;">
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<p>After the log odds ratio's for all the text combinations where the word/lemma is a marker have been calculated, the log odds ratio score is calculated by calculating the average of all log odd ratios. Beyond that, the lowest and highest log odds ratio are selected, and the standard deviation is calculated. While G squared can indicate whether a word/lemma is a marker, the log odds ratio represents the effect size. This is also the reason why snelSLiM will by default sort markers by log odds ratio score.</p>
+	</div>
+</div>
+<div class="row" style="margin-top: 25px;">
+	<div class="col-md-12">
+		<h1>Collocational Analysis</h1>
+		<h2>Log Dice</h2>
+		<p>Optionally, users can request collocational analysis as part of their snelSLiM report. When this option is selected, collocational analysis is performed on the target corpus for every stable lexical marker. Based on the search window defined by the user, every x words/lemmas on the left, and every y words/lemmas on the right of the keyword are counted for each marker. Then log Dice is used as an association measure, using the frequency of the potential collocate within the search windows (f<sub>xy</sub>), the total frequency of the potential collocate within the entire target corpus (f<sub>x</sub>, and the total frequency of the marker within the entire target corpus (f<sub>y</sub>). Specifically, 14 is added to the the binary log of two times the frequency within the search windows divided by the sum of both total frequencies of the marker and potential collocate, resulting in the following formula: </p>
+	</div>
+</div>
+<div class="row" style="margin-top: 25px; margin-bottom: 25px;">
+	<div class="col-md-4 col-md-offset-4">
+		<img src="images/logdice.png" style="width: 100%;">
+	</div>
+</div>
+<div class="row" style="margin-bottom: 25px;">
+	<div class="col-md-12">
+		<p>This results in a score that has a theoretical maximum of 14, and can easily be interpreted. When the resulting logDice is 0 or smaller, the word/lemma being investigated is not considered a collocate. If two scores differ by one, this means the higher score is swice as often a collocate. This means of course that collocates with a score near 14 almost never occur outside of the search windows, and is a very strong collocate of the keyword.</p>
+	</div>
+</div>
