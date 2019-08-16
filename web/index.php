@@ -112,9 +112,6 @@ elseif(isset($_GET['formats'])) {
 elseif(isset($_GET['statistics'])) {
 	require('html/statistics.html');
 }
-elseif(isset($_GET['faq'])) {
-	require('html/faq.html');
-}
 elseif(isset($_GET['accounts'])) {
 	if($_SESSION['admin']) {
 		require('accounts.php');
