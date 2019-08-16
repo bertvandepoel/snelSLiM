@@ -5,6 +5,8 @@ parser
 preparser
 analyser
 autodetect
+testsuite/compare_results
+testsuite/gen_corpus
 
 
 # LaTeX temporary files
