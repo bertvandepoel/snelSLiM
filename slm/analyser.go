@@ -100,14 +100,15 @@ func main() {
 			}
 		}
 
-		if collocleft > 0 || collocleft > 0 {
+		// collocation is presumed if either collocleft or collocright are not zero
+		if collocleft > 0 || collocright > 0 {
 			colloc = true
 		}
 	}
 
 	timer := 0
 	for {
-		_, err := os.Stat(c1 + "done")
+		_, err := os.Stat(c1 + "done") // done file exists when preparsing is done
 		if err == nil {
 			break
 		}
@@ -119,7 +120,7 @@ func main() {
 			}
 			panic(err)
 		}
-		_, err = os.Stat(c1 + "error")
+		_, err = os.Stat(c1 + "error") // check if preparser has written an error file
 		if err == nil {
 			c1error, err := ioutil.ReadFile(c1 + "error")
 			if err != nil {
@@ -137,7 +138,7 @@ func main() {
 			}
 			panic(err)
 		}
-		time.Sleep(5 * time.Second)
+		time.Sleep(5 * time.Second) // wait 5 more seconds, then continue the loop
 		timer += 5
 		if timer > timeout {
 			err = ioutil.WriteFile(reportdir+"error", []byte("error: preparse of corpus 1 took more than "+strconv.Itoa(timeout)+" seconds, timeout reached"), 0644)
@@ -151,7 +152,7 @@ func main() {
 
 	timer = 0
 	for {
-		_, err := os.Stat(c2 + "done")
+		_, err := os.Stat(c2 + "done") // done file exists when preparsing is done
 		if err == nil {
 			break
 		}
@@ -163,7 +164,7 @@ func main() {
 			}
 			panic(err)
 		}
-		_, err = os.Stat(c2 + "error")
+		_, err = os.Stat(c2 + "error") // check if preparser has written an error file
 		if err == nil {
 			c2error, err := ioutil.ReadFile(c2 + "error")
 			if err != nil {
@@ -181,7 +182,7 @@ func main() {
 			}
 			panic(err)
 		}
-		time.Sleep(5 * time.Second)
+		time.Sleep(5 * time.Second) // wait 5 more seconds, then continue the loop
 		timer += 5
 		if timer > timeout {
 			err = ioutil.WriteFile(reportdir+"error", []byte("error: preparse of corpus 2 took more than "+strconv.Itoa(timeout)+" seconds, timeout reached"), 0644)
@@ -193,7 +194,7 @@ func main() {
 		}
 	}
 
-	c1files, err := ioutil.ReadDir(c1)
+	c1files, err := ioutil.ReadDir(c1) // create a list of all preparsed files
 	if err != nil {
 		err = ioutil.WriteFile(reportdir+"error", []byte("Error: Could not read corpus 1"), 0644)
 		if err != nil {
@@ -203,7 +204,7 @@ func main() {
 		panic(err)
 	}
 
-	c2files, err := ioutil.ReadDir(c2)
+	c2files, err := ioutil.ReadDir(c2) // create a list of all preparsed files
 	if err != nil {
 		err = ioutil.WriteFile(reportdir+"error", []byte("Error: Could not read corpus 2"), 0644)
 		if err != nil {
@@ -219,6 +220,9 @@ func main() {
 	var collocwords [][]string
 	c1totalsize := 0
 
+	// loop through every file, if the filename ends in .snelslim it will be a preparsed frequency list,
+	// then read that frequency list into both a counter for the file and a global counter for the corpus
+	// if the filename ends in .plainwords and a collocational analysis is required, read every word into a list per file
 	for _, file := range c1files {
 		if strings.HasSuffix(file.Name(), "snelslim") {
 			data, err := ioutil.ReadFile(c1 + file.Name())
@@ -280,6 +284,8 @@ func main() {
 	c2fragmentcount := make(map[string]map[string]int)
 	var c2fragments []string
 
+	// loop through every file, if the filename ends in .snelslim it will be a preparsed frequency list,
+	// then read that frequency list into a counter for the file, there is no global count for the reference corpus
 	for _, file := range c2files {
 		if strings.HasSuffix(file.Name(), "snelslim") {
 			data, err := ioutil.ReadFile(c2 + file.Name())
@@ -320,6 +326,8 @@ func main() {
 		}
 	}
 
+	// These structures are required for sorting and are only used when sorting is required.
+	// After lists or arrays are created they are inserted into this structure to facilitate sorting and then be written to the report.
 	type structkeyvalue struct {
 		Key   string
 		Value int
@@ -364,8 +372,8 @@ func main() {
 		attraction := 0
 		repulsion := 0
 		lortotal := float64(0)
-		lormin := math.MaxFloat64
-		lormax := -math.MaxFloat64
+		lormin := math.MaxFloat64  // any number will be lower than math.MaxFloat64
+		lormax := -math.MaxFloat64 // any number will be higher than the negative of math.MaxFloat64
 		var lorlist []float64
 
 		for _, c1localcount := range c1fragmentcount {
@@ -377,6 +385,8 @@ func main() {
 			 */
 			cel1 := float64(c1localcount[kv.Key])
 			cel2 := float64(c1localcount["total.snelslim"] - c1localcount[kv.Key])
+			// cA_zero and cB_zero are used to track if in the current file of the target/reference corpus contians a zero value
+			// if a zero value is detected, all cels get +0.5
 			cA_zero := false
 			cB_zero := false
 			if cel1 == 0 || cel2 == 0 {
@@ -418,7 +428,7 @@ func main() {
 				// Check if the keyword is significant
 				if Gsquared > cutoff {
 					kw_freq_c2 := float64(c2localcount[kv.Key]) / float64(c2localcount["total.snelslim"])
-					if kw_freq_c1 > kw_freq_c2 {
+					if kw_freq_c1 > kw_freq_c2 { // this checks if the keyword has a higher relative frequency in the target or the reference corpus
 						// this keyword is a stable lexical marker for corpus 1 for this text combination
 						attraction++
 					} else {
@@ -471,6 +481,8 @@ func main() {
 	for _, kv := range c1results {
 		var valuestring string
 
+		// write the result in the same format as mclm, specifically the following order separated by tabs
+		// marker, absolute score, normalised score, attraction, repulsion, minimum LOR, maximum LOR, stddev LOR, average LOR
 		c1buffer.WriteString(kv.Keyword)
 		c1buffer.WriteString("\t")
 		valuestring = strconv.Itoa(kv.Absolute_score)
@@ -499,6 +511,8 @@ func main() {
 		c1buffer.WriteString("\n")
 
 		c1keyfrags[kv.Keyword] = make(map[string]int)
+		// for each marker, the count within every fragment is checked to create the list of markers per file
+		// similar details are stored, but including information on attraction/repulsion for visualisations
 		for _, fragment := range c1fragments {
 			c1fragresult[fragment] += c1fragmentcount[fragment][kv.Keyword]
 			if c1fragmentcount[fragment][kv.Keyword] > 0 {
@@ -530,6 +544,7 @@ func main() {
 			c2fragresult[fragment] += c2fragmentcount[fragment][kv.Keyword]
 		}
 
+		// if performing CA, for every marker all potential collocates within the the left and right search space are counted
 		if colloc {
 			colloccounts[kv.Keyword] = make(map[string]int)
 			for _, wordlist := range collocwords {
@@ -557,6 +572,9 @@ func main() {
 	}
 
 	var collocbuffer bytes.Buffer
+	// calculation of the log dice is performed for every potential collocate
+	// those that have a score larger than 0 are added to a structure and then sorted
+	// A report is written with the marker, then lines of the collocates and their scores, an empty line is left before the next marker
 	if colloc {
 		for keyword, wordlist := range colloccounts {
 			collocbuffer.WriteString(keyword)
@@ -595,6 +613,7 @@ func main() {
 		}
 	}
 
+	// this structure facilitates the automatic conversion of visualisation arrays into a JSON that can be read directly by VEGA
 	type viznode struct {
 		Id                             int     `json:"id"`
 		Name                           string  `json:"name"`
@@ -741,7 +760,7 @@ func main() {
 	}
 
 	if exportviz {
-		exportjson, err := json.Marshal(vizfraglist)
+		exportjson, err := json.Marshal(vizfraglist) // thanks to our structure, this can immediatly be converted into VEGA ready JSON
 		if err != nil {
 			err = ioutil.WriteFile(reportdir+"error", []byte("error: could convert visualisation data to correct format"+err.Error()), 0644)
 			if err != nil {
@@ -785,6 +804,7 @@ func main() {
 	}
 }
 
+// this function calculates standard deviation, since it is not part of any go core library
 func stdDev(list []float64) float64 {
 	total := 0.0
 	mean := float64(0)
