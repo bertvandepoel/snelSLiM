@@ -1,10 +1,10 @@
 # snelSLiM
 
-A linguistic set of tools in Go and web interface in PHP to do quick Stable Lexical Marker Analysis.
+A linguistic set of tools in Go and web interface in PHP to do quick Stable Lexical Marker Analysis and investigate the results.
 
 ## Contact information
 
-If you have suggestions for features, feedback or a question, feel free to contact me about snelSLiM at bert.vandepoel AT student.kuleuven DOT be.
+If you have suggestions for features, feedback or a question, feel free to contact me about snelSLiM at bert.vandepoel AT student.kuleuven DOT be or create a GitHub issue.
 
 Having issues building or installing my software? I would love to have more users at different universities, so I don't mind if you email me for help or advice!
 
@@ -14,53 +14,22 @@ Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus
 
 ## Screenshots
 
-![screenshot main page](/screenshots/overview.png?raw=true)
-![screenshot corpora overview](/screenshots/screenshot2.png?raw=true)
-![screenshot report overview](/screenshots/screenshot3.png?raw=true)
-![screenshot report details](/screenshots/report.png?raw=true)
+![screenshot main page](/screenshots/form.png?raw=true)
+![screenshot main page with forms opened](/screenshots/formdetailed.png?raw=true)
+![screenshot my corpora list](/screenshots/mycorpora.png?raw=true)
+![screenshot my reports list](/screenshots/myreports.png?raw=true)
+![screenshot report](/screenshots/report.png?raw=true)
+![screenshot report: keyword details](/screenshots/markerdetail.png?raw=true)
 
-## Getting Started
+## Installation
 
-### Prerequisites
+SnelSLiM is a web application, it can easily be installed on cheap shared web hosting, a VPS or private (virtual of physical) server. This makes it possible for individuals, research groups, companies and faculties to deploy snelSLiM on infrastructure that suits their needs
 
-#### Build requirements
-
-* gcc (for foliafolie)
-* Golang 1.8 or higher
-
-#### Hosting requirements
-
-* Unix-style Operating system
-  * Basic tools: unzip, tar, sed, bash (should be installed by default)
-* PHP 5.5 (or higher, including PHP 7.2)
-  * With no restrictions on the use of shell_exec
-  * Preferably the option to enlarge upload_max_filesize and post_max_size
-* MySQL
-* xmllint (usually part of libxml)
-
-
-### Installing
-
-If you are not supplied with a version of this software that includes binaries, you will have to build them. After cloning the repository, execute the build script:
-
-```
-./build.sh
-```
-
-This will build the analyser, preparser and all format parsers.
-
-Upload all files including the binaries to your hosting and import the database structure from db.sql using the mysql command line client or your favourite database administration tool. 
-
-Point your webserver documentroot to the web folder. You should be able to login using test@example.com with password test. Of course you will want to create new accounts and delete the test account.
-
-### Testing functionality
-
-To test whether the application is working correctly, first try and upload a zip and a tar of plain text files from My Corpora. If those succeed move on to FoLiA fast and another XML format. Then try and generate a full report. When corpora or uploads fail, check your webserver's error logs as well as potential error files in the preparsed, reports and unpacked folders in the slm folder. 
-
+Please refer to the installation guide in the [INSTALL.md](INSTALL.md) file for details about the requirements, installation and configuration of snelSLiM.
 
 ## Contributing
 
-I will certainly accept pull requests for bug fixes, extra formats, code cleanup and extra association measures. I am however not looking at external rewrites. By submitting submitting a pull request, you agree to license your submission under the same license as this project, the AGPL.
+I will certainly accept pull requests for bug fixes, extra formats, code cleanup and new functionality (if useful). I am however not looking at external rewrites. By submitting submitting a pull request, you agree to license your submission under the same license as this project, the AGPL.
 
 Feel free to report issues and file feature requests on GitHub.
 
@@ -73,6 +42,6 @@ This project is licensed under the AGPL license - see the [LICENSE](LICENSE) fil
 ## Acknowledgements
 
 * This project was initially developed as my Bachelor Paper for my Bachelor in Linguistics and Literature under the supervision of Prof. Dr. Dirk Speelman
-* I am currentl continuing its development as my Master Thesis for my Master in Linguistics under the supervision of Prof. Dr. Dirk Speelman
+* I have largely rewritten the application, correcting mistakes in the statistics, extending the functionality and improving user experience as my Master Thesis for my Master in Linguistics under the supervision of Prof. Dr. Dirk Speelman
 * Further acknowledgements see the [ACKNOWLEDGEMENTS](ACKNOWLEDGEMENTS) file
 
