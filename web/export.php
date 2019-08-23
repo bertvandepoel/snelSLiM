@@ -220,7 +220,7 @@ else {
 							</label>
 						</div>
 						<div class="form-group">
-							<button type="submit" class="btn btn-primary" name="export" value="<?php echo $_GET['export']; ?>">Export</button>
+							<button type="submit" class="btn btn-primary" name="export" value="<?php echo $_GET['export']; ?>"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> &nbsp; Export</button>
 						</div>
 					</fieldset>
 				</form>

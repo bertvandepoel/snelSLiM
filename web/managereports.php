@@ -56,21 +56,21 @@ $get_reports->execute(array($_SESSION['email']));
 				$diff = NULL;
 				if(file_exists('../slm/reports/' . $report['id'] . '/error')) {
 					$error = file_get_contents('../slm/reports/' . $report['id'] . '/error');
-					$status = '<span class="label label-danger" data-toggle="tooltip" title="' . $error . '">error</span>';
+					$status = '<span class="label label-danger" data-toggle="tooltip" title="' . $error . '"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> error</span>';
 					$errortime = filectime('../slm/reports/' . $report['id'] . '/error');
 					$d1 = date_create($report['datetime']);
 					$d2 = date_create(date('Y-m-d H:i:s', $errortime));
 					$diff = date_diff($d1, $d2);
 				}
 				elseif(file_exists('../slm/reports/' . $report['id'] . '/done')) {
-					$status = '<span class="label label-success">done</span>';
+					$status = '<span class="label label-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> done</span>';
 					$donetime = filectime('../slm/reports/' . $report['id'] . '/done');
 					$d1 = date_create($report['datetime']);
 					$d2 = date_create(date('Y-m-d H:i:s', $donetime));
 					$diff = date_diff($d1, $d2);
 				}
 				else {
-					$status = '<span class="label label-default">processing</span>';
+					$status = '<span class="label label-default"><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> processing</span>';
 					$d1 = date_create($report['datetime']);
 					$d2 = date_create(date('Y-m-d H:i:s'));
 					$diff = date_diff($d1, $d2);
@@ -95,7 +95,7 @@ $get_reports->execute(array($_SESSION['email']));
 				//$cutoff = $cutoff_transform[$report['cutoff']] . ' (' . $report['cutoff'] . ')';
 				$cutoff = $cutoff_transform[$report['cutoff']];
 				
-				echo '<tr data-href="?report=' . $report['id'] . '"><td class="breakwords">' . $report['c1'] . '</td><td class="breakwords">' . $report['c2'] . '</td><td>' . $cutoff . '</td><td>' . $report['freqnum'] . '</td><td>' . $resultnum . '</td><td>' . date("d M Y \a\\t H:i", strtotime($report['datetime'])) . '</td><td>' . $diff->format('%hh%im%ss') . '</td><td>' . $options . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?reports&delete=' . $report['id'] . '">Delete</a></td>';
+				echo '<tr data-href="?report=' . $report['id'] . '"><td class="breakwords">' . $report['c1'] . '</td><td class="breakwords">' . $report['c2'] . '</td><td>' . $cutoff . '</td><td>' . $report['freqnum'] . '</td><td>' . $resultnum . '</td><td>' . date("d M Y \a\\t H:i", strtotime($report['datetime'])) . '</td><td>' . $diff->format('%hh%im%ss') . '</td><td>' . $options . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?reports&delete=' . $report['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
 			}
 ?>
 			</tbody>

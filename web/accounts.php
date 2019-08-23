@@ -104,7 +104,7 @@ if(isset($_GET['add'])) {
 						<label for="adminno" class="radio-inline"><input type="radio" name="isAdmin" value="no" id="adminno" checked>No</label>
 					</div>
 					<div class="form-group">
-						<button type="submit" class="btn btn-primary" name="create">Create new account</button>
+						<button type="submit" class="btn btn-primary" name="create"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> &nbsp; Create new account</button>
 					</div>
 				</fieldset>
 			</form>
@@ -151,7 +151,7 @@ elseif(isset($_GET['editpermissions'])) {
 						<label for="adminno" class="radio-inline"><input type="radio" name="isAdmin" value="no" id="adminno" <?php echo $adminno; ?>>No</label>
 					</div>
 					<div class="form-group">
-						<button type="submit" class="btn btn-primary" name="editpermissions">Change permissions</button>
+						<button type="submit" class="btn btn-primary" name="editpermissions"><span class="glyphicon glyphicon-pencil"></span> &nbsp; Change permissions</button>
 					</div>
 				</fieldset>
 			</form>
@@ -176,12 +176,12 @@ else {
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-4 col-md-offset-4" style="margin-bottom: 10px;">
-		<a href="?accounts&add" class="btn btn-primary" role="button">Add new account</a>
+	<div class="col-md-6 col-md-offset-3" style="margin-bottom: 10px;">
+		<a href="?accounts&add" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> &nbsp; Add new account</a>
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-4 col-md-offset-4">
+	<div class="col-md-6 col-md-offset-3">
 		<table class="table table-striped table-hover">
 			<thead>
 				<tr><th>account</th><th>Permissions</th><th>Delete</th></tr>
@@ -199,7 +199,7 @@ else {
 				elseif($account['admin'] == 1) {
 					$permission = 'Admin';
 				}
-				echo '<tr><td>' . $account['email'] . '</td><td>' . $permission . ' &nbsp; <a href="?accounts&editpermissions=' . $account['email'] . '" title="Change permissions"><span class="glyphicon glyphicon-pencil"></span></a></td><td><a class="btn btn-primary btn-xs" href="?accounts&delete=' . $account['email'] . '">Delete</a></td>';
+				echo '<tr><td>' . $account['email'] . '</td><td>' . $permission . ' &nbsp; <a href="?accounts&editpermissions=' . $account['email'] . '" title="Change permissions"><span class="glyphicon glyphicon-pencil"></span></a></td><td><a class="btn btn-primary btn-xs" href="?accounts&delete=' . $account['email'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
 			}
 ?>
 			</tbody>

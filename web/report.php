@@ -92,15 +92,15 @@ else {
 <?php
 		if( !isset($_GET['allitems']) AND !isset($_GET['detailed']) ) {
 			echo '<h3 id="slmareport">Stable Lexical Marker Analysis - top 100 markers</h3>';
-			echo '<a href="?report='.  $_GET['report'] . '&allitems=" class="btn btn-default">Show all markers</a>&nbsp;&nbsp;&nbsp;';
+			echo '<a href="?report='.  $_GET['report'] . '&allitems=" class="btn btn-default"><span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span> &nbsp; Show all markers</a>&nbsp;&nbsp;&nbsp;';
 		}
 		else {
 			echo '<h3 id="slmareport">Stable Lexical Marker Analysis</h3>';
 		}
 		if(!isset($_GET['detailed'])) {
-			echo '<a href="?report='.  $_GET['report'] . '&detailed=" class="btn btn-default">Show detailed table</a>&nbsp;&nbsp;&nbsp;';
+			echo '<a href="?report='.  $_GET['report'] . '&detailed=" class="btn btn-default"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> &nbsp; Show detailed table</a>&nbsp;&nbsp;&nbsp;';
 		}
-		echo '<a href="?export='.  $_GET['report'] . '" class="btn btn-primary">Export results</a>';
+		echo '<a href="?export='.  $_GET['report'] . '" class="btn btn-primary"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> &nbsp; Export results</a>';
 ?>
 		<table id="resultTable" class="table table-striped table-hover table-condensed">
 			<thead>
@@ -151,7 +151,7 @@ else {
 <?php
 
 		if( !isset($_GET['allitems']) AND !isset($_GET['detailed']) ) {
-			echo '<h4>These are the top 100 markers <a href="?report='.  $_GET['report'] . '&allitems=" class="btn btn-primary">Show all markers</a></h4>';
+			echo '<h4>These are the top 100 markers <a href="?report='.  $_GET['report'] . '&allitems=" class="btn btn-primary"><span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span> &nbsp; Show all markers</a></h4>';
 		}
 
 		if($visualjson) {

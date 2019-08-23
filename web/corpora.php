@@ -147,7 +147,7 @@ if(isset($_GET['add'])) {
 				</div>
 				<?php } ?>
 				<div class="form-group">
-					<button type="submit" class="btn btn-primary" name="add">Add Corpus</button>
+					<button type="submit" class="btn btn-primary" name="add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> &nbsp; Add Corpus</button>
 				</div>
 			</fieldset>
 		</div>
@@ -181,7 +181,7 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 
 <div class="row">
 	<div class="col-md-12">
-		<div class="alert alert-info alert-dismissible"><button type="button" class="close" data-dismiss="alert">×</button>As an admin, you are able to upgrade your personal corpora to global corpora. Beware that those corpora are then available for any user to generate reports based on. An admin can also delete global corpora, this deletion affects all users.</div>
+		<div class="alert alert-info alert-dismissible"><button type="button" class="close" data-dismiss="alert">×</button><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> &nbsp; As an admin, you are able to upgrade your personal corpora to global corpora. Beware that those corpora are then available for any user to generate reports based on. An admin can also delete global corpora, this deletion affects all users.</div>
 	</div>
 </div>
 
@@ -231,13 +231,13 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					$corpus['format'] = $formats[$corpus['format']];
 				}
 				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/error')) {
-					$status = '<span class="label label-danger">error</span>';
+					$status = '<span class="label label-danger"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> error</span>';
 				}
 				elseif(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/done')) {
-					$status = '<span class="label label-success">done</span>';
+					$status = '<span class="label label-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> done</span>';
 				}
 				else {
-					$status = '<span class="label label-default">processing</span>';
+					$status = '<span class="label label-default"><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> processing</span>';
 				}
 				
 				$corpuslabel = '';
@@ -245,7 +245,7 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 				}
 				
-				echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&deleteglobal=' . $corpus['id'] . '">Delete</a></td>';
+				echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&deleteglobal=' . $corpus['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
 			}
 ?>
 			</tbody>
@@ -264,7 +264,7 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 ?>
 <div class="row">
 	<div class="col-md-12">
-		<a href="?corpora&add" class="btn btn-primary" role="button">Add new corpus</a>
+		<a href="?corpora&add" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> &nbsp; Add new corpus</a>
 	</div>
 </div>
 <div class="row">
@@ -315,13 +315,13 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 				}
 				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/error')) {
 					$error = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/error');
-					$status = '<span class="label label-danger" data-toggle="tooltip" title="' . $error . '">error</span>';
+					$status = '<span class="label label-danger" data-toggle="tooltip" title="' . $error . '"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> error</span>';
 				}
 				elseif(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/done')) {
-					$status = '<span class="label label-success">done</span>';
+					$status = '<span class="label label-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> done</span>';
 				}
 				else {
-					$status = '<span class="label label-default">processing</span>';
+					$status = '<span class="label label-default"><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> processing</span>';
 				}
 				
 				$corpuslabel = '';
@@ -330,10 +330,10 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 				}
 				
 				if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
-				echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&castglobal=' . $corpus['id'] . '">Make corpus global</a></td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
+				echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&castglobal=' . $corpus['id'] . '"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> Make corpus global</a></td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
 				}
 				else {		
-					echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '">Delete</a></td>';
+					echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
 				}
 			}
 ?>
