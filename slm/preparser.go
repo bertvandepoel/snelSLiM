@@ -68,6 +68,21 @@ func main() {
 
 	files := []string{}
 	filepath.Walk(outdir, func(path string, info os.FileInfo, err error) error {
+		// skip any hidden folder starting with a . (such as .git, .DS_Store and .Trashes)
+		if info.IsDir() && strings.HasPrefix(info.Name(), ".") {
+			return filepath.SkipDir
+		}
+		// skip hidden windows trash folder
+		if info.IsDir() && info.Name() == "$RECYCLE.BIN" {
+			return filepath.SkipDir
+		}
+		// ignore file: windows thumbnails, windows ini settings, linux/mac dotfiles and windows link files
+		if info.Name() == "Thumbs.db" || info.Name() == "Thumbs.db:encryptable" || info.Name() == "ehthumbs.db" || info.Name() == "ehthumbs_vista.db" ||
+			info.Name() == "desktop.ini" || info.Name() == "Desktop.ini" || strings.HasPrefix(info.Name(), ".") || strings.HasSuffix(info.Name(), ".lnk") {
+			return nil
+		}
+
+		// any file (not a folder) left over is added to the file list with absolute filepaths
 		if !info.IsDir() {
 			abs, err := filepath.Abs(path)
 			if err != nil {
