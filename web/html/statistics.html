@@ -2,14 +2,14 @@
 	<div class="row">
 		<div class="col-md-12">
 			<h1>Statistics behind snelSLiM</h1>
-			<p class="lead">A few statistical measures are used within snelSLiM to make sure results are scientifically sound and there is a high probability of correct results. On this page the individual statistical tests and tools are discussed, including their formula's, for each type of analysis.</p>
+			<p class="lead">A few statistical measures are used within snelSLiM to make sure results are scientifically sound and there is a high probability of correct results. On this page the individual statistical tests and tools are discussed, including their formulas, for each type of analysis.</p>
 		</div>
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-12">
 		<h1>Stable Lexical Marker Analysis</h1>
-		<p>The main analysis performed by snelSLiM, Stable Lexical Marker Analysis (SLMA), uses a central table to calculate all of its scores. This table contains the frequency of the word/lemma that's being statistically tested in the selected text from the target corpus and in selected text from the reference corpus (cels 1 and 3), as well as the frequency of all other words those texts (cel 2 and 4). R1 and R2 are the sums of the rows, meaning R<sub>1</sub> = cel1 + cel2 and R<sub>2</sub> = cel3 + cel4. C1 and C2 represent the sums of the columns, meaning C<sub>1</sub> = cel1 + cel3 and C<sub>2</sub> = cel2 + cel4. N is the sum of all four cells.</p>
+		<p>The main analysis performed by snelSLiM, Stable Lexical Marker Analysis (SLMA), uses a central table to calculate all of its scores. This table contains the frequency of the word/lemma that's being statistically tested in the selected text from the target corpus and in selected text from the reference corpus (cels 1 and 3), as well as the frequency of all other words in those texts (cel 2 and 4). R1 and R2 are the sums of the rows, meaning R<sub>1</sub> = cel1 + cel2 and R<sub>2</sub> = cel3 + cel4. C<sub>1</sub> and C<sub>2</sub> represent the sums of the columns, meaning C<sub>1</sub> = cel1 + cel3 and C<sub>2</sub> = cel2 + cel4. N is the sum of all four cells.</p>
 	</div>
 </div>
 <div class="row">
@@ -18,7 +18,7 @@
 			<tr><th></th><th>Frequency of word/lemma</th><th>Frequency of other words/lemmas</th><td style="font-style: italic;">horizontal sum</td></tr>
 			<tr><th>Selected text from Target Corpus</th><td>cel1</td><td>cel2</td><td style="font-style: italic;">R<sub>1</sub></td></tr>
 			<tr><th>Selected text from Reference Corpus</th><td>cel3</td><td>cel4</td><td style="font-style: italic;">R<sub>2</sub></td></tr>
-			<tr><td style="font-style: italic;">vertical sum</td><td style="font-style: italic;">C<sub>2</sub></td><td style="font-style: italic;">C<sub>2</sub></td><td style="font-style: italic;">N</td></tr>
+			<tr><td style="font-style: italic;">vertical sum</td><td style="font-style: italic;">C<sub>1</sub></td><td style="font-style: italic;">C<sub>2</sub></td><td style="font-style: italic;">N</td></tr>
 		</table>
 	</div>
 </div>
@@ -74,14 +74,14 @@
 </div>
 <div class="row">
 	<div class="col-md-12" style="margin-top: 25px;">
-		<p>If the result is smaller than the cut-off value (based on the user preference), snelSLiM moves on to the next text combination. If the result is statistically significant by being larger than the cut-off value, the word/lemma is a marker for either the target or the reference corpus. To decide, the frequency relative to the entire text is compared between the selected text from the target and the selected text from the reference. If the target text has a higher relative frequency, the keyword is attracted to the target corpus for that text combination, otherwise it's repulsed.<br>For each text combination where a potential marker yields a positive result (G squared larger than the cut-off value), snelSLiM then moves on the calculate the Log odds ratio (see the next section).</p> 
+		<p>If the result is smaller than the cut-off value (based on the user preference), snelSLiM moves on to the next text combination. If the result is statistically significant by being larger than the cut-off value, the word/lemma is a marker for either the target or the reference corpus. To decide, the frequency relative to the entire text is compared between the selected text from the target and the selected text from the reference. If the target text has a higher relative frequency, the keyword is attracted to the target corpus for that text combination, otherwise it's repulsed.<br>For each text combination where a potential marker yields a positive result (G squared larger than the cut-off value), snelSLiM then moves on to calculate the Log odds ratio (see the next section).</p> 
 		<p>After finishing calculation for each text combination, it's possible to calculate the absolute score by subtracting the amount of text combination where the marker is repulsed from the amount of combinations where the marker is attracted. A normalised score can then be derived by dividing the absolute score by the amount of possible combinations. The normalised score can be considered a decimal where 1 means all text combinations are attracted and -1 means that all text combinations are repulsed for this marker. In most realistic cases, this number will be a decimal, since the corpora will contain many text, where some will not feature certain markers. <br>If the resulting absolute score is positive, the word/lemma is a marker for the target corpus. In case it is negative, the word/lemma is actually a marker for the reference corpus. These repulsed markers are highlighted with a red background in the user interface.
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-12">
 		<h2>Log odds ratio</h2>
-		<p>After using the G squared test to verify whether a word/lemma is a marker for a certain text combination, the log odds ratio is calculated. The odds ratio is the division of frequency of the word/lemma in both texts (cel1 and cel2) divided by the division of the other words/lemmas in both texts. Afterwards, its nutural logarithm is taken, which results in the following formula:</p>
+		<p>After using the G squared test to verify whether a word/lemma is a marker for a certain text combination, the log odds ratio is calculated. The odds ratio is the frequency of the marker divided by the frequency of all other words in the target corpus text divided by the same division for the reference corpus text. Afterwards, its natural logarithm is taken, which results in the following formula:</p>
 	</div>
 </div>
 <div class="row" style="margin-top: 25px; margin-bottom: 25px;">
@@ -91,7 +91,7 @@
 </div>
 <div class="row">
 	<div class="col-md-12">
-		<p>After the log odds ratio's for all the text combinations where the word/lemma is a marker have been calculated, the log odds ratio score is calculated by calculating the average of all log odd ratios. Beyond that, the lowest and highest log odds ratio are selected, and the standard deviation is calculated. While G squared can indicate whether a word/lemma is a marker, the log odds ratio represents the effect size. This is also the reason why snelSLiM will by default sort markers by log odds ratio score.</p>
+		<p>After the log odds ratios for all the text combinations where the word/lemma is a marker have been calculated, the log odds ratio score is calculated by taking the average of all log odd ratios. Beyond that, the lowest and highest log odds ratio are selected, and the standard deviation is calculated. While G squared can indicate whether a word/lemma is a marker, the log odds ratio represents the effect size. This is also the reason why snelSLiM will by default sort markers by log odds ratio score.</p>
 	</div>
 </div>
 <div class="row" style="margin-top: 25px;">
@@ -108,6 +108,6 @@
 </div>
 <div class="row" style="margin-bottom: 25px;">
 	<div class="col-md-12">
-		<p>This results in a score that has a theoretical maximum of 14, and can easily be interpreted. When the resulting logDice is 0 or smaller, the word/lemma being investigated is not considered a collocate. If two scores differ by one, this means the higher score is swice as often a collocate. This means of course that collocates with a score near 14 almost never occur outside of the search windows, and is a very strong collocate of the keyword.</p>
+		<p>This results in a score that has a theoretical maximum of 14, and can easily be interpreted. When the resulting logDice is 0 or smaller, the word/lemma being investigated is not considered a collocate. If two scores differ by one, this means the higher score is twice as often a collocate. This means of course that collocates with a score near 14 almost never occur outside of the search windows, and are a very strong collocate of the keyword.</p>
 	</div>
 </div>
