@@ -10,7 +10,7 @@ Having issues building or installing my software? I would love to have more user
 
 ## Supported formats
 
-Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus, FoLiA XML, Gysseling corpus, OANC, OANC MASC, plain text and XML with XPath query.
+Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus, FoLiA XML, Gysseling corpus, XCES GrAF, plain text and XML with XPath query.
 
 ## Screenshots
 

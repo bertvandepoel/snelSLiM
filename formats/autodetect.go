@@ -48,9 +48,7 @@ func main() {
 
 		detected := "unknown"
 		if strings.Contains(firstlines, "<graph xmlns=\"http://www.xces.org/ns/GrAF/") {
-			detected = "oanc"
-		} else if strings.Contains(firstlines, "<cesAna") {
-			detected = "masc"
+			detected = "graf"
 		} else if strings.Contains(firstlines, "<alpino_ds") {
 			detected = "alpino"
 		} else if strings.Contains(firstlines, "<teiHeader>") {

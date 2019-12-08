@@ -91,14 +91,11 @@ function uploadparse($filepost, $format, $extra, $plainwords = FALSE, $tmp = TRU
 	elseif($format == 'gysseling-lemma') {
 		$arguments = 'gysseling lemma -';
 	}
-	elseif($format == 'masc-text') {
-		$arguments = 'masc text -';
+	elseif($format == 'graf-text') {
+		$arguments = 'graf text -';
 	}
-	elseif($format == 'masc-lemma') {
-		$arguments = 'masc lemma -';
-	}
-	elseif($format == 'oanc') {
-		$arguments = 'oanc - -';
+	elseif($format == 'graf-lemma') {
+		$arguments = 'graf lemma -';
 	}
 	elseif($format == 'xpath') {
 		$arguments = 'xpath - ' . escapeshellarg($extra);

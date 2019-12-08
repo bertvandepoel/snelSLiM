@@ -127,9 +127,8 @@ if(isset($_GET['add'])) {
 						<option value="eindhoven">Corpus Eindhoven format (literal string only)</option>
 						<option value="gysseling-text">Corpus Gysseling format: literal string</option>
 						<option value="gysseling-lemma">Corpus Gysseling format: lemma</option>
-						<option value="masc-text">OANC MASC XML: literal string</option>
-						<option value="masc-lemma">OANC MASC XML: base</option>
-						<option value="oanc">OANC XML (base only)</option>
+						<option value="graf-text">XCES GrAF: literal string (may not be available)</option>
+						<option value="graf-lemma">XCES GrAF: base</option>
 						<option value="xpath">XML, specify XPath</option>
 					</select>
 				</div>
@@ -162,7 +161,7 @@ else {
 	$get_corpora = $db->prepare('SELECT id, name, format, extra, datetime FROM corpora WHERE owner=?');
 	$get_corpora->execute(array($_SESSION['email']));
 	
-	$formats = array('conll' => 'CoNLL tab-seperated values (specified column index as extra)', 'folia-text-fast' => 'FoLiA XML - fast method: literal string', 'folia-lemma-fast' => 'FoLiA XML - fast method: lemma', 'folia-text-xpath' => 'FoLiA XML - slow method: literal string', 'folia-lemma-xpath' => 'FoLiA XML - slow method: lemma', 'dcoi-text' => 'DCOI XML: literal string', 'dcoi-lemma' => 'DCOI XML: lemma', 'plain' => 'Plain text (txt)', 'alpino-text' => 'Alpino XML: literal string', 'alpino-lemma' => 'Alpino XML: lemma', 'bnc-text' => 'TEI XML - BNC/Brown Corpus variant: literal string', 'bnc-lemma' => 'TEI XML - BNC/Brown Corpus variant: lemma', 'eindhoven' => 'Corpus Eindhoven format (literal string only)', 'gysseling-text' => 'Corpus Gysseling format: literal string', 'gysseling-lemma' => 'Corpus Gysseling format: lemma', 'masc-text' => 'OANC MASC XML: literal string', 'masc-lemma' => 'OANC MASC XML: base', 'oanc' => 'OANC XML (base only)', 'xpath' => 'XML (specified XPath as extra)');
+	$formats = array('conll' => 'CoNLL tab-seperated values (specified column index as extra)', 'folia-text-fast' => 'FoLiA XML - fast method: literal string', 'folia-lemma-fast' => 'FoLiA XML - fast method: lemma', 'folia-text-xpath' => 'FoLiA XML - slow method: literal string', 'folia-lemma-xpath' => 'FoLiA XML - slow method: lemma', 'dcoi-text' => 'DCOI XML: literal string', 'dcoi-lemma' => 'DCOI XML: lemma', 'plain' => 'Plain text (txt)', 'alpino-text' => 'Alpino XML: literal string', 'alpino-lemma' => 'Alpino XML: lemma', 'bnc-text' => 'TEI XML - BNC/Brown Corpus variant: literal string', 'bnc-lemma' => 'TEI XML - BNC/Brown Corpus variant: lemma', 'eindhoven' => 'Corpus Eindhoven format (literal string only)', 'gysseling-text' => 'Corpus Gysseling format: literal string', 'gysseling-lemma' => 'Corpus Gysseling format: lemma', 'graf-text' => 'XCES GrAF: literal string (may not be available)', 'graf-lemma' => 'XCES GrAF: base', 'xpath' => 'XML (specified XPath as extra)');
 ?>
 
 <div class="page-header" id="banner">
@@ -217,7 +216,7 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					elseif($autodetect == 'tabs') {
 						$corpus['format'] = 'Autodetect: CoNLL tsv format, column number required';
 					}
-					elseif($autodetect == 'oanc' || $autodetect == 'eindhoven') {
+					elseif($autodetect == 'eindhoven') {
 						$corpus['format'] = 'Autodetect: ' . $formats[$autodetect];
 					}
 					elseif($autodetect == 'folia') {
@@ -300,7 +299,7 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					elseif($autodetect == 'tabs') {
 						$corpus['format'] = 'Autodetect: CoNLL tsv format, column number required';
 					}
-					elseif($autodetect == 'oanc' || $autodetect == 'eindhoven') {
+					elseif($autodetect == 'eindhoven') {
 						$corpus['format'] = 'Autodetect: ' . $formats[$autodetect];
 					}
 					elseif($autodetect == 'folia') {

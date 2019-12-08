@@ -122,26 +122,8 @@ Sed vitae ante lorem. Proin ac aliquam massa. </pre>
 </div>
 <div class="row">
 	<div class="col-md-12">
-		<h1>OANC XML</h1>
-		<p>The Open American National Corpus seems to be one of the few corpora to use a variant of the XCES standard (a standard similar in aim to TEI). This XML format starts with a cesAna-tag and then features words and properties in struct-tags containing feat-tags. We use the content of the value attribute in the feat-tag that has base as its name. The base is not strictly a lemma, but quite similar.</p>
-		<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;cesAna xmlns="http://www.xces.org/schema/2003" version="1.0.4"&gt;
-   &lt;struct type="tok" from="324" to="332"&gt;
-      &lt;feat name="base" value="severely"/&gt;
-      &lt;feat name="msd" value="RB"/&gt;
-   &lt;/struct&gt;
-   &lt;struct type="tok" from="333" to="343"&gt;
-      &lt;feat name="msd" value="VBN"/&gt;
-      &lt;feat name="base" value="challenge"/&gt;
-      &lt;feat name="affix" value="ed"/&gt;
-   &lt;/struct&gt;
-&lt;/cesAna&gt;</pre>
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-12">
-		<h1>OANC MASC XML</h1>
-		<p>MASC is a subcorpus of OANC with more annotations. It uses the XCES GrAF format instead of regular XCES. Words are structured within a-tags containing fs-tags containing f-tags with the string and annotations. It starts with a graph-tag and can be easily recognised by its structural elements. The literal word is extracted from the value of the f-tag with string as its name. We use the content of the value attribute in the f-tag that has base as its name. The base is not strictly a lemma, but quite similar.</p>
+		<h1>XCES GrAF</h1>
+		<p>XCES GrAF was designed for the MASC corpus and was later also applied to the OANC corpus (which used to use an earlier XCES format before). Words are structured within a-tags containing fs-tags containing f-tags with the string and annotations. It starts with a graph-tag and can be easily recognised by its structural elements. The literal word is extracted from the value of the f-tag with string as its name. We use the content of the value attribute in the f-tag that has base as its name. The base is not strictly a lemma, but quite similar.</p>
 		<pre>&lt;graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/"&gt;
   &lt;graphHeader&gt;
     ...
