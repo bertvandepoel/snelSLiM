@@ -57,6 +57,8 @@ func main() {
 			detected = "dcoi"
 		} else if strings.Contains(firstlines, "<FoLiA") {
 			detected = "folia"
+		} else if strings.Contains(firstlines, "\"TextGrid\"") {
+			detected = "textgrid"
 		} else if strings.Contains(firstlines, "<bron_afk>") {
 			detected = "gysseling"
 		} else if strings.HasPrefix(firstlines, "[ <") {

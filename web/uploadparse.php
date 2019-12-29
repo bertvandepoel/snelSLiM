@@ -97,6 +97,9 @@ function uploadparse($filepost, $format, $extra, $plainwords = FALSE, $tmp = TRU
 	elseif($format == 'graf-lemma') {
 		$arguments = 'graf lemma -';
 	}
+	elseif($format == 'textgrid') {
+		$arguments = 'textgrid - -';
+	}
 	elseif($format == 'xpath') {
 		$arguments = 'xpath - ' . escapeshellarg($extra);
 	}

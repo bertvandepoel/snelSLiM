@@ -15,7 +15,7 @@ func main() {
 		fmt.Println("The snelSLiM prepraser requires 6 arguments:")
 		fmt.Println("1. the zip or tar file containing the corpus")
 		fmt.Println("2. the folder the corpus should be extracted to")
-		fmt.Println("3. the format of the corpus (autodetect, conll, folia, dcoi, plain, alpino, bnc, eindhoven, gysseling, graf, xpath)")
+		fmt.Println("3. the format of the corpus (autodetect, conll, folia, dcoi, plain, alpino, bnc, eindhoven, gysseling, graf, textgrid, xpath)")
 		fmt.Println("4. option for the relevant format (usually lemma or text), enter - if not using")
 		fmt.Println("5. extra option for very specific formats (e.g. fast or xpath for folia), enter - if not using")
 		fmt.Println("6. the directory to write the preparsed results to")
@@ -146,7 +146,7 @@ func main() {
 			}
 			panic(err)
 		} else if format != "graf" && format != "alpino" && format != "bnc" && format != "dcoi" &&
-			format != "folia" && format != "gysseling" && format != "eindhoven" {
+			format != "folia" && format != "textgrid" && format != "gysseling" && format != "eindhoven" {
 
 			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection did not return a valid response"), 0644)
 			if err != nil {
@@ -186,6 +186,8 @@ func main() {
 			output, err = exec.Command("../formats/gysseling/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "graf" {
 			output, err = exec.Command("../formats/XCES-GrAF/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+		} else if format == "textgrid" {
+			output, err = exec.Command("../formats/TextGrid/parser", file, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "xpath" {
 			output, err = exec.Command("../formats/xpath/parser", file, extra, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else {
