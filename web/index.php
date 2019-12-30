@@ -257,6 +257,10 @@ else {
 			if(isset($_POST['genviz']) AND $_POST['genviz'] == 'on') {
 				$genviz = 1;
 			}
+			$gomaxprocs = '';
+			if($max_threads > 0) {
+				$gomaxprocs = 'GOMAXPROCS=' . $max_threads . ' ';
+			}
 			if(isset($_POST['mailresult']) AND $_POST['mailresult'] == 'on') {
 				$callback = '';
 				if(isset($_SERVER['HTTPS']) AND $_SERVER['HTTPS'] === 'on') {
@@ -266,10 +270,10 @@ else {
 					$callback = 'http://';
 				}
 				$callback .= $_SERVER['SERVER_NAME'] . substr($_SERVER['REQUEST_URI'], 0, -1) . 'callback.php?id=' . $reportid;
-				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' ' . $genviz . ' ' . $collocleft . ' ' . $collocright . ' ' .  $callback . ' > /dev/null &');
+				shell_exec($gomaxprocs . 'nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' ' . $genviz . ' ' . $collocleft . ' ' . $collocright . ' ' .  $callback . ' > /dev/null &');
 			}
 			else {
-				shell_exec('nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' ' . $genviz . ' ' . $collocleft . ' ' . $collocright . ' > /dev/null &');
+				shell_exec($gomaxprocs . 'nohup ./analyser ' . $corpus1 . ' ' . $corpus2 . ' ' . intval($_POST['freqnum']) . ' ' . $_POST['cutoff'] . ' ' . $reportdir . ' ' . $timeout . ' ' . $genviz . ' ' . $collocleft . ' ' . $collocright . ' > /dev/null &');
 			}
 			
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> We have successfully received your report request. You will be redirected to the report that is generating for you right now. </div></div></div>';

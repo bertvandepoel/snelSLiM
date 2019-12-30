@@ -20,6 +20,7 @@
 
 $timeout = "120";
 $max_freqnum = 50000;
+$max_threads = 1;
 $email_from = "no-reply@example.com";
 $email_smtp = FALSE;
 $email_smtp_server = "";

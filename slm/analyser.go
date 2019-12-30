@@ -12,6 +12,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -361,7 +362,8 @@ func main() {
 
 	i := 0
 	freqposition := make(map[string]int)
-	var c1results []structresult
+	channel_c1results := make(chan structresult, freqnum)
+	var wg sync.WaitGroup
 	for _, kv := range sortedc1globalcount {
 		if i == freqnum {
 			break
@@ -369,95 +371,107 @@ func main() {
 		i++
 		freqposition[kv.Key] = i
 
-		attraction := 0
-		repulsion := 0
-		lortotal := float64(0)
-		lormin := math.MaxFloat64  // any number will be lower than math.MaxFloat64
-		lormax := -math.MaxFloat64 // any number will be higher than the negative of math.MaxFloat64
-		var lorlist []float64
+		wg.Add(1)
+		go func(kv structkeyvalue) {
+			defer wg.Done()
 
-		for _, c1localcount := range c1fragmentcount {
-			/*
-			 *            W       !W
-			 * corpus1   cel1    cel2
-			 * corpus2   cel3    cel4
-			 *
-			 */
-			cel1 := float64(c1localcount[kv.Key])
-			cel2 := float64(c1localcount["total.snelslim"] - c1localcount[kv.Key])
-			// cA_zero and cB_zero are used to track if in the current file of the target/reference corpus contians a zero value
-			// if a zero value is detected, all cels get +0.5
-			cA_zero := false
-			cB_zero := false
-			if cel1 == 0 || cel2 == 0 {
-				cA_zero = true
-				cel1 += 0.5
-				cel2 += 0.5
-			}
-			kw_freq_c1 := float64(c1localcount[kv.Key]) / float64(c1localcount["total.snelslim"])
+			attraction := 0
+			repulsion := 0
+			lortotal := float64(0)
+			lormin := math.MaxFloat64  // any number will be lower than math.MaxFloat64
+			lormax := -math.MaxFloat64 // any number will be higher than the negative of math.MaxFloat64
+			var lorlist []float64
 
-			for _, c2localcount := range c2fragmentcount {
-				cel3 := float64(c2localcount[kv.Key])
-				cel4 := float64(c2localcount["total.snelslim"] - c2localcount[kv.Key])
-				if cB_zero == true {
-					cel1 -= 0.5
-					cel2 -= 0.5
-					cB_zero = false
-				}
-				if cA_zero == true {
-					cel3 += 0.5
-					cel4 += 0.5
-				} else if cel3 == 0 || cel4 == 0 {
-					cB_zero = true
+			for _, c1localcount := range c1fragmentcount {
+				/*
+				 *            W       !W
+				 * corpus1   cel1    cel2
+				 * corpus2   cel3    cel4
+				 *
+				 */
+				cel1 := float64(c1localcount[kv.Key])
+				cel2 := float64(c1localcount["total.snelslim"] - c1localcount[kv.Key])
+				// cA_zero and cB_zero are used to track if in the current file of the target/reference corpus contians a zero value
+				// if a zero value is detected, all cels get +0.5
+				cA_zero := false
+				cB_zero := false
+				if cel1 == 0 || cel2 == 0 {
+					cA_zero = true
 					cel1 += 0.5
 					cel2 += 0.5
-					cel3 += 0.5
-					cel4 += 0.5
 				}
-				N := cel1 + cel2 + cel3 + cel4
-				R1 := cel1 + cel2
-				R2 := cel3 + cel4
-				C1 := cel1 + cel3
-				C2 := cel2 + cel4
-				Gcel1 := 2 * cel1 * math.Log(cel1/((R1*C1)/N))
-				Gcel2 := 2 * cel2 * math.Log(cel2/((R1*C2)/N))
-				Gcel3 := 2 * cel3 * math.Log(cel3/((R2*C1)/N))
-				Gcel4 := 2 * cel4 * math.Log(cel4/((R2*C2)/N))
-				Gsquared := Gcel1 + Gcel2 + Gcel3 + Gcel4
+				kw_freq_c1 := float64(c1localcount[kv.Key]) / float64(c1localcount["total.snelslim"])
 
-				// Check if the keyword is significant
-				if Gsquared > cutoff {
-					kw_freq_c2 := float64(c2localcount[kv.Key]) / float64(c2localcount["total.snelslim"])
-					if kw_freq_c1 > kw_freq_c2 { // this checks if the keyword has a higher relative frequency in the target or the reference corpus
-						// this keyword is a stable lexical marker for corpus 1 for this text combination
-						attraction++
-					} else {
-						// this keyword is actually a stable lexical marker for corpus 2 for this text combination
-						repulsion++
+				for _, c2localcount := range c2fragmentcount {
+					cel3 := float64(c2localcount[kv.Key])
+					cel4 := float64(c2localcount["total.snelslim"] - c2localcount[kv.Key])
+					if cB_zero == true {
+						cel1 -= 0.5
+						cel2 -= 0.5
+						cB_zero = false
 					}
-					ratio := (cel1 / cel2) / (cel3 / cel4)
-					logratio := math.Log(ratio)
-					lortotal += logratio
-					if logratio < lormin {
-						lormin = logratio
+					if cA_zero == true {
+						cel3 += 0.5
+						cel4 += 0.5
+					} else if cel3 == 0 || cel4 == 0 {
+						cB_zero = true
+						cel1 += 0.5
+						cel2 += 0.5
+						cel3 += 0.5
+						cel4 += 0.5
 					}
-					if logratio > lormax {
-						lormax = logratio
+					N := cel1 + cel2 + cel3 + cel4
+					R1 := cel1 + cel2
+					R2 := cel3 + cel4
+					C1 := cel1 + cel3
+					C2 := cel2 + cel4
+					Gcel1 := 2 * cel1 * math.Log(cel1/((R1*C1)/N))
+					Gcel2 := 2 * cel2 * math.Log(cel2/((R1*C2)/N))
+					Gcel3 := 2 * cel3 * math.Log(cel3/((R2*C1)/N))
+					Gcel4 := 2 * cel4 * math.Log(cel4/((R2*C2)/N))
+					Gsquared := Gcel1 + Gcel2 + Gcel3 + Gcel4
+
+					// Check if the keyword is significant
+					if Gsquared > cutoff {
+						kw_freq_c2 := float64(c2localcount[kv.Key]) / float64(c2localcount["total.snelslim"])
+						if kw_freq_c1 > kw_freq_c2 { // this checks if the keyword has a higher relative frequency in the target or the reference corpus
+							// this keyword is a stable lexical marker for corpus 1 for this text combination
+							attraction++
+						} else {
+							// this keyword is actually a stable lexical marker for corpus 2 for this text combination
+							repulsion++
+						}
+						ratio := (cel1 / cel2) / (cel3 / cel4)
+						logratio := math.Log(ratio)
+						lortotal += logratio
+						if logratio < lormin {
+							lormin = logratio
+						}
+						if logratio > lormax {
+							lormax = logratio
+						}
+						lorlist = append(lorlist, logratio)
 					}
-					lorlist = append(lorlist, logratio)
 				}
 			}
-		}
 
-		// If none of the text combinations had a significant G test value, the lorlist will be empty since no log odds ratio will have been calculated
-		if len(lorlist) > 0 {
-			combinations := float64(len(c1fragmentcount) * len(c2fragmentcount))
-			absolute_score := attraction - repulsion
-			normalised_score := float64(absolute_score) / combinations
-			lor_score := lortotal / combinations
-			lor_stddev := stdDev(lorlist)
-			c1results = append(c1results, structresult{kv.Key, absolute_score, normalised_score, attraction, repulsion, lormin, lormax, lor_stddev, lor_score})
-		}
+			// If none of the text combinations had a significant G test value, the lorlist will be empty since no log odds ratio will have been calculated
+			if len(lorlist) > 0 {
+				combinations := float64(len(c1fragmentcount) * len(c2fragmentcount))
+				absolute_score := attraction - repulsion
+				normalised_score := float64(absolute_score) / combinations
+				lor_score := lortotal / combinations
+				lor_stddev := stdDev(lorlist)
+				channel_c1results <- structresult{kv.Key, absolute_score, normalised_score, attraction, repulsion, lormin, lormax, lor_stddev, lor_score}
+			}
+		}(kv)
+	}
+
+	wg.Wait()
+	close(channel_c1results)
+	var c1results []structresult
+	for result := range channel_c1results {
+		c1results = append(c1results, result)
 	}
 
 	c1fragviz := make(map[string]map[string]int)
