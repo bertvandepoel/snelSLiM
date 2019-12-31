@@ -4,13 +4,13 @@ A linguistic set of tools in Go and web interface in PHP to do quick Stable Lexi
 
 ## Contact information
 
-If you have suggestions for features, feedback or a question, feel free to contact me about snelSLiM at bert.vandepoel AT student.kuleuven DOT be or create a GitHub issue.
+If you have suggestions for features, feedback or a question, feel free to contact to create a GitHub issue or me about snelSLiM at bert.vandepoel AT student.kuleuven DOT be.
 
 Having issues building or installing my software? I would love to have more users at different universities, so I don't mind if you email me for help or advice!
 
 ## Supported formats
 
-Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus, FoLiA XML, Gysseling corpus, XCES GrAF, plain text and XML with XPath query.
+Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindhoven corpus, FoLiA XML, Gysseling corpus, PRAAT TextGrid, XCES GrAF, plain text and XML with XPath query.
 
 ## Screenshots
 
@@ -23,7 +23,7 @@ Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindehoven corpus
 
 ## Installation
 
-SnelSLiM is a web application, it can easily be installed on cheap shared web hosting, a VPS or private (virtual of physical) server. This makes it possible for individuals, research groups, companies and faculties to deploy snelSLiM on infrastructure that suits their needs
+SnelSLiM is a web application, it can easily be installed on cheap shared web hosting, a VPS or private (virtual or physical) server. This makes it possible for individuals, research groups, companies and faculties to deploy snelSLiM on infrastructure that suits their needs. Of course, more storage makes it possible to store larger corpora, and more CPU cores and power greatly increases analysis speed.
 
 Please refer to the installation guide in the [INSTALL.md](INSTALL.md) file for details about the requirements, installation and configuration of snelSLiM.
 
@@ -43,5 +43,6 @@ This project is licensed under the AGPL license - see the [LICENSE](LICENSE) fil
 
 * This project was initially developed as my Bachelor Paper for my Bachelor in Linguistics and Literature under the supervision of Prof. Dr. Dirk Speelman
 * I have largely rewritten the application, correcting mistakes in the statistics, extending the functionality and improving user experience as my Master Thesis for my Master in Linguistics under the supervision of Prof. Dr. Dirk Speelman
+* Currently developement is being continued for the Thesis of my Advanced Master in Advanced Studies of Linguistics under the supervision of Prof. Dr. Dirk Speelman
 * Further acknowledgements see the [ACKNOWLEDGEMENTS](ACKNOWLEDGEMENTS) file
 

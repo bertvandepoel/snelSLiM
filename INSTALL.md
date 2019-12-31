@@ -47,7 +47,7 @@ If you have chosen to build your binaries on a local machine, you will have to t
 ### Hosting configuration
 
 If you are using a domain or subdomein directly for your installation of snelSLiM, it is important not to point the DocumentRoot of your VirtualHost to the snelSLiM folder. Instead, please point it to the web folder which contains all files to do with the web interface. There is no need to have your binaries and accessible online.
-If you wish to make snelSLiM available as a subfolder, simply use a symbolic link to the web folder and make sure your VirtualHost is configured to follow symlinks.
+If you wish to make snelSLiM available as a subfolder, simply use a symbolic link to the web folder and make sure your VirtualHost or .htaccess is configured to follow symlinks.
 
 ### Application configuration
 
@@ -58,6 +58,7 @@ mysql.php contains the login details for the mysql database. After creating a da
 config.php contains several configuration options:
 * timeout: this is the amount of time the analyser will wait for a preparsing corpus to finish.
 * max_freqnum: the maximum amount of frequent items that can be anaylysed, available to prevent reports that take hours or days to process.
+* max_threads: the maximum amount of threads the analyser can use while crunching all the numbers. By default this is 1 to prevent those using shared hosting from getting banned from the service. Enter 0 or a negative integer to use all cores, enter a specific amount to allocate that amount of the cores.
 * email_from: which email address is displayed as the sender of automated snelSLiM emails.
 * email_smtp: set to true if the PHP mail() function is unavailable for sending email and an SMTP server should be used directly
 * email_smtp_server: IP or address of the SMTP server (if using SMTP)
