@@ -19,9 +19,14 @@
  */
 
 
-$get_report = $db->prepare('SELECT c1, c2 FROM reports WHERE id=?');
-$get_report->execute(array($_GET['reportid']));
+$get_report = $db->prepare('SELECT c1, c2 FROM reports WHERE id=? AND owner=?');
+$get_report->execute(array($_GET['reportid'], $_SESSION['email']));
 $report = $get_report->fetch(PDO::FETCH_ASSOC);
+if(!$report) {
+	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-error"><strong>Error</strong> This report was deleted or is not available to you.</div></div></div>';
+	require('html/bottom.html');
+	exit;
+}
 
 $c1report = file_get_contents('../slm/reports/' . $_GET['reportid'] . '/c1.report');
 $lines = explode("\n", $c1report);

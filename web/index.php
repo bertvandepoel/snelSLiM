@@ -210,9 +210,14 @@ else {
 				}
 			}
 			else {
-				$get_corpusname = $db->prepare('SELECT name FROM corpora WHERE id=?');
-				$get_corpusname->execute(array($_POST['c1-select']));
+				$get_corpusname = $db->prepare('SELECT name FROM corpora WHERE id=? AND (owner=? OR owner IS NULL)');
+				$get_corpusname->execute(array($_POST['c1-select'], $_SESSION['email']));
 				$row = $get_corpusname->fetch(PDO::FETCH_ASSOC);
+				if(!$row) {
+					echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You attempted to analyse a corpus that was deleted or is not available to you.</div></div></div>';
+					require('html/bottom.html');
+					exit;
+				}
 				$corpus1name = $row['name'];
 				$corpus1 = 'preparsed/saved/' . $_POST['c1-select'];
 				if($colloc && !file_exists('../slm/' . $corpus1 . '/plainwords')) {
@@ -238,9 +243,14 @@ else {
 				$corpus2 = uploadparse($_FILES['c2-file'], $_POST['c2-format'], $extra);
 			}
 			else {
-				$get_corpusname = $db->prepare('SELECT name FROM corpora WHERE id=?');
-				$get_corpusname->execute(array($_POST['c2-select']));
+				$get_corpusname = $db->prepare('SELECT name FROM corpora WHERE id=? AND (owner=? OR owner IS NULL)');
+				$get_corpusname->execute(array($_POST['c2-select'], $_SESSION['email']));
 				$row = $get_corpusname->fetch(PDO::FETCH_ASSOC);
+				if(!$row) {
+					echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You attempted to analyse a corpus that was deleted or is not available to you.</div></div></div>';
+					require('html/bottom.html');
+					exit;
+				}
 				$corpus2name = $row['name'];
 				$corpus2 = 'preparsed/saved/' . $_POST['c2-select'];
 			}

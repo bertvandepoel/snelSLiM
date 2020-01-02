@@ -31,7 +31,7 @@ if(isset($_GET['delete'])) {
 	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> The corpus was removed.</div></div></div>';
 }
 
-if(isset($_GET['deleteglobal'])) {
+if( isset($_GET['deleteglobal']) && isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 	$delete = $db->prepare('DELETE FROM corpora WHERE id=? AND owner IS NULL');
 	$delete->execute(array($_GET['deleteglobal']));
 	if($delete->rowCount() > 0) {
