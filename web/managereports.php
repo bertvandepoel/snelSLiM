@@ -91,8 +91,7 @@ $get_reports->execute(array($_SESSION['email']));
 					$options .= ' <span class="label label-info" title="Collocational Analysis">CA</span>';
 				}
 				
-				$cutoff_transform = array('3.841459' => 0.05, '6.634897' => 0.01, '7.879439' => 0.005, '10.827570' => 0.001, '12.115670' => 0.0005, '15.136710' => 0.0001);
-				//$cutoff = $cutoff_transform[$report['cutoff']] . ' (' . $report['cutoff'] . ')';
+				$cutoff_transform = array('3.841459' => '95%', '6.634897' => '99%', '7.879439' => '99.5%', '10.827570' => '99.9%', '12.115670' => '99.95%', '15.136710' => '99.99%');
 				$cutoff = $cutoff_transform[$report['cutoff']];
 				
 				echo '<tr data-href="?report=' . $report['id'] . '"><td class="breakwords">' . $report['c1'] . '</td><td class="breakwords">' . $report['c2'] . '</td><td>' . $cutoff . '</td><td>' . $report['freqnum'] . '</td><td>' . $resultnum . '</td><td>' . date("d M Y \a\\t H:i", strtotime($report['datetime'])) . '</td><td>' . $diff->format('%hh%im%ss') . '</td><td>' . $options . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?reports&delete=' . $report['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
