@@ -160,6 +160,7 @@ func main() {
 		}
 	}
 
+	corpussize := 0
 	for _, file := range files {
 		var output []byte
 		var err error
@@ -198,7 +199,19 @@ func main() {
 			}
 			panic(err)
 		}
-		if err != nil || string(output) != "OK\n" {
+		outputsplit := strings.Split(string(output), "\n")
+		filesize, err := strconv.Atoi(outputsplit[0])
+		if err != nil {
+			err = ioutil.WriteFile(savedir+"error", []byte("error: Could not cast corpussize to integer"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+		corpussize += filesize
+		status := outputsplit[1]
+		if err != nil || status != "OK" {
 			err := ioutil.WriteFile(savedir+"error", []byte("error executing parser: "+string(output)), 0644)
 			if err != nil {
 				fmt.Println("Could not write error")
@@ -206,6 +219,12 @@ func main() {
 			}
 			panic(err)
 		}
+	}
+
+	err := ioutil.WriteFile(savedir+"corpussize", []byte(strconv.Itoa(corpussize)), 0644)
+	if err != nil {
+		fmt.Println("Could not write the corpus size")
+		panic(err)
 	}
 
 	if plainwords {
@@ -216,7 +235,7 @@ func main() {
 		}
 	}
 
-	err := ioutil.WriteFile(savedir+"done", []byte("done"), 0644)
+	err = ioutil.WriteFile(savedir+"done", []byte("done"), 0644)
 	if err != nil {
 		fmt.Println("Could not write done signal")
 		panic(err)

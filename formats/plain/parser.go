@@ -96,5 +96,6 @@ func main() {
 		}
 	}
 
+	fmt.Println(filetotal)
 	fmt.Println("OK")
 }

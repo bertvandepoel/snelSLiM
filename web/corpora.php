@@ -162,7 +162,7 @@ else {
 	$get_corpora = $db->prepare('SELECT id, name, format, extra, datetime FROM corpora WHERE owner=?');
 	$get_corpora->execute(array($_SESSION['email']));
 	
-	$formats = array('conll' => 'CoNLL tab-seperated values (specified column index as extra)', 'folia-text-fast' => 'FoLiA XML - fast method: literal string', 'folia-lemma-fast' => 'FoLiA XML - fast method: lemma', 'folia-text-xpath' => 'FoLiA XML - slow method: literal string', 'folia-lemma-xpath' => 'FoLiA XML - slow method: lemma', 'dcoi-text' => 'DCOI XML: literal string', 'dcoi-lemma' => 'DCOI XML: lemma', 'plain' => 'Plain text (txt)', 'alpino-text' => 'Alpino XML: literal string', 'alpino-lemma' => 'Alpino XML: lemma', 'textgrid' => 'PRAAT TextGrid (literal transcript only)', 'bnc-text' => 'TEI XML - BNC/Brown Corpus variant: literal string', 'bnc-lemma' => 'TEI XML - BNC/Brown Corpus variant: lemma', 'eindhoven' => 'Corpus Eindhoven format (literal string only)', 'gysseling-text' => 'Corpus Gysseling format: literal string', 'gysseling-lemma' => 'Corpus Gysseling format: lemma', 'graf-text' => 'XCES GrAF: literal string (may not be available)', 'graf-lemma' => 'XCES GrAF: base', 'xpath' => 'XML (specified XPath as extra)');
+	$formats = array('conll' => 'CoNLL tab-seperated values', 'folia-text-fast' => 'FoLiA XML - fast method: literal string', 'folia-lemma-fast' => 'FoLiA XML - fast method: lemma', 'folia-text-xpath' => 'FoLiA XML - slow method: literal string', 'folia-lemma-xpath' => 'FoLiA XML - slow method: lemma', 'dcoi-text' => 'DCOI XML: literal string', 'dcoi-lemma' => 'DCOI XML: lemma', 'plain' => 'Plain text (txt)', 'alpino-text' => 'Alpino XML: literal string', 'alpino-lemma' => 'Alpino XML: lemma', 'textgrid' => 'PRAAT TextGrid (literal transcript only)', 'bnc-text' => 'TEI XML - BNC/Brown Corpus variant: literal string', 'bnc-lemma' => 'TEI XML - BNC/Brown Corpus variant: lemma', 'eindhoven' => 'Corpus Eindhoven format (literal string only)', 'gysseling-text' => 'Corpus Gysseling format: literal string', 'gysseling-lemma' => 'Corpus Gysseling format: lemma', 'graf-text' => 'XCES GrAF: literal string (may not be available)', 'graf-lemma' => 'XCES GrAF: base', 'xpath' => 'XML');
 ?>
 
 <div class="page-header" id="banner">
@@ -195,7 +195,7 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 	<div class="col-md-12">
 		<table class="table table-striped table-hover">
 			<thead>
-				<tr><th>Name</th><th>Format</th><th>Extra format option</th><th>Uploaded on</th><th>Status</th><th>Delete</th></tr>
+				<tr><th>Name</th><th>Size</th><th>Format</th><th>Uploaded on</th><th>Status</th><th>Delete</th></tr>
 			</thead>
 			<tbody>
 <?php
@@ -231,7 +231,15 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					}
 				}
 				else {
-					$corpus['format'] = $formats[$corpus['format']];
+					if($corpus['format'] == 'conll') {
+						$corpus['format'] = $formats[$corpus['format']] . ' (column ' . $corpus['extra'] . ')';
+					}
+					elseif($corpus['format'] == 'xpath') {
+						$corpus['format'] = $formats[$corpus['format']] . ' (XPath query: ' . $corpus['extra'] . ')';
+					}
+					else {
+						$corpus['format'] = $formats[$corpus['format']];
+					}
 				}
 				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/error')) {
 					$status = '<span class="label label-danger"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> error</span>';
@@ -247,8 +255,12 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
 					$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 				}
+				$corpussize = '';
+				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
+					$corpussize = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize') . ' tokens';
+				}
 				
-				echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&deleteglobal=' . $corpus['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
+				echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpussize . '</td><td>' . $corpus['format'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&deleteglobal=' . $corpus['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
 			}
 ?>
 			</tbody>
@@ -276,10 +288,10 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 			<thead>
 <?php
 			if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) { 
-				echo '<tr><th>Name</th><th>Format</th><th>Extra format option</th><th>Uploaded on</th><th>Status</th><th>Make corpus global</th><th>Delete</th></tr>';
+				echo '<tr><th>Name</th><th>Size</th><th>Format</th><th>Uploaded on</th><th>Status</th><th>Make corpus global</th><th>Delete</th></tr>';
 			}
 			else {
-				echo '<tr><th>Name</th><th>Format</th><th>Extra format option</th><th>Uploaded on</th><th>Status</th><th>Delete</th></tr>';
+				echo '<tr><th>Name</th><th>Size</th><th>Format</th><th>Uploaded on</th><th>Status</th><th>Delete</th></tr>';
 			}
 ?>
 			</thead>
@@ -317,7 +329,15 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					}
 				}
 				else {
-					$corpus['format'] = $formats[$corpus['format']];
+					if($corpus['format'] == 'conll') {
+						$corpus['format'] = $formats[$corpus['format']] . ' (column ' . $corpus['extra'] . ')';
+					}
+					elseif($corpus['format'] == 'xpath') {
+						$corpus['format'] = $formats[$corpus['format']] . ' (XPath query: ' . $corpus['extra'] . ')';
+					}
+					else {
+						$corpus['format'] = $formats[$corpus['format']];
+					}
 				}
 				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/error')) {
 					$error = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/error');
@@ -334,12 +354,16 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
 					$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 				}
+				$corpussize = '';
+				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
+					$corpussize = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize') . ' tokens';
+				}
 				
 				if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
-				echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&castglobal=' . $corpus['id'] . '"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> Make corpus global</a></td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
+				echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpussize . '</td><td>' . $corpus['format'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&castglobal=' . $corpus['id'] . '"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> Make corpus global</a></td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
 				}
 				else {		
-					echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpus['format'] . '</td><td>' . $corpus['extra'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
+					echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpussize . '</td><td>' . $corpus['format'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&delete=' . $corpus['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
 				}
 			}
 ?>

@@ -307,8 +307,28 @@ else {
 			$first = false;
 		}
 		$corpuslabel = '';
+		if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
+			$corpussize = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize');
+			$shortsize = 0;
+			if($corpussize < 1000) {
+				$shortsize = $corpussize;
+			}
+			elseif($corpussize < 500000) {
+				$shortsize = floor($corpussize / 1000) . 'K';
+			}
+			elseif($corpussize < 10000000) {
+				$shortsize = floor($corpussize / 100000) / 10 . 'M';
+			}
+			elseif($corpussize < 1000000000) {
+				$shortsize = floor($corpussize / 1000000) . 'M';
+			}
+			else {
+				$shortsize = floor($corpussize / 100000000) / 10 . 'B';
+			}
+			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Corpus size: ' . $corpussize . ' tokens">' . $shortsize . '</span>';
+		}
 		if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
-			$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
+			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 		}
 		$corpora_dropdown .= '<option value="' . $corpus['id'] . '">' . $corpus['name'] . '</option>';
 		$corpora_c1search .= '<a class="list-group-item searchitem c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . $corpuslabel . '</a>';
@@ -321,8 +341,28 @@ else {
 	$corpora_c2search .= '<a class="list-group-item disabled" href="#">Your personal corpora</a>';
 	while($corpus = $get_corpora->fetch(PDO::FETCH_ASSOC)) {
 		$corpuslabel = '';
+		if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
+			$corpussize = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize');
+			$shortsize = 0;
+			if($corpussize < 1000) {
+				$shortsize = $corpussize;
+			}
+			elseif($corpussize < 500000) {
+				$shortsize = floor($corpussize / 1000) . 'K';
+			}
+			elseif($corpussize < 10000000) {
+				$shortsize = floor($corpussize / 100000) / 10 . 'M';
+			}
+			elseif($corpussize < 1000000000) {
+				$shortsize = floor($corpussize / 1000000) . 'M';
+			}
+			else {
+				$shortsize = floor($corpussize / 100000000) / 10 . 'B';
+			}
+			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Corpus size: ' . $corpussize . ' tokens">' . $shortsize . '</span>';
+		}
 		if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
-			$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
+			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 		}
 		$corpora_dropdown .= '<option value="' . $corpus['id'] . '">' . $corpus['name'] . '</option>';
 		$corpora_c1search .= '<a class="list-group-item searchitem c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . $corpuslabel . '</a>';

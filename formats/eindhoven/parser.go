@@ -27,6 +27,7 @@ func main() {
 	datastring := string(data)
 
 	fragments := strings.Split(datastring, "]")
+	totalsize := 0
 
 	for _, fragment := range fragments {
 		if fragment == "" || fragment == "\n" || fragment == "\n\n" {
@@ -70,6 +71,7 @@ func main() {
 			result.WriteString("\n")
 			filetotal += value
 		}
+		totalsize += filetotal
 		result.WriteString("total.snelslim")
 		result.WriteString("\t")
 		valuestring := strconv.Itoa(filetotal)
@@ -90,5 +92,6 @@ func main() {
 			}
 		}
 	}
+	fmt.Println(totalsize)
 	fmt.Println("OK")
 }
