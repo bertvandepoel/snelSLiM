@@ -20,15 +20,17 @@
 
 if(isset($_GET['format'])) {
 	$get_report = $db->prepare('SELECT c1, c2, freqnum, cutoff, datetime FROM reports WHERE id=? AND owner=?');
-	$get_report->execute(array($_GET['report'], $_SESSION['email']));
+	$get_report->execute(array($_GET['export'], $_SESSION['email']));
 	$report = $get_report->fetch(PDO::FETCH_ASSOC);
 	if(!$report) {
+		var_dump($_SESSION);
+		echo 'AAAAAAAAAAAA';
 		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-error"><strong>Error</strong> This report was deleted or is not available to you.</div></div></div>';
 		require('html/bottom.html');
 		exit;
 	}
 
-	$c1report = file_get_contents('../slm/reports/' . $_GET['export'] . '/c1.report');
+	$c1report = file_get_contents('../data/reports/' . $_GET['export'] . '/c1.report');
 	if(mb_detect_encoding($c1report, 'UTF-8, ISO-8859-1') === 'ISO-8859-1') {
 		$c1report = utf8_encode($c1report);
 	}

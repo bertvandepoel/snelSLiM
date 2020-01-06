@@ -94,8 +94,19 @@ func main() {
 		return nil
 	})
 
+	execlocation, err := os.Executable()
+	if err != nil {
+		err = ioutil.WriteFile(savedir+"error", []byte("Error: Could lookup preparser executable location to resolve format parser locations"), 0644)
+		if err != nil {
+			fmt.Println("Could not write error")
+			panic(err)
+		}
+		panic(err)
+	}
+	binfolder := filepath.Dir(execlocation)
+
 	if format == "autodetect" {
-		autodetect, err := exec.Command("../formats/autodetect", outdir).Output()
+		autodetect, err := exec.Command(binfolder+"/formats/autodetect", outdir).Output()
 		if err != nil {
 			err = ioutil.WriteFile(savedir+"error", []byte("error: "+err.Error()), 0644)
 			if err != nil {
@@ -170,29 +181,37 @@ func main() {
 			plainwordsfile = savedir + "/" + base + ".plainwords"
 		}
 		if format == "conll" {
-			output, err = exec.Command("../formats/CoNLL/parser", file, extra, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+			output, err = exec.Command(binfolder+"/formats/CoNLL/parser", file, extra, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "folia" {
-			output, err = exec.Command("../formats/FoLiA/parser", file, option, extra, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+			output, err = exec.Command(binfolder+"/formats/FoLiA/parser", file, option, extra, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "dcoi" {
-			output, err = exec.Command("../formats/DCOI/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+			output, err = exec.Command(binfolder+"/formats/DCOI/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "plain" {
-			output, err = exec.Command("../formats/plain/parser", file, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+			output, err = exec.Command(binfolder+"/formats/plain/parser", file, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "alpino" {
-			output, err = exec.Command("../formats/alpino/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+			output, err = exec.Command(binfolder+"/formats/alpino/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "bnc" {
-			output, err = exec.Command("../formats/BNC/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+			output, err = exec.Command(binfolder+"/formats/BNC/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "eindhoven" {
-			output, err = exec.Command("../formats/eindhoven/parser", file, savedir+"/", plainwordsfile).Output()
+			output, err = exec.Command(binfolder+"/formats/eindhoven/parser", file, savedir+"/", plainwordsfile).Output()
 		} else if format == "gysseling" {
-			output, err = exec.Command("../formats/gysseling/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+			output, err = exec.Command(binfolder+"/formats/gysseling/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "graf" {
-			output, err = exec.Command("../formats/XCES-GrAF/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+			output, err = exec.Command(binfolder+"/formats/XCES-GrAF/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "textgrid" {
-			output, err = exec.Command("../formats/TextGrid/parser", file, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+			output, err = exec.Command(binfolder+"/formats/TextGrid/parser", file, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "xpath" {
-			output, err = exec.Command("../formats/xpath/parser", file, extra, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+			output, err = exec.Command(binfolder+"/formats/xpath/parser", file, extra, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else {
 			err := ioutil.WriteFile(savedir+"error", []byte("error: unknown format"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+		if err != nil {
+			err = ioutil.WriteFile(savedir+"error", []byte("error: execution of format parser "+format+" failed: "+err.Error()), 0644)
 			if err != nil {
 				fmt.Println("Could not write error")
 				panic(err)
@@ -221,7 +240,7 @@ func main() {
 		}
 	}
 
-	err := ioutil.WriteFile(savedir+"corpussize", []byte(strconv.Itoa(corpussize)), 0644)
+	err = ioutil.WriteFile(savedir+"corpussize", []byte(strconv.Itoa(corpussize)), 0644)
 	if err != nil {
 		fmt.Println("Could not write the corpus size")
 		panic(err)

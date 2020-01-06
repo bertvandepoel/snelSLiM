@@ -19,15 +19,15 @@
  */
 
 
-if(!file_exists('../slm/reports/' . $_GET['report'])) {
+if(!file_exists('../data/reports/' . $_GET['report'])) {
 	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-warning"><strong>Warning</strong> Your report folder does not seem to exist. Usually it does not take long for the folder to process, so something might be wrong</div></div></div>';
 	echo '<script type="text/javascript">window.setTimeout(function(){ window.location.href = "?report=' . $_GET['report'] . '"}, 5000)</script>';
 }
-elseif(file_exists('../slm/reports/' . $_GET['report'] . '/error')) {
-	$error = file_get_contents('../slm/reports/' . $_GET['report'] . '/error');
+elseif(file_exists('../data/reports/' . $_GET['report'] . '/error')) {
+	$error = file_get_contents('../data/reports/' . $_GET['report'] . '/error');
 	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-error"><strong>Error</strong> The following error occured while generating your report:' . $error . '</div></div></div>';
 }
-elseif(!file_exists('../slm/reports/' . $_GET['report'] . '/done')) {
+elseif(!file_exists('../data/reports/' . $_GET['report'] . '/done')) {
 	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-info"><strong>Info</strong> Your report is still being generated, depending on the size and complexity this may take a while, please standby. This page will check every 5 seconds whether your report is ready.</div></div></div>';
 	echo '<script type="text/javascript">window.setTimeout(function(){ window.location.href = "?report=' . $_GET['report'] . '"}, 5000)</script>';
 }
@@ -42,14 +42,14 @@ else {
 		exit;
 	}
 	
-	$c1report = file_get_contents('../slm/reports/' . $_GET['report'] . '/c1.report');
-	$c1frag = file_get_contents('../slm/reports/' . $_GET['report'] . '/c1frag.report');
-	$c2frag = file_get_contents('../slm/reports/' . $_GET['report'] . '/c2frag.report');
+	$c1report = file_get_contents('../data/reports/' . $_GET['report'] . '/c1.report');
+	$c1frag = file_get_contents('../data/reports/' . $_GET['report'] . '/c1frag.report');
+	$c2frag = file_get_contents('../data/reports/' . $_GET['report'] . '/c2frag.report');
 	$visualjson = FALSE;
-	if(file_exists('../slm/reports/' . $_GET['report'] . '/visuals')) {
+	if(file_exists('../data/reports/' . $_GET['report'] . '/visuals')) {
 		$visualjson = TRUE;
 	}
-	$donetime = filectime('../slm/reports/' . $_GET['report'] . '/done');
+	$donetime = filectime('../data/reports/' . $_GET['report'] . '/done');
 	$d1 = date_create($report['datetime']);
 	$d2 = date_create(date('Y-m-d H:i:s', $donetime));
 	$diff = date_diff($d1, $d2);

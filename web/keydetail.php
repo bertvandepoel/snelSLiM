@@ -28,7 +28,7 @@ if(!$report) {
 	exit;
 }
 
-$c1report = file_get_contents('../slm/reports/' . $_GET['reportid'] . '/c1.report');
+$c1report = file_get_contents('../data/reports/' . $_GET['reportid'] . '/c1.report');
 $lines = explode("\n", $c1report);
 foreach($lines as $line) {
 	if(strpos($line, $_GET['keydetail'] . "\t") === 0) {
@@ -36,7 +36,7 @@ foreach($lines as $line) {
 	}
 }
 $reportfields = explode("\t", $line);
-$c1details = file_get_contents('../slm/reports/' . $_GET['reportid'] . '/keyword_details.report');
+$c1details = file_get_contents('../data/reports/' . $_GET['reportid'] . '/keyword_details.report');
 $blocks = explode("\n\n", $c1details);
 foreach($blocks as $block) {
 	if(strpos($block, $_GET['keydetail'] . "\t") === 0) {
@@ -68,8 +68,8 @@ foreach($blocks as $block) {
 		break;
 	}
 }
-if(file_exists('../slm/reports/' . $_GET['reportid'] . '/collocates.report')) {
-	$collocreport = file_get_contents('../slm/reports/' . $_GET['reportid'] . '/collocates.report');
+if(file_exists('../data/reports/' . $_GET['reportid'] . '/collocates.report')) {
+	$collocreport = file_get_contents('../data/reports/' . $_GET['reportid'] . '/collocates.report');
 	$blocks = explode("\n\n", $collocreport);
 	foreach($blocks as $block) {
 		if(strpos($block, $_GET['keydetail'] . "\n") === 0) {

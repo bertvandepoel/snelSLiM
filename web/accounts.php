@@ -25,13 +25,13 @@ if(isset($_GET['delete'])) {
 		$get_reports = $db->prepare('SELECT id FROM reports WHERE owner=?');
 		$get_reports->execute(array($_GET['delete']));
 		while($report = $get_reports->fetch(PDO::FETCH_ASSOC)) {
-			unlink('../slm/reports/' . $report['id'] . '/c1.report');
-			unlink('../slm/reports/' . $report['id'] . '/c2.report');
-			unlink('../slm/reports/' . $report['id'] . '/c1frag.report');
-			unlink('../slm/reports/' . $report['id'] . '/c2frag.report');
-			unlink('../slm/reports/' . $report['id'] . '/done');
-			unlink('../slm/reports/' . $report['id'] . '/error');
-			rmdir('../slm/reports/' . $report['id']);
+			unlink('../data/reports/' . $report['id'] . '/c1.report');
+			unlink('../data/reports/' . $report['id'] . '/c2.report');
+			unlink('../data/reports/' . $report['id'] . '/c1frag.report');
+			unlink('../data/reports/' . $report['id'] . '/c2frag.report');
+			unlink('../data/reports/' . $report['id'] . '/done');
+			unlink('../data/reports/' . $report['id'] . '/error');
+			rmdir('../data/reports/' . $report['id']);
 		}
 		$delete_reports = $db->prepare('DELETE FROM reports WHERE owner=?');
 		$delete_reports->execute(array($_GET['delete']));
@@ -39,10 +39,10 @@ if(isset($_GET['delete'])) {
 		$get_corpora = $db->prepare('SELECT id FROM corpora WHERE owner=?');
 		$get_corpora->execute(array($_GET['delete']));
 		while($corpus = $get_corpora->fetch(PDO::FETCH_ASSOC)) {
-			foreach(scandir('../slm/preparsed/saved/' . $corpus['id']) as $file) {
-				unlink('../slm/preparsed/saved/' . $corpus['id'] . '/' . $file);
+			foreach(scandir('../data/preparsed/saved/' . $corpus['id']) as $file) {
+				unlink('../data/preparsed/saved/' . $corpus['id'] . '/' . $file);
 			}
-			rmdir('../slm/preparsed/saved/' . $corpus['id']);
+			rmdir('../data/preparsed/saved/' . $corpus['id']);
 		}
 		$delete_corpora = $db->prepare('DELETE FROM corpora WHERE owner=?');
 		$delete_corpora->execute(array($_GET['delete']));

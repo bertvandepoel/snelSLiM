@@ -219,8 +219,8 @@ else {
 					exit;
 				}
 				$corpus1name = $row['name'];
-				$corpus1 = 'preparsed/saved/' . $_POST['c1-select'];
-				if($colloc && !file_exists('../slm/' . $corpus1 . '/plainwords')) {
+				$corpus1 = '../data/preparsed/saved/' . $_POST['c1-select'];
+				if($colloc && !file_exists('../data/' . $corpus1 . '/plainwords')) {
 					echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> The corpus A you selected was not prepared for collocational analyse. Please either disable this additional analysis or select or supply a prepared corpus.</div></div></div>';
 					require('html/bottom.html');
 					exit;
@@ -252,15 +252,15 @@ else {
 					exit;
 				}
 				$corpus2name = $row['name'];
-				$corpus2 = 'preparsed/saved/' . $_POST['c2-select'];
+				$corpus2 = '../data/preparsed/saved/' . $_POST['c2-select'];
 			}
 			
 			$insert_report = $db->prepare('INSERT INTO reports (owner, c1, c2, freqnum, cutoff, datetime) VALUES (?,?,?,?,?,NOW())');
 			$insert_report->execute(array($_SESSION['email'], $corpus1name, $corpus2name, intval($_POST['freqnum']), $_POST['cutoff']));
 			$reportid = $db->lastInsertId();
-			$reportdir = 'reports/' . $reportid;
+			$reportdir = '../data/reports/' . $reportid;
 			
-			chdir('../slm');
+			chdir('../bin');
 			mkdir($reportdir);
 			
 			$genviz = 0;
@@ -307,8 +307,8 @@ else {
 			$first = false;
 		}
 		$corpuslabel = '';
-		if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
-			$corpussize = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize');
+		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
+			$corpussize = file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/corpussize');
 			$shortsize = 0;
 			if($corpussize < 1000) {
 				$shortsize = $corpussize;
@@ -327,7 +327,7 @@ else {
 			}
 			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Corpus size: ' . $corpussize . ' tokens">' . $shortsize . '</span>';
 		}
-		if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
+		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
 			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 		}
 		$corpora_dropdown .= '<option value="' . $corpus['id'] . '">' . $corpus['name'] . '</option>';
@@ -341,8 +341,8 @@ else {
 	$corpora_c2search .= '<a class="list-group-item disabled" href="#">Your personal corpora</a>';
 	while($corpus = $get_corpora->fetch(PDO::FETCH_ASSOC)) {
 		$corpuslabel = '';
-		if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
-			$corpussize = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize');
+		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
+			$corpussize = file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/corpussize');
 			$shortsize = 0;
 			if($corpussize < 1000) {
 				$shortsize = $corpussize;
@@ -361,7 +361,7 @@ else {
 			}
 			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Corpus size: ' . $corpussize . ' tokens">' . $shortsize . '</span>';
 		}
-		if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
+		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
 			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 		}
 		$corpora_dropdown .= '<option value="' . $corpus['id'] . '">' . $corpus['name'] . '</option>';

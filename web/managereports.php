@@ -22,12 +22,12 @@ if(isset($_GET['delete'])) {
 	$delete = $db->prepare('DELETE FROM reports WHERE id=? AND owner=?');
 	$delete->execute(array($_GET['delete'], $_SESSION['email']));
 	if($delete->rowCount() > 0) {
-		unlink('../slm/reports/' . $_GET['delete'] . '/c1.report');
-		unlink('../slm/reports/' . $_GET['delete'] . '/c1frag.report');
-		unlink('../slm/reports/' . $_GET['delete'] . '/c2frag.report');
-		unlink('../slm/reports/' . $_GET['delete'] . '/done');
-		unlink('../slm/reports/' . $_GET['delete'] . '/error');
-		rmdir('../slm/reports/' . $_GET['delete']);
+		unlink('../data/reports/' . $_GET['delete'] . '/c1.report');
+		unlink('../data/reports/' . $_GET['delete'] . '/c1frag.report');
+		unlink('../data/reports/' . $_GET['delete'] . '/c2frag.report');
+		unlink('../data/reports/' . $_GET['delete'] . '/done');
+		unlink('../data/reports/' . $_GET['delete'] . '/error');
+		rmdir('../data/reports/' . $_GET['delete']);
 	}
 }
 
@@ -54,17 +54,17 @@ $get_reports->execute(array($_SESSION['email']));
 <?php
 			while($report = $get_reports->fetch(PDO::FETCH_ASSOC)) {
 				$diff = NULL;
-				if(file_exists('../slm/reports/' . $report['id'] . '/error')) {
-					$error = file_get_contents('../slm/reports/' . $report['id'] . '/error');
+				if(file_exists('../data/reports/' . $report['id'] . '/error')) {
+					$error = file_get_contents('../data/reports/' . $report['id'] . '/error');
 					$status = '<span class="label label-danger" data-toggle="tooltip" title="' . $error . '"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> error</span>';
-					$errortime = filectime('../slm/reports/' . $report['id'] . '/error');
+					$errortime = filectime('../data/reports/' . $report['id'] . '/error');
 					$d1 = date_create($report['datetime']);
 					$d2 = date_create(date('Y-m-d H:i:s', $errortime));
 					$diff = date_diff($d1, $d2);
 				}
-				elseif(file_exists('../slm/reports/' . $report['id'] . '/done')) {
+				elseif(file_exists('../data/reports/' . $report['id'] . '/done')) {
 					$status = '<span class="label label-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> done</span>';
-					$donetime = filectime('../slm/reports/' . $report['id'] . '/done');
+					$donetime = filectime('../data/reports/' . $report['id'] . '/done');
 					$d1 = date_create($report['datetime']);
 					$d2 = date_create(date('Y-m-d H:i:s', $donetime));
 					$diff = date_diff($d1, $d2);
@@ -76,18 +76,18 @@ $get_reports->execute(array($_SESSION['email']));
 					$diff = date_diff($d1, $d2);
 				}
 				
-				if(file_exists('../slm/reports/' . $report['id'] . '/c1.report')) {
-					$resultnum = substr_count(file_get_contents('../slm/reports/' . $report['id'] . '/c1.report'), "\n");
+				if(file_exists('../data/reports/' . $report['id'] . '/c1.report')) {
+					$resultnum = substr_count(file_get_contents('../data/reports/' . $report['id'] . '/c1.report'), "\n");
 				}
 				else {
 					$resultnum = "";
 				}
 				
 				$options = '';
-				if(file_exists('../slm/reports/' . $report['id'] . '/visuals')) {
+				if(file_exists('../data/reports/' . $report['id'] . '/visuals')) {
 					$options .= ' <span class="label label-info" title="Visualizations">Vis</span>';
 				}
-				if(file_exists('../slm/reports/' . $report['id'] . '/collocates.report')) {
+				if(file_exists('../data/reports/' . $report['id'] . '/collocates.report')) {
 					$options .= ' <span class="label label-info" title="Collocational Analysis">CA</span>';
 				}
 				

@@ -20,27 +20,27 @@
  
 function uploadparse($filepost, $format, $extra, $plainwords = FALSE, $tmp = TRUE, $id = NULL) {
 	$randomid = rand(100000, 999999);
-	while(file_exists('../slm/unpacked/' . $randomid)) {
+	while(file_exists('../data/unpacked/' . $randomid)) {
 		$randomid = rand(100000, 999999);
 	}
-	mkdir('../slm/unpacked/' . $randomid);
-	mkdir('../slm/unpacked/' . $randomid . '/out');
+	mkdir('../data/unpacked/' . $randomid);
+	mkdir('../data/unpacked/' . $randomid . '/out');
 	
-	$archive = 'unpacked/' . $randomid . '/' . $filepost['name'];
-	$outdir = 'unpacked/' . $randomid . '/out/';
-	move_uploaded_file($filepost['tmp_name'], '../slm/unpacked/' . $randomid . '/' . $filepost['name']);
+	$archive = '../data/unpacked/' . $randomid . '/' . $filepost['name'];
+	$outdir = '../data/unpacked/' . $randomid . '/out/';
+	move_uploaded_file($filepost['tmp_name'], '../data/unpacked/' . $randomid . '/' . $filepost['name']);
 	
 	if($tmp) {
 		$tmprandomid = $randomid;
-		while(file_exists('../slm/preparsed/tmp/' . $tmprandomid)) {
+		while(file_exists('../data/preparsed/tmp/' . $tmprandomid)) {
 			$tmprandomid = rand(100000, 999999);
 		}
-		mkdir('../slm/preparsed/tmp/' . $tmprandomid);
-		$savedir = 'preparsed/tmp/' . $tmprandomid;
+		mkdir('../data/preparsed/tmp/' . $tmprandomid);
+		$savedir = '../data/preparsed/tmp/' . $tmprandomid;
 	}
 	else {
-		mkdir('../slm/preparsed/saved/' . $id);
-		$savedir = 'preparsed/saved/' . $id;
+		mkdir('../data/preparsed/saved/' . $id);
+		$savedir = '../data/preparsed/saved/' . $id;
 	}
 	
 	if($format == 'autodetect') {
@@ -111,7 +111,7 @@ function uploadparse($filepost, $format, $extra, $plainwords = FALSE, $tmp = TRU
 		$plainwords = 0;
 	}
 	
-	chdir('../slm');
+	chdir('../bin');
 	shell_exec('nohup ./preparser ' . escapeshellarg($archive) . ' ' . $outdir . ' ' . $arguments . ' ' . $savedir . ' ' . $plainwords . ' > /dev/null &');
 	return $savedir;
 }

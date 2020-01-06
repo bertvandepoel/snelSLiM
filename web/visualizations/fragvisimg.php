@@ -29,8 +29,8 @@ if(!$report) {
 	exit;
 }
 
-if(file_exists('../slm/reports/' . $_GET['reportid'] . '/visuals')) {
-	$visstring = file_get_contents('../slm/reports/' . $_GET['reportid'] . '/visuals/' . $_GET['fragvisimg'] . ".snelvis");
+if(file_exists('../data/reports/' . $_GET['reportid'] . '/visuals')) {
+	$visstring = file_get_contents('../data/reports/' . $_GET['reportid'] . '/visuals/' . $_GET['fragvisimg'] . ".snelvis");
 	$height = 500;
 	$width = ceil(strlen($visstring) / $height);
 	if($width < 50) {

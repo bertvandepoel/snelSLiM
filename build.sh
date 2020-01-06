@@ -1,9 +1,9 @@
 #!/bin/bash
-find formats -type f -name "parser" -delete
-rm -f formats/autodetect
-rm -f slm/preparser
-rm -f slm/analyser
-find formats -type d ! -path formats -exec go build -o {}/parser {}/parser.go \;
-go build -o formats/autodetect formats/autodetect.go
-go build -o slm/preparser slm/preparser.go
-go build -o slm/analyser slm/analyser.go
+rm -rf bin/*
+cd src
+find formats -type d ! -path formats -exec go build -o ../bin/{}/parser {}/parser.go \;
+cd ..
+cp src/formats/FoLiA/foliafolie bin/formats/FoLiA/foliafolie
+go build -o bin/formats/autodetect src/formats/autodetect.go
+go build -o bin/preparser src/preparser.go
+go build -o bin/analyser src/analyser.go

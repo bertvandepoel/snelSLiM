@@ -22,11 +22,11 @@ if(isset($_GET['delete'])) {
 	$delete = $db->prepare('DELETE FROM corpora WHERE id=? AND owner=?');
 	$delete->execute(array($_GET['delete'], $_SESSION['email']));
 	if($delete->rowCount() > 0) {
-		foreach(scandir('../slm/preparsed/saved/' . $_GET['delete']) as $file) {
+		foreach(scandir('../data/preparsed/saved/' . $_GET['delete']) as $file) {
 			// no folders here, so no need to check
-			unlink('../slm/preparsed/saved/' . $_GET['delete'] . '/' . $file);
+			unlink('../data/preparsed/saved/' . $_GET['delete'] . '/' . $file);
 		}
-		rmdir('../slm/preparsed/saved/' . $_GET['delete']);
+		rmdir('../data/preparsed/saved/' . $_GET['delete']);
 	}
 	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> The corpus was removed.</div></div></div>';
 }
@@ -35,11 +35,11 @@ if( isset($_GET['deleteglobal']) && isset($_SESSION['admin']) && ($_SESSION['adm
 	$delete = $db->prepare('DELETE FROM corpora WHERE id=? AND owner IS NULL');
 	$delete->execute(array($_GET['deleteglobal']));
 	if($delete->rowCount() > 0) {
-		foreach(scandir('../slm/preparsed/saved/' . $_GET['deleteglobal']) as $file) {
+		foreach(scandir('../data/preparsed/saved/' . $_GET['deleteglobal']) as $file) {
 			// no folders here, so no need to check
-			unlink('../slm/preparsed/saved/' . $_GET['deleteglobal'] . '/' . $file);
+			unlink('../data/preparsed/saved/' . $_GET['deleteglobal'] . '/' . $file);
 		}
-		rmdir('../slm/preparsed/saved/' . $_GET['deleteglobal']);
+		rmdir('../data/preparsed/saved/' . $_GET['deleteglobal']);
 	}
 	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> The corpus was removed.</div></div></div>';
 }
@@ -201,7 +201,7 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 <?php
 			while($corpus = $get_global_corpora->fetch(PDO::FETCH_ASSOC)) {
 				if($corpus['format'] == 'autodetect') {
-					$autodetect = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/autodetect');
+					$autodetect = file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/autodetect');
 					if($autodetect == 'unknown') {
 						$corpus['format'] = 'Autodetect: unknown format';
 					}
@@ -241,10 +241,10 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 						$corpus['format'] = $formats[$corpus['format']];
 					}
 				}
-				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/error')) {
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/error')) {
 					$status = '<span class="label label-danger"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> error</span>';
 				}
-				elseif(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/done')) {
+				elseif(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/done')) {
 					$status = '<span class="label label-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> done</span>';
 				}
 				else {
@@ -252,12 +252,12 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 				}
 				
 				$corpuslabel = '';
-				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
 					$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 				}
 				$corpussize = '';
-				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
-					$corpussize = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize') . ' tokens';
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
+					$corpussize = file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/corpussize') . ' tokens';
 				}
 				
 				echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpussize . '</td><td>' . $corpus['format'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&deleteglobal=' . $corpus['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
@@ -299,7 +299,7 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 <?php
 			while($corpus = $get_corpora->fetch(PDO::FETCH_ASSOC)) {
 				if($corpus['format'] == 'autodetect') {
-					$autodetect = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/autodetect');
+					$autodetect = file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/autodetect');
 					if($autodetect == 'unknown') {
 						$corpus['format'] = 'Autodetect: unknown format';
 					}
@@ -339,11 +339,11 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 						$corpus['format'] = $formats[$corpus['format']];
 					}
 				}
-				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/error')) {
-					$error = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/error');
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/error')) {
+					$error = file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/error');
 					$status = '<span class="label label-danger" data-toggle="tooltip" title="' . $error . '"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> error</span>';
 				}
-				elseif(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/done')) {
+				elseif(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/done')) {
 					$status = '<span class="label label-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> done</span>';
 				}
 				else {
@@ -351,12 +351,12 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 				}
 				
 				$corpuslabel = '';
-				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
 					$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 				}
 				$corpussize = '';
-				if(file_exists('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
-					$corpussize = file_get_contents('../slm/preparsed/saved/' . $corpus['id'] . '/corpussize') . ' tokens';
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
+					$corpussize = file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/corpussize') . ' tokens';
 				}
 				
 				if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {

@@ -17,12 +17,12 @@ zip -r target.zip target
 
 echo "running snelSLiM preparser"
 mkdir extract
-../slm/preparser target.zip extract/ plain - - preparsed_target/
+../bin/preparser target.zip extract/ plain - - preparsed_target/
 mkdir extract
-../slm/preparser reference.zip extract/ plain - - preparsed_reference/
+../bin/preparser reference.zip extract/ plain - - preparsed_reference/
 
 echo "running snelSLiM analyser"
-../slm/analyser preparsed_target/ preparsed_reference/ 5000 3.841459 result_snelslim/ 120
+../bin/analyser preparsed_target/ preparsed_reference/ 5000 3.841459 result_snelslim/ 120
 
 echo "running mclm R script"
 R --vanilla < slma.R

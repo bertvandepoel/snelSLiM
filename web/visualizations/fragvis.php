@@ -28,9 +28,9 @@ if(!$report) {
 	exit;
 }
 
-if(file_exists('../slm/reports/' . $_GET['reportid'] . '/visuals')) {
-	$visstring = file_get_contents('../slm/reports/' . $_GET['reportid'] . '/visuals/' . $_GET['fragvis'] . ".snelvis");
-	$jsonstring = file_get_contents('../slm/reports/' . $_GET['reportid'] . '/visuals/treemap.json');
+if(file_exists('../data/reports/' . $_GET['reportid'] . '/visuals')) {
+	$visstring = file_get_contents('../data/reports/' . $_GET['reportid'] . '/visuals/' . $_GET['fragvis'] . ".snelvis");
+	$jsonstring = file_get_contents('../data/reports/' . $_GET['reportid'] . '/visuals/treemap.json');
 	$json = json_decode($jsonstring, TRUE);
 	$filestats = FALSE;
 	foreach($json as $item) {
