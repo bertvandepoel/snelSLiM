@@ -52,10 +52,6 @@ if(isset($_GET['json'])) {
 	require('visualizations/json.php');
 	exit;
 }
-elseif(isset($_GET['fragvisimg'])) {
-	require('visualizations/fragvisimg.php');
-	exit;
-}
 elseif(isset($_GET['export']) && isset($_GET['format'])) {
 	require('export.php');
 	exit;

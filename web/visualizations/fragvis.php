@@ -29,7 +29,6 @@ if(!$report) {
 }
 
 if(file_exists('../data/reports/' . $_GET['reportid'] . '/visuals')) {
-	$visstring = file_get_contents('../data/reports/' . $_GET['reportid'] . '/visuals/' . $_GET['fragvis'] . ".snelvis");
 	$jsonstring = file_get_contents('../data/reports/' . $_GET['reportid'] . '/visuals/treemap.json');
 	$json = json_decode($jsonstring, TRUE);
 	$filestats = FALSE;
@@ -69,13 +68,6 @@ if(file_exists('../data/reports/' . $_GET['reportid'] . '/visuals')) {
 			?>
 			</p>
 		</div>
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-12">
-		<h1>Visualization</h1>
-		<p>The image below is a representation of this specific file. Each square represents a stable lexical marker, ordered by effect size. If the marker is not present in the file, the pixel is white, if the marker is attracted and present, it is blue, when repulsed it's red, and when it is exactly as repulsed as it is attracted, it is grey. Black squares can be ignored. You can click on the image to view it in more detail.</p>
-		<p><a href="?reportid=<?php echo $_GET['reportid']; ?>&fragvisimg=<?php echo $_GET['fragvis']; ?>" target="_blank"><img src="?reportid=<?php echo $_GET['reportid']; ?>&fragvisimg=<?php echo $_GET['fragvis']; ?>&rotate" style="max-width: 100%;"></a></p>
 	</div>
 </div>
 	

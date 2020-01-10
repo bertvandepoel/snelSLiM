@@ -481,7 +481,6 @@ func main() {
 			c1fragviz[fragment]["total"] = c1fragmentcount[fragment]["total.snelslim"]
 		}
 	}
-	c1fileviz := make(map[string]string)
 
 	sort.Slice(c1results, func(i, j int) bool {
 		return c1results[i].Lor_score > c1results[j].Lor_score
@@ -539,18 +538,13 @@ func main() {
 					if kv.Absolute_score < 0 {
 						c1fragviz[fragment]["repulsion_total"] += c1fragmentcount[fragment][kv.Keyword]
 						c1fragviz[fragment]["repulsion_unique"] += 1
-						c1fileviz[fragment] = c1fileviz[fragment] + "r"
 					} else if kv.Absolute_score > 0 {
 						c1fragviz[fragment]["attraction_total"] += c1fragmentcount[fragment][kv.Keyword]
 						c1fragviz[fragment]["attraction_unique"] += 1
-						c1fileviz[fragment] = c1fileviz[fragment] + "a"
 					} else {
 						c1fragviz[fragment]["balanced_total"] += c1fragmentcount[fragment][kv.Keyword]
 						c1fragviz[fragment]["balanced_unique"] += 1
-						c1fileviz[fragment] = c1fileviz[fragment] + "b"
 					}
-				} else {
-					c1fileviz[fragment] = c1fileviz[fragment] + "x"
 				}
 			}
 		}
@@ -800,9 +794,6 @@ func main() {
 				panic(err)
 			}
 			panic(err)
-		}
-		for fragment, charlist := range c1fileviz {
-			err = ioutil.WriteFile(reportdir+"visuals/"+fragment+".snelvis", []byte(charlist), 0644)
 		}
 	}
 
