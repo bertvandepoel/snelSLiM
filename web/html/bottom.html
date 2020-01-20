@@ -20,8 +20,13 @@
 						},  
 						function(){ 
 							$(this).removeClass('active'); 
-						}).click( function(){ 
-							document.location = $(this).attr('data-href'); 
+						}).mouseup( function(e){ 
+							if(e.which == 2 || (e.ctrlKey && e.which == 1)) {
+								window.open($(this).attr('data-href'), '_blank');
+							} 
+							else if(e.which == 1) {
+								document.location = $(this).attr('data-href'); 
+							}
 						}
 					);
 				});
