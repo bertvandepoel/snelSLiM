@@ -336,6 +336,9 @@ else {
 	$corpora_c1search .= '<a class="list-group-item disabled" href="#">Your personal corpora</a>';
 	$corpora_c2search .= '<a class="list-group-item disabled" href="#">Your personal corpora</a>';
 	while($corpus = $get_corpora->fetch(PDO::FETCH_ASSOC)) {
+		if(!file_exists('../data/preparsed/saved/' . $corpus['id'] . '/done')) {
+			continue;
+		}
 		$corpuslabel = '';
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
 			$corpussize = file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/corpussize');

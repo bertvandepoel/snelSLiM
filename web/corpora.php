@@ -45,9 +45,14 @@ if( isset($_GET['deleteglobal']) && isset($_SESSION['admin']) && ($_SESSION['adm
 }
 
 if( isset($_GET['castglobal']) && isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
-	$update = $db->prepare('UPDATE corpora SET owner=NULL WHERE id=? AND owner=?');
-	$update->execute(array($_GET['castglobal'], $_SESSION['email']));
-	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> Your corpus is now global.</div></div></div>';
+	if(!file_exists('../data/preparsed/saved/' . $corpus['castglobal'] . '/done')) {
+		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> This corpus is still being processed or has encountered an error during processing. Only corpora that are marked as having successfully processed can be made available to all users.</div></div></div>';
+	}
+	else {
+		$update = $db->prepare('UPDATE corpora SET owner=NULL WHERE id=? AND owner=?');
+		$update->execute(array($_GET['castglobal'], $_SESSION['email']));
+		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> Your corpus is now global.</div></div></div>';
+	}
 }
 
 if(isset($_POST['add'])) {
