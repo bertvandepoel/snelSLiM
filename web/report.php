@@ -128,18 +128,18 @@ else {
 				$fields = explode("\t", $row);
 				if(isset($_GET['detailed'])) {
 					if($fields[1] < 0) {
-						echo '<tr class="repulsion"><td>' . $i . '</td><td class="breakwords">' . htmlentities($fields[0]) . ' &nbsp; <a href="?reportid=' . $_GET['report'] . '&keydetail=' . $fields[0] . '" target="_blank"><span class="glyphicon glyphicon-zoom-in"></span></a></td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . round($fields[5],3) . '</td><td>' . round($fields[6],3) . '</td><td>' . round($fields[7],3) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+						echo '<tr class="repulsion"><td>' . $i . '</td><td class="breakwords">' . htmlentities($fields[0]) . ' &nbsp; <a href="?reportid=' . $_GET['report'] . '&keydetail=' . urlencode($fields[0]) . '" target="_blank"><span class="glyphicon glyphicon-zoom-in"></span></a></td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . round($fields[5],3) . '</td><td>' . round($fields[6],3) . '</td><td>' . round($fields[7],3) . '</td><td>' . round($fields[8],3) . '</td></tr>';
 					}
 					else {
-						echo '<tr><td>' . $i . '</td><td class="breakwords">' . htmlentities($fields[0]) . ' &nbsp; <a href="?reportid=' . $_GET['report'] . '&keydetail=' . $fields[0] . '" target="_blank"><span class="glyphicon glyphicon-zoom-in"></span></a></td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . round($fields[5],3) . '</td><td>' . round($fields[6],3) . '</td><td>' . round($fields[7],3) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+						echo '<tr><td>' . $i . '</td><td class="breakwords">' . htmlentities($fields[0]) . ' &nbsp; <a href="?reportid=' . $_GET['report'] . '&keydetail=' . urlencode($fields[0]) . '" target="_blank"><span class="glyphicon glyphicon-zoom-in"></span></a></td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . $fields[3] . '</td><td>' . $fields[4] . '</td><td>' . round($fields[5],3) . '</td><td>' . round($fields[6],3) . '</td><td>' . round($fields[7],3) . '</td><td>' . round($fields[8],3) . '</td></tr>';
 					}
 				}
 				else {
 					if($fields[1] < 0) {
-						echo '<tr class="repulsion"><td>' . $i . '</td><td class="breakwords">' . htmlentities($fields[0]) . ' &nbsp; <a href="?reportid=' . $_GET['report'] . '&keydetail=' . $fields[0] . '" target="_blank"><span class="glyphicon glyphicon-zoom-in"></span></a></td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+						echo '<tr class="repulsion"><td>' . $i . '</td><td class="breakwords">' . htmlentities($fields[0]) . ' &nbsp; <a href="?reportid=' . $_GET['report'] . '&keydetail=' . urlencode($fields[0]) . '" target="_blank"><span class="glyphicon glyphicon-zoom-in"></span></a></td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . round($fields[8],3) . '</td></tr>';
 					}
 					else {
-						echo '<tr><td>' . $i . '</td><td class="breakwords">' . htmlentities($fields[0]) . ' &nbsp; <a href="?reportid=' . $_GET['report'] . '&keydetail=' . $fields[0] . '" target="_blank"><span class="glyphicon glyphicon-zoom-in"></span></a></td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . round($fields[8],3) . '</td></tr>';
+						echo '<tr><td>' . $i . '</td><td class="breakwords">' . htmlentities($fields[0]) . ' &nbsp; <a href="?reportid=' . $_GET['report'] . '&keydetail=' . urlencode($fields[0]) . '" target="_blank"><span class="glyphicon glyphicon-zoom-in"></span></a></td><td>' . $fields[1] . '</td><td>' . round($fields[2],4) . '</td><td>' . round($fields[8],3) . '</td></tr>';
 					}
 				}
 				if( !isset($_GET['allitems']) AND !isset($_GET['detailed']) AND $i == 100 ) {
@@ -191,7 +191,7 @@ else {
 				$fields = explode("\t", $row);
 				$pathinfo = pathinfo($fields[0]);
 				if($visualjson) {
-					echo '<tr><td>' . $fields[0] . '</td><td>' . $pathinfo['extension'] . '</td><td>' . $fields[1] . '</td><td><a href="?reportid=' . $_GET['report'] . '&fragvis=' . $fields[0] . '" target="_blank"><span class="glyphicon glyphicon-stats"></span></a></td></tr>';
+					echo '<tr><td>' . $fields[0] . '</td><td>' . $pathinfo['extension'] . '</td><td>' . $fields[1] . '</td><td><a href="?reportid=' . $_GET['report'] . '&fragvis=' . urlencode($fields[0]) . '" target="_blank"><span class="glyphicon glyphicon-stats"></span></a></td></tr>';
 				}
 				else {
 					echo '<tr><td>' . $fields[0] . '</td><td>' . $pathinfo['extension'] . '</td><td>' . $fields[1] . '</td></tr>';
