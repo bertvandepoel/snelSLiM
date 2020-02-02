@@ -321,7 +321,14 @@ else {
 			else {
 				$shortsize = floor($corpussize / 100000000) / 10 . 'B';
 			}
-			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Corpus size: ' . $corpussize . ' tokens">' . $shortsize . '</span>';
+			$corpusfiles = scandir('../data/preparsed/saved/' . $corpus['id'] . '/');
+			$numfiles = 0;
+			foreach($corpusfiles as $corpusfile) {
+				if(substr($corpusfile, -9) == '.snelslim') {
+					$numfiles++;
+				}
+			}
+			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Corpus size: ' . number_format($corpussize, 0, '.', ' ') . ' tokens (in ' . $numfiles . ' files)">' . $shortsize . '</span>';
 		}
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
 			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
@@ -358,7 +365,14 @@ else {
 			else {
 				$shortsize = floor($corpussize / 100000000) / 10 . 'B';
 			}
-			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Corpus size: ' . $corpussize . ' tokens">' . $shortsize . '</span>';
+			$corpusfiles = scandir('../data/preparsed/saved/' . $corpus['id'] . '/');
+			$numfiles = 0;
+			foreach($corpusfiles as $corpusfile) {
+				if(substr($corpusfile, -9) == '.snelslim') {
+					$numfiles++;
+				}
+			}
+			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Corpus size: ' . number_format($corpussize, 0, '.', ' ') . ' tokens (in ' . $numfiles . ' files)">' . $shortsize . '</span>';
 		}
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
 			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';

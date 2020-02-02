@@ -262,7 +262,15 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 				}
 				$corpussize = '';
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
-					$corpussize = file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/corpussize') . ' tokens';
+					$corpussize = number_format(file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/corpussize'), 0, '.', ' ') . ' tokens';
+					$corpusfiles = scandir('../data/preparsed/saved/' . $corpus['id'] . '/');
+					$numfiles = 0;
+					foreach($corpusfiles as $corpusfile) {
+						if(substr($corpusfile, -9) == '.snelslim') {
+							$numfiles++;
+						}
+					}
+					$corpussize .= ' (in ' . $numfiles . ' files)';
 				}
 				
 				echo '<tr><td>' . $corpus['name'] . $corpuslabel . '</td><td>' . $corpussize . '</td><td>' . $corpus['format'] . '</td><td>' . date("d M Y \a\\t H:i", strtotime($corpus['datetime'])) . '</td><td>' . $status . '</td><td><a class="btn btn-primary btn-xs" href="?corpora&deleteglobal=' . $corpus['id'] . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a></td>';
@@ -361,7 +369,15 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 				}
 				$corpussize = '';
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
-					$corpussize = file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/corpussize') . ' tokens';
+					$corpussize = number_format(file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/corpussize'), 0, '.', ' ') . ' tokens';
+					$corpusfiles = scandir('../data/preparsed/saved/' . $corpus['id'] . '/');
+					$numfiles = 0;
+					foreach($corpusfiles as $corpusfile) {
+						if(substr($corpusfile, -9) == '.snelslim') {
+							$numfiles++;
+						}
+					}
+					$corpussize .= ' (in ' . $numfiles . ' files)';
 				}
 				
 				if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
