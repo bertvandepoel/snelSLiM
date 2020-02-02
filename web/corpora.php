@@ -23,6 +23,9 @@ if(isset($_GET['delete'])) {
 	$delete->execute(array($_GET['delete'], $_SESSION['email']));
 	if($delete->rowCount() > 0) {
 		foreach(scandir('../data/preparsed/saved/' . $_GET['delete']) as $file) {
+			if($file === '.' OR $file === '..') {
+				continue;
+			}
 			// no folders here, so no need to check
 			unlink('../data/preparsed/saved/' . $_GET['delete'] . '/' . $file);
 		}
@@ -36,6 +39,9 @@ if( isset($_GET['deleteglobal']) && isset($_SESSION['admin']) && ($_SESSION['adm
 	$delete->execute(array($_GET['deleteglobal']));
 	if($delete->rowCount() > 0) {
 		foreach(scandir('../data/preparsed/saved/' . $_GET['deleteglobal']) as $file) {
+			if($file === '.' OR $file === '..') {
+				continue;
+			}
 			// no folders here, so no need to check
 			unlink('../data/preparsed/saved/' . $_GET['deleteglobal'] . '/' . $file);
 		}

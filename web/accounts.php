@@ -40,6 +40,9 @@ if(isset($_GET['delete'])) {
 		$get_corpora->execute(array($_GET['delete']));
 		while($corpus = $get_corpora->fetch(PDO::FETCH_ASSOC)) {
 			foreach(scandir('../data/preparsed/saved/' . $corpus['id']) as $file) {
+				if($file === '.' OR $file === '..') {
+					continue;
+				}
 				unlink('../data/preparsed/saved/' . $corpus['id'] . '/' . $file);
 			}
 			rmdir('../data/preparsed/saved/' . $corpus['id']);
