@@ -40,7 +40,7 @@ func main() {
 
 	for _, row := range rows {
 		//ignore XML lines
-		if !strings.HasPrefix(row, "<") && row != "" {
+		if !strings.HasPrefix(row, "<") && !strings.HasPrefix(row, "#") && row != "" && row != " " {
 			fields := strings.Split(row, "\t")
 			if fields[colnum] != "." && fields[colnum] != "..." && fields[colnum] != "?" && fields[colnum] != "!" && fields[colnum] != ":" &&
 				fields[colnum] != ";" && fields[colnum] != "_" && fields[colnum] != "," && fields[colnum] != "?!" && fields[colnum] != "!?" &&
@@ -49,9 +49,13 @@ func main() {
 				fields[colnum] != "\\" && fields[colnum] != "/" && fields[colnum] != "|" && fields[colnum] != "+" && fields[colnum] != "=" &&
 				fields[colnum] != "[" && fields[colnum] != "]" && fields[colnum] != "{" && fields[colnum] != "}" && fields[colnum] != "<" &&
 				fields[colnum] != ">" && fields[colnum] != "-" {
-				count[strings.ToLower(fields[colnum])]++
+				token := strings.Trim(strings.ToLower(fields[colnum]), " ")
+				if len(token) < 1 {
+					continue
+				}
+				count[token]++
 				if plainwords {
-					plainwordsstring += strings.ToLower(fields[colnum]) + "\t"
+					plainwordsstring += token + "\t"
 				}
 			}
 		}
