@@ -46,6 +46,7 @@ if(isset($_POST['login'])) {
 	$_SESSION['poweruser'] = $user['poweruser'];
 	$_SESSION['admin'] = $user['admin'];
 	require('html/redirectlogin.html');
+	exit;
 }
 
 if(isset($_GET['json'])) {
