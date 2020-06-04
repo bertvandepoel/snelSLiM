@@ -73,18 +73,26 @@ func main() {
 					}
 					if lemma {
 						if !strings.HasPrefix(field, "-t:") {
-							count[strings.ToLower(html.UnescapeString(field))]++
+							token := cleanToken(field)
+							if len(token) < 1 {
+								continue
+							}
+							count[token]++
 							if plainwords {
-								plainwordsstring += strings.ToLower(html.UnescapeString(field)) + "\t"
+								plainwordsstring += token + "\t"
 							}
 							break
 						}
 					} else {
 						if strings.HasPrefix(field, "-t:") {
 							value := strings.Split(field, ":")
-							count[strings.ToLower(html.UnescapeString(value[1]))]++
+							token := cleanToken(value[1])
+							if len(token) < 1 {
+								continue
+							}
+							count[token]++
 							if plainwords {
-								plainwordsstring += strings.ToLower(html.UnescapeString(value[1])) + "\t"
+								plainwordsstring += token + "\t"
 							}
 						}
 					}
@@ -109,9 +117,13 @@ func main() {
 			for _, row := range rows {
 				if row != "" && row != " " {
 					value := strings.Split(row, "\"")
-					count[strings.ToLower(html.UnescapeString(value[0]))]++
+					token := cleanToken(value[0])
+					if len(token) < 1 {
+						continue
+					}
+					count[token]++
 					if plainwords {
-						plainwordsstring += strings.ToLower(html.UnescapeString(value[0])) + "\t"
+						plainwordsstring += token + "\t"
 					}
 				}
 			}
@@ -121,9 +133,13 @@ func main() {
 			for _, row := range rows {
 				if row != "" && row != " " {
 					value := strings.Split(row, ">")
-					count[strings.ToLower(html.UnescapeString(value[1]))]++
+					token := cleanToken(value[1])
+					if len(token) < 1 {
+						continue
+					}
+					count[token]++
 					if plainwords {
-						plainwordsstring += strings.ToLower(html.UnescapeString(value[1])) + "\t"
+						plainwordsstring += token + "\t"
 					}
 				}
 			}
@@ -163,4 +179,14 @@ func main() {
 
 	fmt.Println(filetotal)
 	fmt.Println("OK")
+}
+
+func cleanToken(token string) string {
+	var newtoken string
+	newtoken = html.UnescapeString(token)                  //decode all HTML entities
+	newtoken = strings.ToLower(newtoken)                   //make the string lower case
+	newtoken = strings.Replace(newtoken, "\t", "    ", -1) //while tabs shouldn't feature in tokens, they sometimes do (for example as &#9;)
+	newtoken = strings.Replace(newtoken, "\n", " ", -1)    //while newlines shouldn't feature in tokens, they sometimes do (for example as &#10;)
+	newtoken = strings.Trim(newtoken, " \r")               //remove whitespace at the edges of the string
+	return newtoken
 }
