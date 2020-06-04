@@ -35,7 +35,7 @@ func main() {
 
 	var cmd string
 	if lemma {
-		cmd = "/bin/sed -e \"s/xmlns=/ignore=/\" \"" + filename + "\" | /usr/bin/xmllint --xpath '//node/@lemma' - "
+		cmd = "/bin/sed -e \"s/xmlns=/ignore=/\" \"" + filename + "\" | /usr/bin/xmllint --xpath '//node/@root' - "
 	} else {
 		cmd = "/bin/sed -e \"s/xmlns=/ignore=/\" \"" + filename + "\" | /usr/bin/xmllint --xpath '//node/@word' - "
 	}
@@ -47,7 +47,7 @@ func main() {
 	datastring := string(output)
 	plainwordsstring := ""
 	if lemma {
-		rows := strings.Split(datastring, "lemma=\"")
+		rows := strings.Split(datastring, "root=\"")
 		for _, row := range rows {
 			if row != "" && row != " " {
 				value := strings.Split(row, "\"")
