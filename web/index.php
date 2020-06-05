@@ -45,7 +45,7 @@ if(isset($_POST['login'])) {
 	$_SESSION['email'] = $_POST['email'];
 	$_SESSION['poweruser'] = $user['poweruser'];
 	$_SESSION['admin'] = $user['admin'];
-	require('html/redirectlogin.html');
+	header('Location: ' . $_SERVER['REQUEST_URI']);
 	exit;
 }
 
