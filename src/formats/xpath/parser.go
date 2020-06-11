@@ -120,8 +120,10 @@ func cleanToken(token string) string {
 	newtoken = html.UnescapeString(token)                  //decode all HTML entities
 	newtoken = strings.ToLower(newtoken)                   //make the string lower case
 	newtoken = strings.Replace(newtoken, "\t", "    ", -1) //while tabs shouldn't feature in tokens, they sometimes do (for example as &#9;)
+	newtoken = strings.Replace(newtoken, "\r\n", " ", -1)  //while newlines shouldn't feature in tokens, they sometimes do (for example as &#10;)
 	newtoken = strings.Replace(newtoken, "\n", " ", -1)    //while newlines shouldn't feature in tokens, they sometimes do (for example as &#10;)
-	newtoken = strings.Trim(newtoken, " \r")               //remove whitespace at the edges of the string
+	newtoken = strings.Replace(newtoken, "\r", " ", -1)    //while newlines shouldn't feature in tokens, they sometimes do (for example as &#10;)
+	newtoken = strings.Trim(newtoken, " ")                 //remove whitespace at the edges of the string
 	return newtoken
 }
 
