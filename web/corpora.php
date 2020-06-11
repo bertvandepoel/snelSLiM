@@ -151,6 +151,7 @@ if(isset($_GET['add'])) {
 				<div class="form-group collapse" id="c1-extra-xpath-container">
 					<label for="c1-extra-xpath" class="control-label">XPath Query</label>
 					<input class="form-control" id="c1-extra-xpath" type="text" name="c1-extra-xpath">
+					<p>Please refer to the <a href="?formats#xpath" target="_blank">section on XPath</a> on the corpus formats help page for important limitations.</p>
 				</div>
 				<?php if($_SESSION['poweruser'] == 1) { ?>
 				<div class="form-group">

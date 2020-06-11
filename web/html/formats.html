@@ -177,7 +177,54 @@ Sed vitae ante lorem. Proin ac aliquam massa. </pre>
 </div>
 <div class="row">
 	<div class="col-md-12">
-		<h1>Other XML formats</h1>
-		<p>The vast amount of different XML formats used in linguistics makes it hard to make sure to support every relevant format. Specially when new formats could be around the corner. Therefore this application offers a generic XPath option. Do keep in mind that the XPath query needs to end in either the selection of a tag or an attribute (as in /tag or /@attr). Otherwise, output from the query might not get processed correctly. The corpus itself should be XML without custom entities, containing only numeric style regular entities and no complex features such as includes, DTDs and XSLT. Also keep in mind to only supply XML files and make sure the XPath applies to all XML files. The parser will attempt to parse every files contained in the archive and will consider the corpus erroneous if any of the files do not return correct XPath query results.</p>
+		<h1 id="xpath">Using XPath queries for other XML formats</h1>
+		<p>The vast quantity of different XML formats used in linguistics makes it hard to ensure support for every relevant format. New corpora often deviate from standards and decide to design their own formats. To include some limited support for these formats, a generic XML option is available where an XPath query can be specified to extract tokens.<br><br>
+		
+		Keep in mind that XML files are processed individually and features such as includes, transformations using XSLT and custom DTDs are not supported. If any corpus files are not (valid) XML files, this may cause the processing of the corpus to fail. While many XPath features are supported, type conversion functions and certain namespace related functions won't work. It's important to keep performance in mind when designing your XPath query. If the structure is straightforward, it can be worth to go through the full structure instead of overly using //. If the structure is more complex, // can sometimes be circumvented by using a | union combining several possible options. When the token is stored within an attribute, no text() is required and the parser will remove the attribute name from the output, however when stored directly as a tag value, text() is required to get the desired result. For those with some experience with XPath, testing your query using xmllint might be useful for verification of correctness as well as performance tuning. When you're expecting an XPath query to be slow, saving your corpus under "My corpora" prevents your analysis from timing out.</p>
+		<h3>Simple example</h3>
+		<pre>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;document&gt;
+  &lt;chapter&gt;
+    &lt;paragraph&gt;
+      &lt;sentence&gt;
+        &lt;word lemma="this"&gt;This&lt;/word&gt;
+        &lt;word lemma="are"&gt;is&lt;/word&gt;
+        &lt;word lemma="a"&gt;an&lt;/word&gt;
+        &lt;word lemma="example"&gt;example&lt;/word&gt;
+        &lt;punc&gt;.&lt;/punc&gt;
+      &lt;/sentence&gt;
+    &lt;/paragraph&gt;
+  &lt;/chapter&gt;
+&lt;/document&gt;</pre>
+		<p> To extract the bare words from this XML, the following query could be used: <code>/document/chapter/paragraph/sentence/word/text()</code><br>
+		The query to extract the lemmas is very similar: <code>/document/chapter/paragraph/sentence/word/@lemma</code></p>
+		<h3>More complex example</h3>
+		<pre>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;document&gt;
+  &lt;chapter&gt;
+    &lt;paragraph&gt;
+      &lt;sentence&gt;
+        &lt;word type="det" lemma="this"&gt;This&lt;/word&gt;
+        &lt;word type="verb" lemma="are"&gt;is&lt;/word&gt;
+        &lt;word type="det" lemma="a"&gt;an&lt;/word&gt;
+        &lt;word type="noun" lemma="example"&gt;example&lt;/word&gt;
+        &lt;word type="punc"&gt;.&lt;/word&gt;
+      &lt;/sentence&gt;
+    &lt;/paragraph&gt;
+  &lt;/chapter&gt;
+  &lt;chapter&gt;
+    &lt;sentence&gt;
+      &lt;word type="det" lemma="this"&gt;This&lt;/word&gt;
+      &lt;word type="verb" lemma="are"&gt;is&lt;/word&gt;
+      &lt;word type="adv" lemma="also"&gt;also&lt;/word&gt;
+      &lt;word type="det" lemma="a"&gt;an&lt;/word&gt;
+      &lt;word type="noun" lemma="example"&gt;example&lt;/word&gt;
+      &lt;word type="punc"&gt;.&lt;/word&gt;
+    &lt;/sentence&gt;
+  &lt;/chapter&gt;
+&lt;/document&gt;</pre>
+		<p>This query could be used to extract bare words: <code>/document/chapter/paragraph/sentence/word[@type!="punc"]/text()|/document/chapter/sentence/word[@type!="punc"]/text()</code><br>
+		While this one extracts lemmas: <code>/document/chapter/paragraph/sentence/word/@lemma|/document/chapter/sentence/word/@lemma</code><br><br>
+		Notice how the two different structures (with and without paragraphs) are accomodated with a | union instead of using //word directly. The performance gain from this is only becomes relevant when parsing a corpus with some size and complexity of course. In this case, punctation can be filtered out using the type. As this is sadly not always possible, all tokens are also evaluated by the parser and rejected if they only consist of punctuation, non-currency symbols and/or spacing.</p>
 	</div>
 </div>
