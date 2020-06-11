@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 func main() {
@@ -42,21 +43,16 @@ func main() {
 		//ignore XML lines
 		if !strings.HasPrefix(row, "<") && !strings.HasPrefix(row, "#") && row != "" && row != " " {
 			fields := strings.Split(row, "\t")
-			if fields[colnum] != "." && fields[colnum] != "..." && fields[colnum] != "?" && fields[colnum] != "!" && fields[colnum] != ":" &&
-				fields[colnum] != ";" && fields[colnum] != "_" && fields[colnum] != "," && fields[colnum] != "?!" && fields[colnum] != "!?" &&
-				fields[colnum] != "???" && fields[colnum] != "!!!" && fields[colnum] != "!!" && fields[colnum] != "??" && fields[colnum] != "&" &&
-				fields[colnum] != "(" && fields[colnum] != ")" && fields[colnum] != "*" && fields[colnum] != "'" && fields[colnum] != "\"" &&
-				fields[colnum] != "\\" && fields[colnum] != "/" && fields[colnum] != "|" && fields[colnum] != "+" && fields[colnum] != "=" &&
-				fields[colnum] != "[" && fields[colnum] != "]" && fields[colnum] != "{" && fields[colnum] != "}" && fields[colnum] != "<" &&
-				fields[colnum] != ">" && fields[colnum] != "-" {
-				token := strings.Trim(strings.ToLower(fields[colnum]), " ")
-				if len(token) < 1 {
-					continue
-				}
-				count[token]++
-				if plainwords {
-					plainwordsstring += token + "\t"
-				}
+			token := strings.Trim(strings.ToLower(fields[colnum]), " ")
+			if len(token) < 1 {
+				continue
+			}
+			if isIrrelevantToken(token) {
+				continue
+			}
+			count[token]++
+			if plainwords {
+				plainwordsstring += token + "\t"
 			}
 		}
 	}
@@ -94,4 +90,13 @@ func main() {
 
 	fmt.Println(filetotal)
 	fmt.Println("OK")
+}
+
+func isIrrelevantToken(token string) bool {
+	for _, rune := range token {
+		if !unicode.In(rune, unicode.Cf, unicode.Punct, unicode.Sk, unicode.Sm, unicode.So, unicode.Z) {
+			return false
+		}
+	}
+	return true
 }
