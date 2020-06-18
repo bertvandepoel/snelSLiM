@@ -63,6 +63,9 @@ func main() {
 			detected = "gysseling"
 		} else if strings.HasPrefix(firstlines, "[ <") {
 			detected = "eindhoven"
+		} else if strings.HasPrefix(firstlines, "<?xml version=\"1.0\" encoding=\"utf-8\"?>") && strings.Contains(firstlines, "<document") &&
+			(strings.Contains(firstlines, "<CHAPTER ") || strings.Contains(firstlines, "<s ")) {
+			detected = "xml-opus"
 		} else if strings.HasPrefix(firstlines, "<?xml") {
 			detected = "xml"
 		} else if strings.Count(firstlines, "\t") > 5 {

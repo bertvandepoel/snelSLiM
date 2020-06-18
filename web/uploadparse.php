@@ -100,6 +100,12 @@ function uploadparse($filepost, $format, $extra, $plainwords = FALSE, $tmp = TRU
 	elseif($format == 'textgrid') {
 		$arguments = 'textgrid - -';
 	}
+	elseif($format == 'opus-text') {
+		$arguments = 'opus text -';
+	}
+	elseif($format == 'opus-lemma') {
+		$arguments = 'opus lemma -';
+	}
 	elseif($format == 'xpath') {
 		$arguments = 'xpath - ' . escapeshellarg($extra);
 	}

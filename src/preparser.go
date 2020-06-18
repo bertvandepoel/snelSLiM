@@ -142,8 +142,15 @@ func main() {
 				panic(err)
 			}
 			panic(err)
+		} else if format == "xml-opus" {
+			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection detected files in an XML format that may or may not be NLPL OPUS. Please refer to help page for more information."), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
 		} else if format == "xml" {
-			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection detected files an unknown XML format. Please refer to help page for more information."), 0644)
+			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection detected files in an unknown XML format. Please refer to help page for more information."), 0644)
 			if err != nil {
 				fmt.Println("Could not write error")
 				panic(err)
@@ -200,6 +207,8 @@ func main() {
 			output, err = exec.Command(binfolder+"/formats/XCES-GrAF/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "textgrid" {
 			output, err = exec.Command(binfolder+"/formats/TextGrid/parser", file, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+		} else if format == "opus" {
+			output, err = exec.Command(binfolder+"/formats/OPUS/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "xpath" {
 			output, err = exec.Command(binfolder+"/formats/xpath/parser", file, extra, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else {

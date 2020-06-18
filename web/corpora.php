@@ -141,6 +141,8 @@ if(isset($_GET['add'])) {
 						<option value="gysseling-lemma">Corpus Gysseling format: lemma</option>
 						<option value="graf-text">XCES GrAF: literal string (may not be available)</option>
 						<option value="graf-lemma">XCES GrAF: base</option>
+						<option value="opus-text">NLPL OPUS (XML or parsed): literal string</option>
+						<option value="opus-lemma">NLPL OPUS (XML or parsed): lemma</option>
 						<option value="xpath">XML, specify XPath</option>
 					</select>
 				</div>
@@ -174,7 +176,7 @@ else {
 	$get_corpora = $db->prepare('SELECT id, name, format, extra, datetime FROM corpora WHERE owner=?');
 	$get_corpora->execute(array($_SESSION['email']));
 	
-	$formats = array('conll' => 'CoNLL tab-seperated values', 'folia-text-fast' => 'FoLiA XML - fast method: literal string', 'folia-lemma-fast' => 'FoLiA XML - fast method: lemma', 'folia-text-xpath' => 'FoLiA XML - slow method: literal string', 'folia-lemma-xpath' => 'FoLiA XML - slow method: lemma', 'dcoi-text' => 'DCOI XML: literal string', 'dcoi-lemma' => 'DCOI XML: lemma', 'plain' => 'Plain text (txt)', 'alpino-text' => 'Alpino XML: literal string', 'alpino-lemma' => 'Alpino XML: lemma', 'textgrid' => 'PRAAT TextGrid (literal transcript only)', 'bnc-text' => 'TEI XML - BNC/Brown Corpus variant: literal string', 'bnc-lemma' => 'TEI XML - BNC/Brown Corpus variant: lemma', 'eindhoven' => 'Corpus Eindhoven format (literal string only)', 'gysseling-text' => 'Corpus Gysseling format: literal string', 'gysseling-lemma' => 'Corpus Gysseling format: lemma', 'graf-text' => 'XCES GrAF: literal string (may not be available)', 'graf-lemma' => 'XCES GrAF: base', 'xpath' => 'XML');
+	$formats = array('conll' => 'CoNLL tab-seperated values', 'folia-text-fast' => 'FoLiA XML - fast method: literal string', 'folia-lemma-fast' => 'FoLiA XML - fast method: lemma', 'folia-text-xpath' => 'FoLiA XML - slow method: literal string', 'folia-lemma-xpath' => 'FoLiA XML - slow method: lemma', 'dcoi-text' => 'DCOI XML: literal string', 'dcoi-lemma' => 'DCOI XML: lemma', 'plain' => 'Plain text (txt)', 'alpino-text' => 'Alpino XML: literal string', 'alpino-lemma' => 'Alpino XML: lemma', 'textgrid' => 'PRAAT TextGrid (literal transcript only)', 'bnc-text' => 'TEI XML - BNC/Brown Corpus variant: literal string', 'bnc-lemma' => 'TEI XML - BNC/Brown Corpus variant: lemma', 'eindhoven' => 'Corpus Eindhoven format (literal string only)', 'gysseling-text' => 'Corpus Gysseling format: literal string', 'gysseling-lemma' => 'Corpus Gysseling format: lemma', 'graf-text' => 'XCES GrAF: literal string (may not be available)', 'graf-lemma' => 'XCES GrAF: base', 'opus-text' => 'NLPL OPUS: literal string', 'opus-lemma' => 'NLPL OPUS: lemma', 'xpath' => 'XML');
 ?>
 
 <div class="page-header" id="banner">
@@ -222,6 +224,9 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					}
 					elseif($autodetect == 'mixed') {
 						$corpus['format'] = 'Autodetect: several different formats';
+					}
+					elseif($autodetect == 'xml-opus') {
+						$corpus['format'] = 'Autodetect: unknown XML format (might be NLPL OPUS)';
 					}
 					elseif($autodetect == 'xml') {
 						$corpus['format'] = 'Autodetect: unknown XML format';
@@ -328,6 +333,9 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					}
 					elseif($autodetect == 'mixed') {
 						$corpus['format'] = 'Autodetect: several different formats';
+					}
+					elseif($autodetect == 'xml-opus') {
+						$corpus['format'] = 'Autodetect: unknown XML format (might be NLPL OPUS)';
 					}
 					elseif($autodetect == 'xml') {
 						$corpus['format'] = 'Autodetect: unknown XML format';
