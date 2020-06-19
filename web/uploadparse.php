@@ -70,6 +70,9 @@ function uploadparse($filepost, $format, $extra, $plainwords = FALSE, $tmp = TRU
 	elseif($format == 'plain') {
 		$arguments = 'plain - -';
 	}
+	elseif($format == 'plain-striptags') {
+		$arguments = 'plain 1 -';
+	}
 	elseif($format == 'alpino-text') {
 		$arguments = 'alpino text -';
 	}

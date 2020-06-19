@@ -51,7 +51,7 @@ if( isset($_GET['deleteglobal']) && isset($_SESSION['admin']) && ($_SESSION['adm
 }
 
 if( isset($_GET['castglobal']) && isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
-	if(!file_exists('../data/preparsed/saved/' . $corpus['castglobal'] . '/done')) {
+	if(!file_exists('../data/preparsed/saved/' . $_GET['castglobal'] . '/done')) {
 		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> This corpus is still being processed or has encountered an error during processing. Only corpora that are marked as having successfully processed can be made available to all users.</div></div></div>';
 	}
 	else {
@@ -124,6 +124,7 @@ if(isset($_GET['add'])) {
 					<select class="form-control" id="c1-format" name="c1-format">
 						<option value="autodetect">Autodetect format</option>
 						<option value="plain">Plain text (txt)</option>
+						<option value="plain-striptags">Plain text (txt) with tags removed</option>
 						<option value="conll">CoNLL tab-seperated values, specify column index</option>
 						<option value="folia-text-fast">FoLiA XML - fast method: literal string</option>
 						<option value="folia-lemma-fast">FoLiA XML - fast method: lemma</option>
@@ -176,7 +177,7 @@ else {
 	$get_corpora = $db->prepare('SELECT id, name, format, extra, datetime FROM corpora WHERE owner=?');
 	$get_corpora->execute(array($_SESSION['email']));
 	
-	$formats = array('conll' => 'CoNLL tab-seperated values', 'folia-text-fast' => 'FoLiA XML - fast method: literal string', 'folia-lemma-fast' => 'FoLiA XML - fast method: lemma', 'folia-text-xpath' => 'FoLiA XML - slow method: literal string', 'folia-lemma-xpath' => 'FoLiA XML - slow method: lemma', 'dcoi-text' => 'DCOI XML: literal string', 'dcoi-lemma' => 'DCOI XML: lemma', 'plain' => 'Plain text (txt)', 'alpino-text' => 'Alpino XML: literal string', 'alpino-lemma' => 'Alpino XML: lemma', 'textgrid' => 'PRAAT TextGrid (literal transcript only)', 'bnc-text' => 'TEI XML - BNC/Brown Corpus variant: literal string', 'bnc-lemma' => 'TEI XML - BNC/Brown Corpus variant: lemma', 'eindhoven' => 'Corpus Eindhoven format (literal string only)', 'gysseling-text' => 'Corpus Gysseling format: literal string', 'gysseling-lemma' => 'Corpus Gysseling format: lemma', 'graf-text' => 'XCES GrAF: literal string (may not be available)', 'graf-lemma' => 'XCES GrAF: base', 'opus-text' => 'NLPL OPUS: literal string', 'opus-lemma' => 'NLPL OPUS: lemma', 'xpath' => 'XML');
+	$formats = array('conll' => 'CoNLL tab-seperated values', 'folia-text-fast' => 'FoLiA XML - fast method: literal string', 'folia-lemma-fast' => 'FoLiA XML - fast method: lemma', 'folia-text-xpath' => 'FoLiA XML - slow method: literal string', 'folia-lemma-xpath' => 'FoLiA XML - slow method: lemma', 'dcoi-text' => 'DCOI XML: literal string', 'dcoi-lemma' => 'DCOI XML: lemma', 'plain' => 'Plain text (txt)', 'plain-striptags' => 'Plain text (txt) with tags removed', 'alpino-text' => 'Alpino XML: literal string', 'alpino-lemma' => 'Alpino XML: lemma', 'textgrid' => 'PRAAT TextGrid (literal transcript only)', 'bnc-text' => 'TEI XML - BNC/Brown Corpus variant: literal string', 'bnc-lemma' => 'TEI XML - BNC/Brown Corpus variant: lemma', 'eindhoven' => 'Corpus Eindhoven format (literal string only)', 'gysseling-text' => 'Corpus Gysseling format: literal string', 'gysseling-lemma' => 'Corpus Gysseling format: lemma', 'graf-text' => 'XCES GrAF: literal string (may not be available)', 'graf-lemma' => 'XCES GrAF: base', 'opus-text' => 'NLPL OPUS: literal string', 'opus-lemma' => 'NLPL OPUS: lemma', 'xpath' => 'XML');
 ?>
 
 <div class="page-header" id="banner">

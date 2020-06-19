@@ -11,8 +11,13 @@ import (
 
 func main() {
 	filename := os.Args[1]
-	outfilename := os.Args[2]
-	outplainwords := os.Args[3]
+	striptagsarg := os.Args[2]
+	striptags := false
+	if striptagsarg != "-" && striptagsarg != "0" {
+		striptags = true
+	}
+	outfilename := os.Args[3]
+	outplainwords := os.Args[4]
 	plainwords := false
 	if outplainwords != "-" {
 		plainwords = true
@@ -25,7 +30,23 @@ func main() {
 	}
 
 	datastring := string(data)
+	if striptags && strings.Contains(datastring, "<") {
+		lefttagsplit := strings.Split(datastring, "<")
+		for index, leftfield := range lefttagsplit {
+			if index == 0 {
+				datastring = leftfield
+				continue
+			}
+			if strings.Contains(leftfield, ">") {
+				righttagsplit := strings.SplitN(leftfield, ">", 2)
+				datastring += righttagsplit[1]
+			} else {
+				datastring += "<" + leftfield
+			}
+		}
+	}
 	datastring = strings.Replace(datastring, "\n", " ", -1)
+	datastring = strings.Replace(datastring, "\r", " ", -1)
 	datastring = strings.Replace(datastring, "\t", " ", -1)
 	datastring = strings.Replace(datastring, ".", " ", -1)
 	datastring = strings.Replace(datastring, ",", " ", -1)
@@ -57,7 +78,7 @@ func main() {
 	plainwordsstring := ""
 
 	for _, field := range fields {
-		if field != "" {
+		if field != "" && field != "-" && field != "--" && field != "---" {
 			count[strings.ToLower(field)]++
 			if plainwords {
 				plainwordsstring += strings.ToLower(field) + "\t"

@@ -194,7 +194,7 @@ func main() {
 		} else if format == "dcoi" {
 			output, err = exec.Command(binfolder+"/formats/DCOI/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "plain" {
-			output, err = exec.Command(binfolder+"/formats/plain/parser", file, savedir+"/"+base+".snelslim", plainwordsfile).Output()
+			output, err = exec.Command(binfolder+"/formats/plain/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "alpino" {
 			output, err = exec.Command(binfolder+"/formats/alpino/parser", file, option, savedir+"/"+base+".snelslim", plainwordsfile).Output()
 		} else if format == "bnc" {
