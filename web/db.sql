@@ -45,5 +45,5 @@ ALTER TABLE `corpora`
 ALTER TABLE `reports`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-INSERT INTO `accounts` (`email`, `hash`, `admin`) VALUES
+INSERT INTO `accounts` VALUES
 ('test@example.com', '$2y$10$d53lQJTJAn6EMuXsYf/NNeXjhkXWh.KorXcHCvBuYzkyQT1Pn84He', 1, 1);
