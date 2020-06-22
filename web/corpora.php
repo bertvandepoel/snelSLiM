@@ -61,7 +61,7 @@ if( isset($_GET['castglobal']) && isset($_SESSION['admin']) && ($_SESSION['admin
 	}
 }
 
-if(isset($_POST['add'])) {
+if(isset($_POST['add']) AND !$demo) {
 	if ( ($_POST['c1-format'] == 'conll') AND  (intval($_POST['c1-extra-conll']) < 1) ) {
 		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You have chosen CoNLL as the format for your corpus, but you have not specified which column to select.</div></div></div>';
 	}
@@ -105,16 +105,17 @@ if(isset($_GET['add'])) {
 		<div class="col-md-4 col-md-offset-4">
 			<fieldset>
 				<legend>New corpus</legend>
+				<?php if($demo) echo '<div class="alert alert-info">This feature is not available in this demo.</div>'; ?>
 				<div class="form-group">
 					<label for="c1-name" class="control-label">Name</label>
-					<input class="form-control" id="c1-name" type="text" name="c1-name">
+					<input class="form-control" id="c1-name" type="text" name="c1-name" <?php if($demo) echo "disabled" ?>>
 				</div>
 				<div class="form-group">
 					<label for="c1-file" class="control-label">
 						Corpus file
 						<a href="https://github.com/bertvandepoel/snelSLiM/tree/master/docs/user-manual.pdf" target="_blank" data-toggle="tooltip" class="formtooltip" title="Supply your corpus in the form of a zip or tar containing your texts or fragments. For more detailed instructions please refer to the manual."><span class="glyphicon glyphicon-question-sign"></span></a>
 					</label>
-					<input class="form-control" id="c1-file" type="file" name="c1-file">
+					<input class="form-control" id="c1-file" type="file" name="c1-file" <?php if($demo) echo "disabled" ?>>
 				</div>
 				<div class="form-group">
 					<label for="c1-format" class="control-label">
@@ -162,7 +163,7 @@ if(isset($_GET['add'])) {
 				</div>
 				<?php } ?>
 				<div class="form-group">
-					<button type="submit" class="btn btn-primary" name="add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> &nbsp; Add Corpus</button>
+					<button type="submit" class="btn btn-primary" name="add" <?php if($demo) echo "disabled" ?>><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> &nbsp; Add Corpus</button>
 				</div>
 			</fieldset>
 		</div>

@@ -27,26 +27,36 @@ session_start();
 require('mysql.php');
 require('config.php');
 if(isset($_POST['login'])) {
-	$get_user = $db->prepare('SELECT hash, poweruser, admin FROM accounts WHERE email=?');
-	$get_user->execute(array($_POST['email']));
-	$user = $get_user->fetch(PDO::FETCH_ASSOC);
-	if( (!$user) OR (!password_verify($_POST['password'], $user['hash']))) {
-		require('html/top.html');
-		require('html/loginerror.html');
-		require('html/login.html');
-		require('html/bottom.html');
+	if($demo) {
+		$_SESSION['loggedin'] = true;
+		$_SESSION['email'] = "demo@example.com";
+		$_SESSION['poweruser'] = 0;
+		$_SESSION['admin'] = 0;
+		header('Location: ' . $_SERVER['REQUEST_URI']);
 		exit;
 	}
-	if(password_needs_rehash($user['hash'], PASSWORD_DEFAULT)) {
-		$update_user = $db->prepare('UPDATE accounts SET hash=? WHERE email=?');
-		$update_user->execute(array(password_hash($_POST['password'], PASSWORD_DEFAULT), $_POST['email']));
+	else {
+		$get_user = $db->prepare('SELECT hash, poweruser, admin FROM accounts WHERE email=?');
+		$get_user->execute(array($_POST['email']));
+		$user = $get_user->fetch(PDO::FETCH_ASSOC);
+		if( (!$user) OR (!password_verify($_POST['password'], $user['hash']))) {
+			require('html/top.html');
+			require('html/loginerror.html');
+			require('html/login.html');
+			require('html/bottom.html');
+			exit;
+		}
+		if(password_needs_rehash($user['hash'], PASSWORD_DEFAULT)) {
+			$update_user = $db->prepare('UPDATE accounts SET hash=? WHERE email=?');
+			$update_user->execute(array(password_hash($_POST['password'], PASSWORD_DEFAULT), $_POST['email']));
+		}
+		$_SESSION['loggedin'] = true;
+		$_SESSION['email'] = $_POST['email'];
+		$_SESSION['poweruser'] = $user['poweruser'];
+		$_SESSION['admin'] = $user['admin'];
+		header('Location: ' . $_SERVER['REQUEST_URI']);
+		exit;
 	}
-	$_SESSION['loggedin'] = true;
-	$_SESSION['email'] = $_POST['email'];
-	$_SESSION['poweruser'] = $user['poweruser'];
-	$_SESSION['admin'] = $user['admin'];
-	header('Location: ' . $_SERVER['REQUEST_URI']);
-	exit;
 }
 
 if(isset($_GET['json'])) {
@@ -65,6 +75,10 @@ else {
 	require('html/top.html');
 }
 
+if($demo) {
+	require('html/demonotice.html');
+}
+
 if(!isset($_SESSION['loggedin']) && isset($_GET['reset'])) {
 	if(isset($_POST['reset']) && !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> please enter a valid email address.</div></div></div>';
@@ -77,7 +91,12 @@ if(!isset($_SESSION['loggedin']) && isset($_GET['reset'])) {
 	require('html/resetpassword.html');
 }
 elseif(!isset($_SESSION['loggedin'])) {
-	require('html/login.html');
+	if($demo) {
+		require('html/demologin.html');
+	}
+	else {
+		require('html/login.html');
+	}
 }
 elseif(isset($_GET['corpora'])) {
 	require('corpora.php');
@@ -118,7 +137,10 @@ elseif(isset($_GET['accounts'])) {
 	}
 }
 elseif(isset($_GET['pw'])) {
-	if(isset($_POST['change'])) {
+	if($demo) {
+		echo '<div class="alert alert-info">This feature is not available in this demo.</div>';
+	}
+	elseif(isset($_POST['change'])) {
 		if($_POST['password'] !== $_POST['password_confirm']) {
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> Your password and confirmation did not match.</div></div></div>';
 		}
@@ -143,9 +165,18 @@ elseif(isset($_GET['logout'])) {
 }
 else {
 	if(isset($_POST['analyse'])) {
+		if($demo) {
+			$_POST['freqnum'] = 5000;
+			$_POST['cutoff'] = 10.82757;
+			$_POST['collocleft'] = 3;
+			$_POST['collocright'] = 3;
+		}
 		if( ($_POST['c1-select'] !== 'none') AND ($_POST['c1-select'] == $_POST['c2-select']) ) {
 			// comparing same saved corpus, revert to form
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You selected the same corpus twice. This would of course not work out.</div></div></div>';
+		}
+		elseif( $demo AND ($_POST['c1-select'] == 'none' OR $_POST['c2-select'] == 'none') ) {
+			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You can only select from existing global corpora in this demo.</div></div></div>';
 		}
 		elseif ( ($_POST['c1-select'] == 'none') AND ($_POST['c1-format'] == 'conll') AND (intval($_POST['c1-extra-conll']) < 1) ) {
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You have chosen CoNLL as the format for your first corpus, but you have not specified which column to select.</div></div></div>';
@@ -384,6 +415,9 @@ else {
 	}
 	
 	$form = file_get_contents('html/form.html');
+	if($demo) {
+		$form = file_get_contents('html/demoform.html');
+	}
 	$form = str_replace('%corpus_dropdown%', $corpora_dropdown, $form);
 	$form = str_replace('%corpus_c1search%', $corpora_c1search, $form);
 	$form = str_replace('%corpus_c2search%', $corpora_c2search, $form);
