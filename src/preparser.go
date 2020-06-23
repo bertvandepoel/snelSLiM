@@ -122,7 +122,7 @@ func main() {
 			panic(err)
 		}
 		if format == "unknown" {
-			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection was unable to detect the format of your corpus. Please refer to help page for more information."), 0644)
+			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection was unable to detect the format of your corpus. Please refer to the user manual and the corpus formats help page for more information."), 0644)
 			if err != nil {
 				fmt.Println("Could not write error")
 				panic(err)
@@ -143,14 +143,14 @@ func main() {
 			}
 			panic(err)
 		} else if format == "xml-opus" {
-			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection detected files in an XML format that may or may not be NLPL OPUS. Please refer to help page for more information."), 0644)
+			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection detected files in an XML format that may or may not be NLPL OPUS. Please refer to the user manual and the corpus formats help page for more information."), 0644)
 			if err != nil {
 				fmt.Println("Could not write error")
 				panic(err)
 			}
 			panic(err)
 		} else if format == "xml" {
-			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection detected files in an unknown XML format. Please refer to help page for more information."), 0644)
+			err := ioutil.WriteFile(savedir+"error", []byte("error: corpus format autodetection detected files in an unknown XML format. Please refer to the user manual and the corpus formats help page for more information."), 0644)
 			if err != nil {
 				fmt.Println("Could not write error")
 				panic(err)
