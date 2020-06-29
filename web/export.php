@@ -116,7 +116,7 @@ if(isset($_GET['format'])) {
 				"{" => "\\{",
 				"}" => "\\}",
 			);
-			return preg_replace( "/([\^\%~\\\\#\$%&_\{\}])/e", "\$map['$1']", $string );
+			return preg_replace_callback( "/([\^\%~\\\\#\$%&_\{\}])/", "\$map['$1']", $string );
 		}
 	}
 	
