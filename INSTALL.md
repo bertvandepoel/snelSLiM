@@ -46,7 +46,7 @@ If you have chosen to build your binaries on a local machine, you will have to t
 
 ### Hosting configuration
 
-If you are using a domain or subdomein directly for your installation of snelSLiM, it is important not to point the DocumentRoot of your VirtualHost to the snelSLiM folder. Instead, please point it to the web folder which contains all files to do with the web interface. There is no need to have your binaries and accessible online.
+If you are using a domain or subdomein directly for your installation of snelSLiM, it is important not to point the DocumentRoot of your VirtualHost to the snelSLiM folder. Instead, please point it to the web folder which contains all files to do with the web interface. There is no need to have your binaries, data and the source files accessible online.
 If you wish to make snelSLiM available as a subfolder, simply use a symbolic link to the web folder and make sure your VirtualHost or .htaccess is configured to follow symlinks.
 
 ### Application configuration
