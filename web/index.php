@@ -18,11 +18,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  */
  
-ini_set('upload_max_filesize', '2G');
-ini_set('post_max_size', '2G');
-
-
-
 session_start();
 require('mysql.php');
 require('config.php');

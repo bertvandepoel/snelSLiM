@@ -68,6 +68,8 @@ config.php contains several configuration options:
 * email_smtp_username: username for the SMTP server (if using SMTP auth)
 * email_smtp_password: password for the SMTP server (if using SMTP auth)
 
+By default, snelSLiM uses both .htaccess and .user.ini to allow uploading up to 100MB each request. If your hosting or setup requires this to be set through some other means, make sure to do so. If you wish to increase or decrease the limit to allow users to supply larger corpora or limit them to smaller corpora, you can edit .htaccess and .user.ini in the web folder. Keep in mind that depending on compression rates, the unpacked corpus might be much larger than the uploaded file.
+
 ## Accessing snelSLiM
 
 After configuring your installation, snelSLiM should be available on the domain, subdomain or subfolder it was installed on. If there are problems connecting to the database, an error may be shown or written to your webserver error log depending the web server configuration.
