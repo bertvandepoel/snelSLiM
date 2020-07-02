@@ -63,6 +63,7 @@ fieldset {
 	position: fixed;
 	right: 4rem;
 	bottom: 2rem;
+	z-index: 1;
 }
 
 .breakwords {
