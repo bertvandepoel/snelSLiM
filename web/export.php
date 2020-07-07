@@ -23,9 +23,7 @@ if(isset($_GET['format'])) {
 	$get_report->execute(array($_GET['export'], $_SESSION['email']));
 	$report = $get_report->fetch(PDO::FETCH_ASSOC);
 	if(!$report) {
-		var_dump($_SESSION);
-		echo 'AAAAAAAAAAAA';
-		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-error"><strong>Error</strong> This report was deleted or is not available to you.</div></div></div>';
+		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> This report was deleted or is not available to you.</div></div></div>';
 		require('html/bottom.html');
 		exit;
 	}
