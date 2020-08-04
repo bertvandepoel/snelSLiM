@@ -74,6 +74,23 @@ if($demo) {
 	require('html/demonotice.html');
 }
 
+if(isset($_GET['sharetoken'])) {
+	if(isset($_GET['keydetail'])) {
+		require('keydetail.php');
+	}
+	elseif(isset($_GET['fragvis'])) {
+		require('visualizations/fragvis.php');
+	}
+	elseif(isset($_GET['export'])) {
+		require('export.php');
+	}
+	else {
+		require('report.php');
+	}
+	require('html/bottom.html');
+	exit;
+}
+
 if(!isset($_SESSION['loggedin']) && isset($_GET['reset'])) {
 	if(isset($_POST['reset']) && !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> please enter a valid email address.</div></div></div>';
@@ -104,6 +121,9 @@ elseif(isset($_GET['report'])) {
 }
 elseif(isset($_GET['export'])) {
 	require('export.php');
+}
+elseif(isset($_GET['share'])) {
+	require('share.php');
 }
 elseif(isset($_GET['fragvis'])) {
 	require('visualizations/fragvis.php');

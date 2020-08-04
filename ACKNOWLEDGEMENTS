@@ -54,5 +54,10 @@ Publicly available as open source software software under the MIT License https:
 Copyright (c) 2014 Duy Anh Nguyen
 
 
+clipboard.js
+Publicly available as open source software software under the MIT License https://opensource.org/licenses/MIT and available on https://github.com/zenorocha/clipboard.js/
+Copyright (c) 2020 Zeno Rocha
+
+
 libxml2 - xmllint
-snelSLiM uses the installed version of xmllint on the server it is deployed to. Non the less an acknowledgement is in place for the great work at the libxml project http://www.xmlsoft.org/
+snelSLiM uses the installed version of xmllint on the server it is deployed to. Non the less an acknowledgement is in place for the great work at the libxml2 project http://www.xmlsoft.org/

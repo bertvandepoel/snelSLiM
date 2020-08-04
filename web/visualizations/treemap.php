@@ -64,7 +64,7 @@ var spec = {
   "data": [
     {
       "name": "tree",
-      "url": "?json=&reportid=<?php echo $_GET['report']; ?>",
+      "url": "?json=&reportid=<?php echo $report['id'] . $report['linksuffix']; ?>",
       "transform": [
         {
           "type": "stratify", 
@@ -144,7 +144,7 @@ var spec = {
       "encode": {
         "enter": {
           "stroke": {"value": "#fff"},
-          "href": {"signal": "'?reportid=<?php echo $_GET['report']; ?>&fragvis='+datum.name"},
+          "href": {"signal": "'?reportid=<?php echo $report['id']; ?>&fragvis='+datum.name+'<?php echo $report['linksuffix']; ?>'"},
           "cursor": {"value": "pointer"},
           "tooltip": {"signal": "datum.name"}
         },

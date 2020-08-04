@@ -19,9 +19,22 @@
  */
 
 if(isset($_GET['format'])) {
-	$get_report = $db->prepare('SELECT c1, c2, freqnum, cutoff, datetime FROM reports WHERE id=? AND owner=?');
-	$get_report->execute(array($_GET['export'], $_SESSION['email']));
-	$report = $get_report->fetch(PDO::FETCH_ASSOC);
+	if(isset($_GET['sharetoken'])) {
+		$get_tokenreport = $db->prepare('SELECT c1, c2 FROM reports, share_link WHERE share_link.sharetoken=? AND reports.id=share_link.reportid ORDER BY id DESC');
+		$get_tokenreport->execute(array($_GET['sharetoken']));
+		$report = $get_tokenreport->fetch(PDO::FETCH_ASSOC);
+	}
+	else {
+		$get_report = $db->prepare('SELECT c1, c2, freqnum, cutoff, datetime FROM reports WHERE id=? AND owner=?');
+		$get_report->execute(array($_GET['export'], $_SESSION['email']));
+		$report = $get_report->fetch(PDO::FETCH_ASSOC);
+		if(!$report) {
+			$get_shares = $db->prepare('SELECT c1, c2 FROM reports, share_user WHERE reports.id=? AND share_user.account=? AND reports.id=share_user.reportid ORDER BY id DESC');
+			$get_shares->execute(array($_GET['export'], $_SESSION['email']));
+			$report = $get_shares->fetch(PDO::FETCH_ASSOC);
+		}
+	}
+	
 	if(!$report) {
 		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> This report was deleted or is not available to you.</div></div></div>';
 		require('html/bottom.html');
@@ -225,6 +238,7 @@ else {
 							</label>
 						</div>
 						<div class="form-group">
+							<?php if(isset($_GET['sharetoken'])) { echo '<input name="sharetoken" type="hidden" value="' . $_GET['sharetoken'] . '">'; } ?>
 							<button type="submit" class="btn btn-primary" name="export" value="<?php echo $_GET['export']; ?>"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> &nbsp; Export</button>
 						</div>
 					</fieldset>

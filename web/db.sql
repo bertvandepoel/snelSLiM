@@ -29,6 +29,16 @@ CREATE TABLE `reports` (
   `datetime` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `share_link` (
+  `sharetoken` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reportid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `share_user` (
+  `reportid` int(11) NOT NULL,
+  `account` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 ALTER TABLE `accounts`
   ADD PRIMARY KEY (`email`);
@@ -44,6 +54,13 @@ ALTER TABLE `corpora`
 
 ALTER TABLE `reports`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `share_link`
+  ADD PRIMARY KEY (`sharetoken`),
+  ADD UNIQUE KEY `reportid` (`reportid`);
+
+ALTER TABLE `share_user`
+  ADD PRIMARY KEY (`reportid`,`account`);
 
 INSERT INTO `accounts` VALUES
 ('test@example.com', '$2y$10$d53lQJTJAn6EMuXsYf/NNeXjhkXWh.KorXcHCvBuYzkyQT1Pn84He', 1, 1);
