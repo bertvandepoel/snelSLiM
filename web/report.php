@@ -100,6 +100,11 @@ if(isset($report['owner'])) {
 		<div class="col-md-12">
 			<h1>Your report is ready</h1>
 			<p class="lead">You requested a snelSLiM report for <span class="emphasize">Corpus &quot;<?php echo $report['c1']; ?>&quot;</span> against <span class="emphasize">Corpus &quot;<?php echo $report['c2']; ?>&quot;</span> on <?php echo date("d M Y \a\\t H:i", strtotime($report['datetime'])); ?> (finished in <?php echo $diff->format('%hh%im%ss'); ?>) using a statistical probability of <span class="emphasize"><?php echo $cutoff_transform[$report['cutoff']] ?></span><a href="?statistics" target="_blank" data-toggle="tooltip" class="formtooltip" title="Click for more information about statistical probability cut-off values"><span class="glyphicon glyphicon-question-sign"></span></a> and <span class="emphasize"><?php echo $report['freqnum']; ?></span><a href="?statistics" target="_blank" data-toggle="tooltip" class="formtooltip" title="Click for more information about what the number of frequent items means, or refer to the user manual"><span class="glyphicon glyphicon-question-sign"></span></a> of the most frequent items from the primary corpus to end up finding <span class="emphasize"><?php echo substr_count($c1report, "\n"); ?> stable lexical markers</span>. In the table you can see whether they were attracted to the first corpus or repulsed by it, and look into the effect size using the log odds ratio. For more information on these measures, please consult the help pages. In the bottommost table the results were then used to mark potentially interesting fragments/texts based on marker frequencies.</p>
+			<?php
+			if(file_exists('../data/reports/' . $report['id'] . '/collocinvalid')) {
+				echo '<p class="lead collocinvalid">Collocational analysis was requested but Corpus A (target) was not pre-analysed for collocational analysis or the file was supplied by a user without the required premissions for pre-analysis for collocational analysis.</p>';
+			}
+			?>
 		</div>
 	</div>
 </div>

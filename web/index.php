@@ -183,8 +183,8 @@ else {
 		if($demo) {
 			$_POST['freqnum'] = 5000;
 			$_POST['cutoff'] = 10.82757;
-			$_POST['collocleft'] = 3;
-			$_POST['collocright'] = 3;
+			$_POST['collocleft'] = 4;
+			$_POST['collocright'] = 4;
 		}
 		if( ($_POST['c1-select'] !== 'none') AND ($_POST['c1-select'] == $_POST['c2-select']) ) {
 			// comparing same saved corpus, revert to form
@@ -215,6 +215,7 @@ else {
 			$collocleft = 0;
 			$collocright = 0;
 			$colloc = FALSE;
+			$collocinvalid = FALSE;
 			if(isset($_POST['colloc']) AND $_POST['colloc'] == 'on') {
 				$collocleft = intval($_POST['collocleft']);
 				$collocright = intval($_POST['collocright']);
@@ -224,7 +225,7 @@ else {
 			if($_SESSION['poweruser'] != 1 && $colloc) {
 				$nonpowercolloc = TRUE;
 			}
-			// all paths must be relative to application/slm
+			// all paths must be relative to bin/ (where the executables are located)
 			require('uploadparse.php');
 			if($_POST['c1-select'] == 'none') {
 				if($_FILES['c1-file']['error'] !== UPLOAD_ERR_OK) {
@@ -233,9 +234,8 @@ else {
 					exit;
 				}
 				elseif($nonpowercolloc) {
-					echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You do not have the right permissions to request collocational analysis on a temporary corpus.</div></div></div>';
-					require('html/bottom.html');
-					exit;
+					$colloc = FALSE;
+					$collocinvalid = TRUE;
 				}
 				$extra = NULL;
 				if($_POST['c1-format'] == 'conll') {
@@ -264,9 +264,8 @@ else {
 				$corpus1name = $row['name'];
 				$corpus1 = '../data/preparsed/saved/' . $_POST['c1-select'];
 				if($colloc && !file_exists('../data/' . $corpus1 . '/plainwords')) {
-					echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> The corpus A you selected was not prepared for collocational analyse. Please either disable this additional analysis or select or supply a prepared corpus.</div></div></div>';
-					require('html/bottom.html');
-					exit;
+					$colloc = FALSE;
+					$collocinvalid = TRUE;
 				}
 			}
 			if($_POST['c2-select'] == 'none') {
@@ -305,6 +304,9 @@ else {
 			
 			chdir('../bin');
 			mkdir($reportdir);
+			if($collocinvalid) {
+				touch($reportdir . '/collocinvalid');
+			}
 			
 			$genviz = 0;
 			if(isset($_POST['genviz']) AND $_POST['genviz'] == 'on') {

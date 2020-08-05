@@ -87,3 +87,7 @@ fieldset {
 	max-height: 30rem;
 	overflow-y: auto;
 }
+
+.collocinvalid {
+	font-style: italic;
+}
