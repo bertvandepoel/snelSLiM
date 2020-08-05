@@ -18,7 +18,8 @@ snelSLiM needs to be compiled before use, this can be done either on the final h
   * xmllint (usually part of libxml, needed for corpora in XML-formats)
 * PHP 7.0 or higher (may work with PHP 5.5 and 5.6, but is no longer actively tested)
   * With no restrictions on the use of shell_exec
-  * Preferably the option to enlarge upload_max_filesize and post_max_size (for uploading large corpora)
+  * Preferably the option to enlarge upload_max_filesize and post_max_size (for uploading large corpora), for example using .user.ini
+  * PHP Pear Mail (Mail.php) should either be pre-installed or installed in the web folder by hand
 * MySQL
 
 ## Getting the files
