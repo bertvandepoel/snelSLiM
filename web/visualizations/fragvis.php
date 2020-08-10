@@ -51,28 +51,33 @@ if(file_exists('../data/reports/' . $_GET['reportid'] . '/visuals')) {
 			break;
 		}
 	}
+	if(!$filestats) {
+		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> This file does not seem to exist or the filename could not be recognized</div></div></div>';
+		require('html/bottom.html');
+		exit;
+	}
 	?>
 	
 <div class="page-header">
 	<div class="row">
 		<div class="col-md-12">
 			<h1>Detailed report for file &quot;<?php echo $_GET['fragvis']; ?>&quot;</h1>
-			<p class="lead">You requested more details about the file <span class="emphasize">&quot;<?php echo $_GET['fragvis']; ?>&quot;</span> of your snelSLiM report for <span class="emphasize">Corpus &quot;<?php echo $report['c1']; ?>&quot;</span> against <span class="emphasize">Corpus &quot;<?php echo $report['c2']; ?>&quot;</span>. The file contains <span class="emphasize"><?php echo $item['size_total']; ?></span> inidividual words of which <span class="emphasize"><?php echo $item['size_keyword_total']; ?></span> are stable lexical markers. The file contains <span class="emphasize"><?php echo $item['size_keyword_unique']; ?></span> unique stable lexical markers. This means that <span class="emphasize"><?php echo round($item['size_keyword_percentage_total']*100, 2); ?>%</span> of this file are stable lexical markers.
+			<p class="lead">You requested more details about the file <span class="emphasize">&quot;<?php echo $_GET['fragvis']; ?>&quot;</span> of your snelSLiM report for <span class="emphasize">Corpus &quot;<?php echo $report['c1']; ?>&quot;</span> against <span class="emphasize">Corpus &quot;<?php echo $report['c2']; ?>&quot;</span>. The file contains <span class="emphasize"><?php echo $filestats['size_total']; ?></span> inidividual words of which <span class="emphasize"><?php echo $filestats['size_keyword_total']; ?></span> are stable lexical markers. The file contains <span class="emphasize"><?php echo $filestats['size_keyword_unique']; ?></span> unique stable lexical markers. This means that <span class="emphasize"><?php echo round($filestats['size_keyword_percentage_total']*100, 2); ?>%</span> of this file are stable lexical markers.
 			<?php
-				if($item['parent_total'] == 2) {
+				if($filestats['parent_total'] == 2) {
 					echo 'The majority of the stable lexical markers in this file are <span class="emphasize">attracted</span>. ';
 				}
-				elseif($item['parent_total'] == 3) {
+				elseif($filestats['parent_total'] == 3) {
 					echo 'The majority of the stable lexical markers in this file are <span class="emphasize">repulsed</span>. ';
 				}
 				else {
 					echo 'There is an <span class="emphasize">equal amount</span> of attracted and repulsed stable lexical markers in this file. ';
 				}
 				
-				if($item['parent_unique'] == 2) {
+				if($filestats['parent_unique'] == 2) {
 					echo 'While of the unique stable lexical markers, a majority in this file are <span class="emphasize">attracted</span>.';
 				}
-				elseif($item['parent_unique'] == 3) {
+				elseif($filestats['parent_unique'] == 3) {
 					echo 'While of the unique stable lexical markers, a majority in this file are <span class="emphasize">repulsed</span>.';
 				}
 				else {
