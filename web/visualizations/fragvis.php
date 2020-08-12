@@ -23,6 +23,7 @@ if(isset($_GET['sharetoken'])) {
 	$get_tokenreport = $db->prepare('SELECT id, c1, c2 FROM reports, share_link WHERE share_link.sharetoken=? AND reports.id=share_link.reportid ORDER BY id DESC');
 	$get_tokenreport->execute(array($_GET['sharetoken']));
 	$report = $get_tokenreport->fetch(PDO::FETCH_ASSOC);
+	$report['linksuffix'] = '&sharetoken=' . $_GET['sharetoken'];
 }
 else {
 	$get_report = $db->prepare('SELECT id, c1, c2 FROM reports WHERE id=? AND owner=?');
@@ -33,6 +34,7 @@ else {
 		$get_shares->execute(array($_GET['reportid'], $_SESSION['email']));
 		$report = $get_shares->fetch(PDO::FETCH_ASSOC);
 	}
+	$report['linksuffix'] = '';
 }
 
 if(!$report) {
@@ -94,5 +96,7 @@ if(file_exists('../data/reports/' . $_GET['reportid'] . '/visuals')) {
 	$c1frag = file_get_contents('../data/reports/' . $report['id'] . '/c1frag.report');
 	$c2frag = file_get_contents('../data/reports/' . $report['id'] . '/c2frag.report');
 	require('visualizations/scatter_euclid.php');
+	echo '<h4>Scatterplot of file clustering based on an average prototype for each corpus</h4>';
+	require('visualizations/scatter_prototype.php');
 }
 

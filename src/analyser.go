@@ -680,6 +680,16 @@ func main() {
 
 	var vizfraglist []viznode
 	if exportviz {
+		err = os.Mkdir(reportdir+"visuals", 0755)
+		if err != nil {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: could not create visuals folder in the report folder"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+
 		vizfraglist = append(vizfraglist, viznode{Id: 1, Name: "corpus"})
 		vizfraglist = append(vizfraglist, viznode{Id: 2, Name: "attracted", Parent_total: 1, Parent_unique: 1})
 		vizfraglist = append(vizfraglist, viznode{Id: 3, Name: "repulsed", Parent_total: 1, Parent_unique: 1})
@@ -840,6 +850,63 @@ func main() {
 			}
 			panic(err)
 		}
+
+		corpusA_normalized_vectors := make(map[string][]float64)
+		corpusB_normalized_vectors := make(map[string][]float64)
+		for filename, vector := range corpusA_vectors {
+			corpusA_normalized_vectors[filename] = normalize_vector(vector)
+		}
+		for filename, vector := range corpusB_vectors {
+			corpusB_normalized_vectors[filename] = normalize_vector(vector)
+		}
+		prototypeA := average_vectors(corpusA_normalized_vectors)
+		prototypeB := average_vectors(corpusB_normalized_vectors)
+
+		type vizprotocoordinates struct {
+			Filename string  `json:"filename"`
+			X        float64 `json:"xcoor,omitempty"`
+			Y        float64 `json:"ycoor,omitempty"`
+			Corpus   string  `json:"corpus"`
+		}
+		var prototype_coordinates []vizprotocoordinates
+
+		for filename, vector := range corpusA_normalized_vectors {
+			y := dotproduct_vectors(prototypeA, vector)
+			x := dotproduct_vectors(prototypeB, vector)
+			if math.IsNaN(x) || math.IsNaN(y) {
+				prototype_coordinates = append(prototype_coordinates, vizprotocoordinates{Filename: filename, Corpus: "error"})
+			} else {
+				prototype_coordinates = append(prototype_coordinates, vizprotocoordinates{Filename: filename, X: x, Y: y, Corpus: "A"})
+			}
+		}
+		for filename, vector := range corpusB_normalized_vectors {
+			y := dotproduct_vectors(prototypeA, vector)
+			x := dotproduct_vectors(prototypeB, vector)
+			if math.IsNaN(x) || math.IsNaN(y) {
+				prototype_coordinates = append(prototype_coordinates, vizprotocoordinates{Filename: filename, Corpus: "error"})
+			} else {
+				prototype_coordinates = append(prototype_coordinates, vizprotocoordinates{Filename: filename, X: x, Y: y, Corpus: "B"})
+			}
+		}
+
+		exportjson, err := json.Marshal(prototype_coordinates) // thanks to our structure, this can immediatly be converted into VEGA ready JSON
+		if err != nil {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: could convert prototype vector visualisation data to correct format"+err.Error()), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+		err = ioutil.WriteFile(reportdir+"visuals/prototype_coordinates.json", exportjson, 0644)
+		if err != nil {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write prototype vector visualisation data"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
 	}
 
 	var sortedc1fragresult []structkeyvalue
@@ -952,15 +1019,6 @@ func main() {
 			}
 			panic(err)
 		}
-		err = os.Mkdir(reportdir+"visuals", 0755)
-		if err != nil {
-			err = ioutil.WriteFile(reportdir+"error", []byte("error: could not create visuals folder in the report folder"), 0644)
-			if err != nil {
-				fmt.Println("Could not write error")
-				panic(err)
-			}
-			panic(err)
-		}
 		err = ioutil.WriteFile(reportdir+"visuals/treemap.json", exportjson, 0644)
 		if err != nil {
 			err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write treemap json data for visualisations"), 0644)
@@ -1005,4 +1063,49 @@ func euclidean_distance(plist []float64, qlist []float64) float64 {
 		summed_squares += math.Pow(qlist[index]-plist[index], 2)
 	}
 	return math.Sqrt(summed_squares)
+}
+
+func euclidean_length(plist []float64) float64 {
+	var summed_squares float64
+	for _, p := range plist {
+		summed_squares += math.Pow(p, 2)
+	}
+	return math.Sqrt(summed_squares)
+}
+
+func normalize_vector(vectorvalues []float64) []float64 {
+	var result []float64
+	length := euclidean_length(vectorvalues)
+	for _, value := range vectorvalues {
+		result = append(result, value/length)
+	}
+	return result
+}
+
+func average_vectors(vectors map[string][]float64) []float64 {
+	var result []float64
+	total := float64(len(vectors))
+	first := true
+	for _, vectorvalues := range vectors {
+		if first {
+			first = false
+			result = vectorvalues
+		} else {
+			for index, value := range vectorvalues {
+				result[index] += value
+			}
+		}
+	}
+	for index, _ := range result {
+		result[index] = result[index] / total
+	}
+	return result
+}
+
+func dotproduct_vectors(vector1 []float64, vector2 []float64) float64 {
+	var result float64
+	for index, _ := range vector1 {
+		result += vector1[index] * vector2[index]
+	}
+	return result
 }

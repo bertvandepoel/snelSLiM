@@ -204,6 +204,8 @@ if(isset($report['owner'])) {
 					<?php require('visualizations/treemap.php'); ?>
 					<h4>Scatterplot of file clustering based on euclidean distance</h4>
 					<?php require('visualizations/scatter_euclid.php'); ?>
+					<h4>Scatterplot of file clustering based on an average prototype for each corpus</h4>
+					<?php require('visualizations/scatter_prototype.php'); ?>
 				</div>
 			</div>
 <?php
