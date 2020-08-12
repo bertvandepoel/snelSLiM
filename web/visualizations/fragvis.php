@@ -20,16 +20,16 @@
 
 
 if(isset($_GET['sharetoken'])) {
-	$get_tokenreport = $db->prepare('SELECT c1, c2 FROM reports, share_link WHERE share_link.sharetoken=? AND reports.id=share_link.reportid ORDER BY id DESC');
+	$get_tokenreport = $db->prepare('SELECT id, c1, c2 FROM reports, share_link WHERE share_link.sharetoken=? AND reports.id=share_link.reportid ORDER BY id DESC');
 	$get_tokenreport->execute(array($_GET['sharetoken']));
 	$report = $get_tokenreport->fetch(PDO::FETCH_ASSOC);
 }
 else {
-	$get_report = $db->prepare('SELECT c1, c2 FROM reports WHERE id=? AND owner=?');
+	$get_report = $db->prepare('SELECT id, c1, c2 FROM reports WHERE id=? AND owner=?');
 	$get_report->execute(array($_GET['reportid'], $_SESSION['email']));
 	$report = $get_report->fetch(PDO::FETCH_ASSOC);
 	if(!$report) {
-		$get_shares = $db->prepare('SELECT c1, c2 FROM reports, share_user WHERE reports.id=? AND share_user.account=? AND reports.id=share_user.reportid ORDER BY id DESC');
+		$get_shares = $db->prepare('SELECT id, c1, c2 FROM reports, share_user WHERE reports.id=? AND share_user.account=? AND reports.id=share_user.reportid ORDER BY id DESC');
 		$get_shares->execute(array($_GET['reportid'], $_SESSION['email']));
 		$report = $get_shares->fetch(PDO::FETCH_ASSOC);
 	}
@@ -88,7 +88,11 @@ if(file_exists('../data/reports/' . $_GET['reportid'] . '/visuals')) {
 		</div>
 	</div>
 </div>
-	
 	<?php
+	echo '<h3>Visualizations</h3>';
+	echo '<h4>Scatterplot of file clustering based on euclidean distance</h4>';
+	$c1frag = file_get_contents('../data/reports/' . $report['id'] . '/c1frag.report');
+	$c2frag = file_get_contents('../data/reports/' . $report['id'] . '/c2frag.report');
+	require('visualizations/scatter_euclid.php');
 }
 

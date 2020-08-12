@@ -327,8 +327,7 @@ func main() {
 		}
 	}
 
-	// These structures are required for sorting and are only used when sorting is required.
-	// After lists or arrays are created they are inserted into this structure to facilitate sorting and then be written to the report.
+	// These structures are required for sorting and make passing data through channels for multithreading much easier
 	type structkeyvalue struct {
 		Key   string
 		Value int
@@ -363,6 +362,8 @@ func main() {
 	i := 0
 	freqposition := make(map[string]int)
 	channel_c1results := make(chan structresult, freqnum)
+	channel_corpusA_vectorvalues := make(chan map[string]map[string]float64, freqnum)
+	channel_corpusB_vectorvalues := make(chan map[string]map[string]float64, freqnum)
 	var wg sync.WaitGroup
 	for _, kv := range sortedc1globalcount {
 		if i == freqnum {
@@ -381,8 +382,10 @@ func main() {
 			lormin := math.MaxFloat64  // any number will be lower than math.MaxFloat64
 			lormax := -math.MaxFloat64 // any number will be higher than the negative of math.MaxFloat64
 			var lorlist []float64
+			corpusA_kwvectorvalues := make(map[string]float64)
+			corpusB_kwvectorvalues := make(map[string]float64)
 
-			for _, c1localcount := range c1fragmentcount {
+			for corpusA_fragmentname, c1localcount := range c1fragmentcount {
 				/*
 				 *            W       !W
 				 * corpus1   cel1    cel2
@@ -402,7 +405,7 @@ func main() {
 				}
 				kw_freq_c1 := float64(c1localcount[kv.Key]) / float64(c1localcount["total.snelslim"])
 
-				for _, c2localcount := range c2fragmentcount {
+				for corpusB_fragmentname, c2localcount := range c2fragmentcount {
 					cel3 := float64(c2localcount[kv.Key])
 					cel4 := float64(c2localcount["total.snelslim"] - c2localcount[kv.Key])
 					if cB_zero == true {
@@ -434,15 +437,23 @@ func main() {
 					// Check if the keyword is significant
 					if Gsquared > cutoff {
 						kw_freq_c2 := float64(c2localcount[kv.Key]) / float64(c2localcount["total.snelslim"])
+						ratio := (cel1 / cel2) / (cel3 / cel4)
+						logratio := math.Log(ratio)
 						if kw_freq_c1 > kw_freq_c2 { // this checks if the keyword has a higher relative frequency in the target or the reference corpus
 							// this keyword is a stable lexical marker for corpus 1 for this text combination
 							attraction++
+							if exportviz {
+								corpusA_kwvectorvalues[corpusA_fragmentname] = corpusA_kwvectorvalues[corpusA_fragmentname] + (logratio / float64(len(c2fragmentcount)))
+								corpusB_kwvectorvalues[corpusB_fragmentname] = corpusB_kwvectorvalues[corpusB_fragmentname] + 0.0
+							}
 						} else {
 							// this keyword is actually a stable lexical marker for corpus 2 for this text combination
 							repulsion++
+							if exportviz {
+								corpusA_kwvectorvalues[corpusA_fragmentname] = corpusA_kwvectorvalues[corpusA_fragmentname] + 0.0
+								corpusB_kwvectorvalues[corpusB_fragmentname] = corpusB_kwvectorvalues[corpusB_fragmentname] + (logratio / float64(len(c1fragmentcount)))
+							}
 						}
-						ratio := (cel1 / cel2) / (cel3 / cel4)
-						logratio := math.Log(ratio)
 						lortotal += logratio
 						if logratio < lormin {
 							lormin = logratio
@@ -451,8 +462,14 @@ func main() {
 							lormax = logratio
 						}
 						lorlist = append(lorlist, logratio)
+					} else {
+						if exportviz {
+							corpusA_kwvectorvalues[corpusA_fragmentname] = corpusA_kwvectorvalues[corpusA_fragmentname] + 0.0
+							corpusB_kwvectorvalues[corpusB_fragmentname] = corpusB_kwvectorvalues[corpusB_fragmentname] + 0.0
+						}
 					}
 				}
+
 			}
 
 			// If none of the text combinations had a significant G test value, the lorlist will be empty since no log odds ratio will have been calculated
@@ -463,6 +480,15 @@ func main() {
 				lor_score := lortotal / combinations
 				lor_stddev := stdDev(lorlist)
 				channel_c1results <- structresult{kv.Key, absolute_score, normalised_score, attraction, repulsion, lormin, lormax, lor_stddev, lor_score}
+
+				if exportviz {
+					corpusA_kwvectorvalues_wrapped := make(map[string]map[string]float64)
+					corpusA_kwvectorvalues_wrapped[kv.Key] = corpusA_kwvectorvalues
+					channel_corpusA_vectorvalues <- corpusA_kwvectorvalues_wrapped
+					corpusB_kwvectorvalues_wrapped := make(map[string]map[string]float64)
+					corpusB_kwvectorvalues_wrapped[kv.Key] = corpusB_kwvectorvalues
+					channel_corpusB_vectorvalues <- corpusB_kwvectorvalues_wrapped
+				}
 			}
 		}(kv)
 	}
@@ -472,6 +498,24 @@ func main() {
 	var c1results []structresult
 	for result := range channel_c1results {
 		c1results = append(c1results, result)
+	}
+	close(channel_corpusA_vectorvalues)
+	corpusA_vectorvalues := make(map[string]map[string]float64)
+	if exportviz {
+		for corpusA_kwvectorvalues_wrapped := range channel_corpusA_vectorvalues {
+			for keyword, vectorvalues := range corpusA_kwvectorvalues_wrapped {
+				corpusA_vectorvalues[keyword] = vectorvalues
+			}
+		}
+	}
+	close(channel_corpusB_vectorvalues)
+	corpusB_vectorvalues := make(map[string]map[string]float64)
+	if exportviz {
+		for corpusB_kwvectorvalues_wrapped := range channel_corpusB_vectorvalues {
+			for keyword, vectorvalues := range corpusB_kwvectorvalues_wrapped {
+				corpusB_vectorvalues[keyword] = vectorvalues
+			}
+		}
 	}
 
 	c1fragviz := make(map[string]map[string]int)
@@ -665,6 +709,137 @@ func main() {
 				i++
 			}
 		}
+
+		corpusA_vectors := make(map[string][]float64)
+		corpusB_vectors := make(map[string][]float64)
+		for keyword, vectorvalues := range corpusA_vectorvalues {
+			for filename, value := range vectorvalues {
+				corpusA_vectors[filename] = append(corpusA_vectors[filename], value)
+			}
+			for filename, value := range corpusB_vectorvalues[keyword] {
+				corpusB_vectors[filename] = append(corpusB_vectors[filename], value)
+			}
+		}
+
+		var corpusA_vectorbuffer bytes.Buffer
+		for filename, values := range corpusA_vectors {
+			corpusA_vectorbuffer.WriteString(filename)
+			corpusA_vectorbuffer.WriteString("\t[ ")
+			for _, value := range values {
+				valuestring := strconv.FormatFloat(value, 'f', -1, 64)
+				corpusA_vectorbuffer.WriteString(valuestring)
+				corpusA_vectorbuffer.WriteString(" ")
+			}
+			corpusA_vectorbuffer.WriteString("]\n")
+		}
+		err = ioutil.WriteFile(reportdir+"corpusA.vectors", corpusA_vectorbuffer.Bytes(), 0644)
+		if err != nil {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write vector representation for corpus A"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+
+		var corpusB_vectorbuffer bytes.Buffer
+		for filename, values := range corpusB_vectors {
+			corpusB_vectorbuffer.WriteString(filename)
+			corpusB_vectorbuffer.WriteString("\t[ ")
+			for _, value := range values {
+				valuestring := strconv.FormatFloat(value, 'f', -1, 64)
+				corpusB_vectorbuffer.WriteString(valuestring)
+				corpusB_vectorbuffer.WriteString(" ")
+			}
+			corpusB_vectorbuffer.WriteString("]\n")
+		}
+		err = ioutil.WriteFile(reportdir+"corpusB.vectors", corpusB_vectorbuffer.Bytes(), 0644)
+		if err != nil {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write vector representation for corpus A"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
+
+		var distancelines []string
+		var labellines []string
+		for _, row_fragmentname := range c1fragments {
+			labellines = append(labellines, "{'filename': '"+row_fragmentname+"', 'corpus': 'A'}")
+			distanceline := "["
+			for _, col_fragmentname := range c1fragments {
+				var distance float64
+				if row_fragmentname == col_fragmentname { // both from corpus A so potentially same file
+					distance = 0.0
+				} else {
+					distance = euclidean_distance(corpusA_vectors[row_fragmentname], corpusA_vectors[col_fragmentname])
+				}
+				valuestring := strconv.FormatFloat(distance, 'f', -1, 64)
+				distanceline += valuestring + ", "
+			}
+			for _, col_fragmentname := range c2fragments {
+				distance := euclidean_distance(corpusA_vectors[row_fragmentname], corpusB_vectors[col_fragmentname])
+				valuestring := strconv.FormatFloat(distance, 'f', -1, 64)
+				distanceline += valuestring + ", "
+			}
+			distanceline = distanceline[0 : len(distanceline)-2]
+			distanceline += "]"
+			distancelines = append(distancelines, distanceline)
+		}
+		for _, row_fragmentname := range c2fragments {
+			labellines = append(labellines, "{'filename': '"+row_fragmentname+"', 'corpus': 'B'}")
+			distanceline := "["
+			for _, col_fragmentname := range c1fragments {
+				distance := euclidean_distance(corpusB_vectors[row_fragmentname], corpusA_vectors[col_fragmentname])
+				valuestring := strconv.FormatFloat(distance, 'f', -1, 64)
+				distanceline += valuestring + ", "
+			}
+			for _, col_fragmentname := range c2fragments {
+				var distance float64
+				if row_fragmentname == col_fragmentname { // both from corpus B so potentially same file
+					distance = 0.0
+				} else {
+					distance = euclidean_distance(corpusB_vectors[row_fragmentname], corpusB_vectors[col_fragmentname])
+				}
+				valuestring := strconv.FormatFloat(distance, 'f', -1, 64)
+				distanceline += valuestring + ", "
+			}
+			distanceline = distanceline[0 : len(distanceline)-2]
+			distanceline += "]"
+			distancelines = append(distancelines, distanceline)
+		}
+
+		var distancematrix bytes.Buffer
+		distancematrix.WriteString("var distancematrix = [\n")
+		for index, distanceline := range distancelines {
+			distancematrix.WriteString("\t")
+			distancematrix.WriteString(distanceline)
+			if index != (len(distancelines) - 1) {
+				distancematrix.WriteString(",\n")
+			}
+		}
+		distancematrix.WriteString("\n];")
+
+		distancematrix.WriteString("\n\nvar distancelabels = [\n")
+		for index, labelline := range labellines {
+			distancematrix.WriteString("\t")
+			distancematrix.WriteString(labelline)
+			if index != (len(labellines) - 1) {
+				distancematrix.WriteString(",\n")
+			}
+		}
+		distancematrix.WriteString("\n];")
+
+		err = ioutil.WriteFile(reportdir+"distancematrix.js", distancematrix.Bytes(), 0644)
+		if err != nil {
+			err = ioutil.WriteFile(reportdir+"error", []byte("error: could not write distance matrix for vectors"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
+		}
 	}
 
 	var sortedc1fragresult []structkeyvalue
@@ -822,4 +997,12 @@ func stdDev(list []float64) float64 {
 	}
 	variance := total / float64(len(list)-1)
 	return math.Sqrt(variance)
+}
+
+func euclidean_distance(plist []float64, qlist []float64) float64 {
+	var summed_squares float64
+	for index, _ := range plist {
+		summed_squares += math.Pow(qlist[index]-plist[index], 2)
+	}
+	return math.Sqrt(summed_squares)
 }

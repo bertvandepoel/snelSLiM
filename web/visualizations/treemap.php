@@ -28,7 +28,7 @@ if($height < 300) {
 
 ?>
 <div id="treemapbindings" class="form-group col-md-4"></div><div class="col-md-offset-8"></div>
-<div class="col-md-12"><h4><span class="label label-primary" style="background-color: #4b4bff;">Attraction</span> <span class="label label-danger">Repulsion</span> <span class="label label-default">Balanced</span></h4></div>
+<div class="col-md-12"><h4>Legend: &nbsp; <span class="label label-primary" style="background-color: #4b4bff;">Attraction</span> <span class="label label-danger">Repulsion</span> <span class="label label-default">Balanced</span></h4></div>
 <div id="treemap"></div>
 <script>
 var spec = {

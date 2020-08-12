@@ -118,7 +118,7 @@ if(isset($report['owner'])) {
 	<div class="col-md-12">
 		<h3>Table of Contents</h3>
 		<h4><a href="#slmareport">Go to result table</a></h4>
-		<?php if($visualjson){ echo '<h4><a href="#vis">Go to visualization</a></h4>'; } ?>
+		<?php if($visualjson){ echo '<h4><a href="#vis">Go to visualizations</a></h4>'; } ?>
 		<h4><a href="#freqreport">Go to frequency tables</a></h4>
 	</div>
 </div>
@@ -199,8 +199,11 @@ if(isset($report['owner'])) {
 ?>
 			<div class="row">
 				<div class="col-md-12">
-					<h3 id="vis">Visualization</h3>
+					<h3 id="vis">Visualizations</h3>
+					<h4>Treemap representation of corpus A</h4>
 					<?php require('visualizations/treemap.php'); ?>
+					<h4>Scatterplot of file clustering based on euclidean distance</h4>
+					<?php require('visualizations/scatter_euclid.php'); ?>
 				</div>
 			</div>
 <?php
