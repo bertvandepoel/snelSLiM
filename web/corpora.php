@@ -272,7 +272,19 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 				
 				$corpuslabel = '';
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
-					$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
+					$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
+				}
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles')) {
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles') . '">warning</span>';
+				}
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_small')) {
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_small') . '">warning</span>';
+				}
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall')) {
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall') . '">warning</span>';
+				}
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution')) {
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution') . '">warning</span>';
 				}
 				$corpussize = '';
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
@@ -382,7 +394,19 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 				
 				$corpuslabel = '';
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
-					$corpuslabel = ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
+					$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
+				}
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles')) {
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles') . '">warning</span>';
+				}
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_small')) {
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_small') . '">warning</span>';
+				}
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall')) {
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall') . '">warning</span>';
+				}
+				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution')) {
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution') . '">warning</span>';
 				}
 				$corpussize = '';
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/corpussize')) {

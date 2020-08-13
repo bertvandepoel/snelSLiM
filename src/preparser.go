@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -179,6 +180,8 @@ func main() {
 	}
 
 	corpussize := 0
+	largest := 0
+	smallest := math.MaxInt64
 	for _, file := range files {
 		var output []byte
 		var err error
@@ -238,6 +241,12 @@ func main() {
 			panic(err)
 		}
 		corpussize += filesize
+		if filesize > largest {
+			largest = filesize
+		}
+		if filesize < smallest {
+			smallest = filesize
+		}
 		status := outputsplit[1]
 		if err != nil || status != "OK" {
 			err := ioutil.WriteFile(savedir+"error", []byte("error executing parser: "+string(output)), 0644)
@@ -245,6 +254,34 @@ func main() {
 				fmt.Println("Could not write error")
 				panic(err)
 			}
+			panic(err)
+		}
+	}
+
+	if len(files) < 5 {
+		err = ioutil.WriteFile(savedir+"warning_numfiles", []byte("This corpus has very few files. Stability across different texts is an important aspects of SLMA, so several files are required."), 0644)
+		if err != nil {
+			fmt.Println("Could not write numfiles warning")
+			panic(err)
+		}
+	}
+	if smallest < 250 {
+		err = ioutil.WriteFile(savedir+"warning_extrasmall", []byte("This corpus contains some very small files. If a file contains fewer than 250 words it is most probably unsuitable for SLMA."), 0644)
+		if err != nil {
+			fmt.Println("Could not write extrasmall warning")
+			panic(err)
+		}
+	} else if smallest < 500 {
+		err = ioutil.WriteFile(savedir+"warning_small", []byte("This corpus contains some smaller files. If a file contains fewer than 500 words it may not be very suitable for SLMA."), 0644)
+		if err != nil {
+			fmt.Println("Could not write small warning")
+			panic(err)
+		}
+	}
+	if smallest*20 < largest {
+		err = ioutil.WriteFile(savedir+"warning_distribution", []byte("This corpus contains files of very different sizes. The smallest file contains over 20 times fewer words than the largest, this may yield untrustworthy results"), 0644)
+		if err != nil {
+			fmt.Println("Could not write distribution warning")
 			panic(err)
 		}
 	}

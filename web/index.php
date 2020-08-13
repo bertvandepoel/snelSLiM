@@ -382,6 +382,18 @@ else {
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
 			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 		}
+		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles')) {
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles') . '">warning</span>';
+		}
+		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_small')) {
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_small') . '">warning</span>';
+		}
+		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall')) {
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall') . '">warning</span>';
+		}
+		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution')) {
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution') . '">warning</span>';
+		}
 		$corpora_dropdown .= '<option value="' . $corpus['id'] . '">' . $corpus['name'] . '</option>';
 		$corpora_c1search .= '<a class="list-group-item searchitem c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . $corpuslabel . '</a>';
 		$corpora_c2search .= '<a class="list-group-item searchitem c2click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . $corpuslabel . '</a>';
@@ -425,6 +437,18 @@ else {
 		}
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/plainwords')) {
 			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
+		}
+		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles')) {
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles') . '">warning</span>';
+		}
+		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_small')) {
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_small') . '">warning</span>';
+		}
+		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall')) {
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall') . '">warning</span>';
+		}
+		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution')) {
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution') . '">warning</span>';
 		}
 		$corpora_dropdown .= '<option value="' . $corpus['id'] . '">' . $corpus['name'] . '</option>';
 		$corpora_c1search .= '<a class="list-group-item searchitem c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . $corpuslabel . '</a>';

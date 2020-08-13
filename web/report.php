@@ -104,6 +104,30 @@ if(isset($report['owner'])) {
 			if(file_exists('../data/reports/' . $report['id'] . '/collocinvalid')) {
 				echo '<p class="lead collocinvalid">Collocational analysis was requested but Corpus A (target) was not pre-analysed for collocational analysis or the file was supplied by a user without the required premissions for pre-analysis for collocational analysis.</p>';
 			}
+			if(file_exists('../data/reports/' . $report['id'] . '/corpusA_warning_numfiles')) {
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusA_warning_numfiles') .  '</div></div></div>';
+			}
+			if(file_exists('../data/reports/' . $report['id'] . '/corpusA_warning_small')) {
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusA_warning_small') .  '</div></div></div>';
+			}
+			if(file_exists('../data/reports/' . $report['id'] . '/corpusA_warning_extrasmall')) {
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusA_warning_extrasmall') .  '</div></div></div>';
+			}
+			if(file_exists('../data/reports/' . $report['id'] . '/corpusA_warning_distribution')) {
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusA_warning_distribution') .  '</div></div></div>';
+			}
+			if(file_exists('../data/reports/' . $report['id'] . '/corpusB_warning_numfiles')) {
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusB_warning_numfiles') .  '</div></div></div>';
+			}
+			if(file_exists('../data/reports/' . $report['id'] . '/corpusB_warning_small')) {
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusB_warning_small') .  '</div></div></div>';
+			}
+			if(file_exists('../data/reports/' . $report['id'] . '/corpusB_warning_extrasmall')) {
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusB_warning_extrasmall') .  '</div></div></div>';
+			}
+			if(file_exists('../data/reports/' . $report['id'] . '/corpusB_warning_distribution')) {
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusB_warning_distribution') .  '</div></div></div>';
+			}
 			?>
 		</div>
 	</div>

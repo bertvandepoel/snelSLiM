@@ -220,6 +220,10 @@ func main() {
 	var c1fragments []string
 	var collocwords [][]string
 	c1totalsize := 0
+	warning_numfiles := false
+	warning_small := false
+	warning_extrasmall := false
+	warning_distribution := false
 
 	// loop through every file, if the filename ends in .snelslim it will be a preparsed frequency list,
 	// then read that frequency list into both a counter for the file and a global counter for the corpus
@@ -279,11 +283,52 @@ func main() {
 			datastring := string(data)
 			wordlist := strings.Split(datastring, "\t")
 			collocwords = append(collocwords, wordlist)
+		} else if file.Name() == "warning_numfiles" {
+			warning_numfiles = true
+		} else if file.Name() == "warning_small" {
+			warning_small = true
+		} else if file.Name() == "warning_extrasmall" {
+			warning_extrasmall = true
+		} else if file.Name() == "warning_distribution" {
+			warning_distribution = true
+		}
+	}
+	if warning_numfiles {
+		err = ioutil.WriteFile(reportdir+"corpusA_warning_numfiles", []byte("Corpus A has very few files. Stability across different texts is an important aspects of SLMA, so several files are required."), 0644)
+		if err != nil {
+			fmt.Println("Could not write numerfiles warning")
+			panic(err)
+		}
+	}
+	if warning_small {
+		err = ioutil.WriteFile(reportdir+"corpusA_warning_small", []byte("Corpus A contains some smaller files. If a file contains fewer than 500 words it may not be very suitable for SLMA."), 0644)
+		if err != nil {
+			fmt.Println("Could not write small warning")
+			panic(err)
+		}
+
+	}
+	if warning_extrasmall {
+		err = ioutil.WriteFile(reportdir+"corpusA_warning_extrasmall", []byte("Corpus A contains some very small files. If a file contains fewer than 250 words it is most probably unsuitable for SLMA."), 0644)
+		if err != nil {
+			fmt.Println("Could not write extrasmall warning")
+			panic(err)
+		}
+	}
+	if warning_distribution {
+		err = ioutil.WriteFile(reportdir+"corpusA_warning_distribution", []byte("Corpus A contains files of very different sizes. The smallest file contains over 20 times fewer words than the largest, this may yield untrustworthy results"), 0644)
+		if err != nil {
+			fmt.Println("Could not write distribution warning")
+			panic(err)
 		}
 	}
 
 	c2fragmentcount := make(map[string]map[string]int)
 	var c2fragments []string
+	warning_numfiles = false
+	warning_small = false
+	warning_extrasmall = false
+	warning_distribution = false
 
 	// loop through every file, if the filename ends in .snelslim it will be a preparsed frequency list,
 	// then read that frequency list into a counter for the file, there is no global count for the reference corpus
@@ -324,6 +369,43 @@ func main() {
 				}
 			}
 			c2fragmentcount[fragname] = localcount
+		} else if file.Name() == "warning_numfiles" {
+			warning_numfiles = true
+		} else if file.Name() == "warning_small" {
+			warning_small = true
+		} else if file.Name() == "warning_extrasmall" {
+			warning_extrasmall = true
+		} else if file.Name() == "warning_distribution" {
+			warning_distribution = true
+		}
+	}
+	if warning_numfiles {
+		err = ioutil.WriteFile(reportdir+"corpusB_warning_numfiles", []byte("Corpus B has very few files. Stability across different texts is an important aspects of SLMA, so several files are required."), 0644)
+		if err != nil {
+			fmt.Println("Could not write numerfiles warning")
+			panic(err)
+		}
+	}
+	if warning_small {
+		err = ioutil.WriteFile(reportdir+"corpusB_warning_small", []byte("Corpus B contains some smaller files. If a file contains fewer than 500 words it may not be very suitable for SLMA."), 0644)
+		if err != nil {
+			fmt.Println("Could not write small warning")
+			panic(err)
+		}
+
+	}
+	if warning_extrasmall {
+		err = ioutil.WriteFile(reportdir+"corpusB_warning_extrasmall", []byte("Corpus B contains some very small files. If a file contains fewer than 250 words it is most probably unsuitable for SLMA."), 0644)
+		if err != nil {
+			fmt.Println("Could not write extrasmall warning")
+			panic(err)
+		}
+	}
+	if warning_distribution {
+		err = ioutil.WriteFile(reportdir+"corpusB_warning_distribution", []byte("Corpus B contains files of very different sizes. The smallest file contains over 20 times fewer words than the largest, this may yield untrustworthy results"), 0644)
+		if err != nil {
+			fmt.Println("Could not write distribution warning")
+			panic(err)
 		}
 	}
 
