@@ -9,7 +9,7 @@
 
 \title{SnelSLiM User Manual}
 \author{Bert Van de Poel}
-\date{29 December 2019}
+\date{13 August 2020}
 
 \begin{document}
 
@@ -37,7 +37,7 @@ After logging into your installation of snelSLiM, the main form is displayed, re
 
 \centerline{\includegraphics[width=\textwidth]{images/form.png}}
 
-For both the target and the reference corpus, you can either select and existing corpus or upload a new one. 
+For both the target and the reference corpus, you can either select an existing corpus or upload a new one. 
 
 \subsection{Using saved corpora}
 
@@ -100,11 +100,11 @@ After selecting existing corpora, preparing new files to be uploaded, or both, y
 
 Since corpora can get quite large and contain many unique words, not every unique word is necessarily tested as a potential stable lexical marker. Instead only a certain number of most frequent items are analysed. This can be changed by the user based on the size of the corpora, their experience with the corpora, and previous results where perhaps every tested item was a marker and therefore a broader analysis is required. The system administrator can, while installing the application, impose a limit to prevent egregious usage of resources. 
 
-After the number of most frequent items, there's a dropdown to controle the statistical probability cutoff used in SLMA. The smaller the number, the higher the probability of accuracy. More detailed information about the statistics behind this option is available on the help page ``What statistics are used?''.
+After the number of most frequent items, there's a dropdown to controle the statistical probability cutoff used in SLMA. The percentage represents the statistical probability of an accurate result. Keep in mind that as many calculations are performed, the default is 99.9\% here and not 95\% as is common with other methods. More detailed information about the statistics behind this option is available on the help page ``What statistics are used?''.
 
-Next is a, by default ticked, checkbox for visualisations. If you do not desire any visualisations in your report, you can disable this option. This will result in no treemap being displayed, as well as the detailed file reports being unavailable. This might speed up the analysis slightly.
+Next is a, by default ticked, checkbox for visualisations. If you do not desire any visualisations in your report, you can disable this option. This will result in no treemap or scatter plots being displayed, as well as the detailed file reports being unavailable. Depending on the corpus size and the amount of requested frequent items, this may have a noticeable impact on analysis speed.
 
-Second to last are the options for collocational analysis. First of all a checkbox to enable collocational analysis. It's not enabled by default, not only because it takes extra time and resources, but also because not every corpus might be pre-analysed for collocational analysis. When using an existing saved target corpus, it has to have the ``CA ready'' label to be eligible for collocational analysis. When uploading a new temporary corpus, CA can only be performed if your account has been given special permission by an administrator to use more resources. If you perform CA on an unfit corpus, the analysis will not start but an error will be displayed. After the checkbox, the search windows (left and right) can be specified. This indicates how many words to the left and/or the right from a marker collocates should be searched and checked for. For more details on the techniques used to perform collocational analysis, please refer to the help page ``What statistics are used?''.
+Second to last are the options for collocational analysis. First of all a checkbox to perform collocational analysis if available. If an existing A corpus is not preparsed for collocational analysis (missing the ``CA ready'' label), or the user uploads a new temporary corpus but lacks the correct account permissions to preparse that corpus for collocational analysis, a friendly message will be added to the report and CA will not be performed. It can be useful to disable CA when you are not planning to use its results as it will save time and resources. After the checkbox, the search windows (left and right) can be specified. This indicates how many words to the left and/or the right from a marker collocates should be searched and checked for. The window is counted exclusively, so the numbers do not include the marker itself. For more details on the techniques used to perform collocational analysis, please refer to the help page ``What statistics are used?''.
 
 Finally, there's the email notification option. This is the only option shown by default. When working with large corpora with many files, many calculations have to be performed. This may result in an analysis not taking a few seconds but several minutes or even over an hour. In that case it's not always convenient to leave your web browser open. So you can request that snelSLiM emails you when your report is finished.
 
@@ -136,13 +136,21 @@ Clicking on the magnifying glass icon next to a marker opens up the detailed mar
 
 \centerline{\includegraphics[width=0.9\textwidth]{images/mainreport_detailtable.png}}
 
-After the main results table, a treemap visualisation representing the target corpus is displayed (if visualisations weren't disabled for this report). At the top, two dropdown elements are displayed. The first gives the user the possibility to decide what the size of the blocks of the treemap elements are based on. Specifically, the number of markers in each file, the number of unique markers in the each, or one of those relative to the number of total words/lemmas in the file. The colour can be based on the total number of markers per category (being attracted or repulsed markers), or the number of unique markers per category. For a very consistent target corpus that had a very successful stable lexical marker analysis, the treeview will yield many blue files or mostly the same size. However, if some files turn up red, or there are some large inconsistencies in size, this may be interesting to investigate. For example a certain file might be an interesting outlier that features a much higher or much lower density of markers. At the same time it could also signal problems with the quality of the corpus (see Common pitfalls later in this manual).
+After the main results table, several visualizations are available (if visualisations weren't disabled for this report) to help assess which files to inspect or which aspects of the corpora to (re)consider. First, a treemap visualisation representing the target corpus is displayed. At the top, two dropdown elements are displayed. The first gives the user the possibility to decide what the size of the blocks of the treemap elements are based on. Specifically, the number of markers in each file, the number of unique markers in the each, or one of those relative to the number of total words/lemmas in the file. The colour can be based on the total number of markers per category (being attracted or repulsed markers), or the number of unique markers per category. For a very consistent target corpus that had a very successful stable lexical marker analysis, the treeview will yield many blue files or mostly the same size. However, if some files turn up red, or there are some large inconsistencies in size, this may be interesting to investigate. For example a certain file might be an interesting outlier that features a much higher or much lower density of markers. At the same time it could also signal problems with the quality of the corpus (see Common pitfalls later in this manual).
 
 \centerline{\includegraphics[width=0.9\textwidth]{images/treemap.png}}
 
-Clicking on the different elements of the treemap representing different files opens up the detailed file report for that specific file.
+Following the treemap visualization, the first of two scatter plots is displayed. These two scatter plots are based on representing each file as a vector of the effect sizes of markers that were attracted to that file. The first plot uses the distance between vectors to display the clustering of files. This way, it's possible to gain some insight whether the files of your corpora are diverse or rather similar in keyword distribution across files. It may also be interesting to see what specific files are outliers and whether they are for example also files that contain mostly repulsed keywords in the treemap visualization.
 
-Underneath the visualisation, two tables are displayed. The left table represents the files (which represent text fragments or individual texts) in the target corpus, the right table is the same but for the reference corpus. For each file, the filename, file extension and the amount of markers in the file are listed. The file extension enables users to easily see anomalies, using the sorting arrows. If visualisations haven't been disabled, icons are displayed on the target corpus table which link to the detailed file report for that file (similar to clicking on elements on the treemap).
+\centerline{\includegraphics[width=0.9\textwidth]{images/euclid.png}}
+
+As mentioned before, the final visualization is also based on the vectors used for the other scatter plot. While both display the clustering of files from both corpora, the second scatter plot uses a comparison with an average stereotype for each corpus. This way, it's possible to see which files are key to a corpus and which are of less importance, but also if there's potentially some file that has a great similarity to the corpus it's not part of.
+
+\centerline{\includegraphics[width=0.9\textwidth]{images/proto.png}}
+
+Clicking on the different elements of the treemap representing different files or any of the marks on the scatter plot opens up the detailed file report for that specific file.
+
+Underneath the visualisations, two tables are displayed. The left table represents the files (which represent text fragments or individual texts) in the target corpus, the right table is the same but for the reference corpus. For each file, the filename, file extension and the amount of markers in the file are listed. The file extension enables users to easily see anomalies, using the sorting arrows. If visualisations haven't been disabled, icons are displayed on the target corpus table which link to the detailed file report for that file (similar to clicking on elements on the treemap).
 
 \centerline{\includegraphics[width=0.6\textwidth]{images/mainreport_frac.png}}
 
@@ -151,6 +159,12 @@ Underneath the visualisation, two tables are displayed. The left table represent
 By clicking on the ``Export results'' button at the top of the main report page, it's possible to export the main result table to many formats. Depending on whether you want to export your results for use in R, Excel, LaTeX or another tool, you can choose another export file format. To minimise the need to remove unnecessary columns, you can decide which ones you which to include. By clicking on the ``Export'' button, the file you requested will be downloaded to your computer or displayed within your browser ready to copy.
 
 \centerline{\includegraphics[width=0.7\textwidth]{images/exportresults.png}}
+
+\subsection{Sharing reports}
+
+Next to the ``Export results'' button, a final button ``Share report'' is available to share your report with others. There are two ways to share reports. The first is using a shareable link. Once generated, anyone with this link will be able to view the full report including all details. The link can be revoked so access is again private, it's then possible to generate a new, different shareable link. It's possible to include a shareable link as part of a publication so others are able to verify your results. A more restricted way of sharing results is to a specific user. Using the email address associated with any account on your snelSLiM instance, you can share a report to them. The user will receive and email and will by able to see the shared report on the ``My reports'' page under a separate section. Again, access can easily be revoked. A user can also opt unshare a report that was shared with them if they no longer wish to have access to it.
+
+\centerline{\includegraphics[width=0.7\textwidth]{images/share.png}}
 
 \subsection{Detailed marker report}
 
@@ -171,6 +185,8 @@ After this introduction, a visualisation is shown which represents each stable l
 \section{Common pitfalls}
 
 It's important to keep in mind that inconsistent corpora or corpora that have not been cleaned up correctly, can result in anomalous analysis results. For example corpora with files that contain very few words or that contain files that cannot be parsed and therefore in the eyes of snelSLiM contain no words, can lead to strange behaviour if potential markers are very prevalent in other files. Luckily, these files are easily noticed in the treeview, resulting in great differences in element size with certain dropdown settings, and of course using the fragment table to look for low frequencies and unexpected extension. The detailed file reports can then be used to investigate these files, or you can of course open the source corpus (if available to you) on your own computer to investigate those files by hand.
+
+SnelSLiM tries to catch the most problematic corpora by displaying warning labels next to them and by showing large warnings when analyses are performed using potentially problematic corpora. The lack of a warning however doesn't mean your corpora are necessarily of good quality.
 
 Another potential pitfall is not considering the effect size of markers. While statistical tests are used to check if a word or lemma is potentially a marker, it doesn't necessarily have a great effect size.
 
