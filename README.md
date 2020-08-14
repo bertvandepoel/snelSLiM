@@ -43,6 +43,6 @@ This project is licensed under the AGPL license - see the [LICENSE](LICENSE) fil
 
 * This project was initially developed as my Bachelor Paper for my Bachelor in Linguistics and Literature under the supervision of Prof. Dr. Dirk Speelman
 * I have largely rewritten the application, correcting mistakes in the statistics, extending the functionality and improving user experience as my Master Thesis for my Master in Linguistics under the supervision of Prof. Dr. Dirk Speelman
-* Currently developement is being continued for the Thesis of my Advanced Master in Advanced Studies of Linguistics under the supervision of Prof. Dr. Dirk Speelman
+* Development has continued for the Thesis of my Advanced Master in Advanced Studies of Linguistics under the supervision of Prof. Dr. Dirk Speelman, introducing new visualizations, checks for corpus quality, new corpus formats, the option to share reports, demo mode, multithreading and many small improvements
 * Further acknowledgements see the [ACKNOWLEDGEMENTS](ACKNOWLEDGEMENTS) file
 
