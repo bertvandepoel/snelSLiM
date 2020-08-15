@@ -183,7 +183,8 @@ else {
 	var view = new vega.View(vega.parse(spec3), {
 	  loader: vega.loader({target: '_blank'}),
 	  logLevel: vega.Warn,
-	  renderer: 'svg'
+	  renderer: 'svg',
+	  tooltip: handler.call
 	}).initialize('#scatter_prototype').hover().run();
 	</script>
 	<?php

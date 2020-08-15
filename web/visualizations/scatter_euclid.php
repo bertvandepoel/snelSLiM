@@ -199,7 +199,8 @@ else {
 	var view = new vega.View(vega.parse(spec2), {
 	  loader: vega.loader({target: '_blank'}),
 	  logLevel: vega.Warn,
-	  renderer: 'svg'
+	  renderer: 'svg',
+	  tooltip: handler.call
 	}).initialize('#scatter_euclid').hover().run();
 }
 </script>

@@ -184,10 +184,12 @@ var spec = {
   ]
 }
 
+var handler = new vegaTooltip.Handler();
 var view = new vega.View(vega.parse(spec), {
   loader: vega.loader({target: '_blank'}),
   logLevel: vega.Warn,
-  renderer: 'svg'
+  renderer: 'svg',
+  tooltip: handler.call
 }).initialize('#treemap', '#treemapbindings').hover().run();
 </script>
 

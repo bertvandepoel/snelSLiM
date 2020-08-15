@@ -58,6 +58,9 @@ clipboard.js
 Publicly available as open source software software under the MIT License https://opensource.org/licenses/MIT and available on https://github.com/zenorocha/clipboard.js/
 Copyright (c) 2020 Zeno Rocha
 
+Vega-tooltip
+Publicly available as open source software software under the BSD-3-Clause License https://opensource.org/licenses/BSD-3-Clause and available on https://github.com/vega/vega-tooltip
+Copyright (c) 2016 Interactive Data Lab and contributors
 
 libxml2 - xmllint
 snelSLiM uses the installed version of xmllint on the server it is deployed to. Non the less an acknowledgement is in place for the great work at the libxml2 project http://www.xmlsoft.org/
