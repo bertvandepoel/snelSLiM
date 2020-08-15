@@ -196,6 +196,7 @@ else {
 	  ]
 	}
 
+	var handler = new vegaTooltip.Handler();
 	var view = new vega.View(vega.parse(spec2), {
 	  loader: vega.loader({target: '_blank'}),
 	  logLevel: vega.Warn,
