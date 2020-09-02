@@ -223,7 +223,7 @@ func main() {
 			panic(err)
 		}
 		if err != nil {
-			err = ioutil.WriteFile(savedir+"error", []byte("error: execution of format parser "+format+" failed: "+err.Error()), 0644)
+			err = ioutil.WriteFile(savedir+"error", []byte("error: execution of format parser "+format+" failed: "+err.Error()+" with original output: "+string(output)), 0644)
 			if err != nil {
 				fmt.Println("Could not write error")
 				panic(err)
