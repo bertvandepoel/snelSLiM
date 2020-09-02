@@ -61,6 +61,9 @@ if( isset($_GET['castglobal']) && isset($_SESSION['admin']) && ($_SESSION['admin
 	}
 }
 
+if($_SERVER['REQUEST_METHOD'] == 'POST' AND empty($_POST)) {
+	echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> The corpus exceeded the maximum upload size. Please use high compression or contact the administrator of your snelSLiM installation if you need to upload a very large corpus.</div></div></div>';
+}
 if(isset($_POST['add']) AND !$demo) {
 	if ( ($_POST['c1-format'] == 'conll') AND  (intval($_POST['c1-extra-conll']) < 1) ) {
 		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You have chosen CoNLL as the format for your corpus, but you have not specified which column to select.</div></div></div>';
@@ -74,7 +77,12 @@ if(isset($_POST['add']) AND !$demo) {
 	else {
 		require('uploadparse.php');
 		if($_FILES['c1-file']['error'] !== UPLOAD_ERR_OK) {
-			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> Corpus one generated an upload error.</div></div></div>';
+			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> The corpus generated an upload error.</div></div></div>';
+			require('html/bottom.html');
+			exit;
+		}
+		elseif(empty($_FILES)) {
+			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> No corpus was uploaded or the corpus exceeded the maximum upload size. Please use high compression or contact the administrator of your snelSLiM installation if you need to upload a very large corpus.</div></div></div>';
 			require('html/bottom.html');
 			exit;
 		}

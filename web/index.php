@@ -233,6 +233,11 @@ else {
 					require('html/bottom.html');
 					exit;
 				}
+				elseif(empty($_FILES) OR !isset($_FILES['c1-file']) OR empty($_FILES['c1-file'])) {
+					echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> No corpus A was uploaded or the corpus exceeded the maximum upload size. If you are uploading a corpus for both A and B you may want to upload them separately under "My corpora". Please use high compression or contact the administrator of your snelSLiM installation if you need to upload a very large corpus.</div></div></div>';
+					require('html/bottom.html');
+					exit;
+				}
 				elseif($nonpowercolloc) {
 					$colloc = FALSE;
 					$collocinvalid = TRUE;
@@ -271,6 +276,11 @@ else {
 			if($_POST['c2-select'] == 'none') {
 				if($_FILES['c2-file']['error'] !== UPLOAD_ERR_OK) {
 					echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> Corpus two generated an upload error.</div></div></div>';
+					require('html/bottom.html');
+					exit;
+				}
+				elseif(empty($_FILES) OR !isset($_FILES['c2-file']) OR empty($_FILES['c2-file'])) {
+					echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> No corpus B was uploaded or the corpus exceeded the maximum upload size. If you are uploading a corpus for both A and B you may want to upload them separately under "My corpora". Please use high compression or contact the administrator of your snelSLiM installation if you need to upload a very large corpus.</div></div></div>';
 					require('html/bottom.html');
 					exit;
 				}
@@ -337,6 +347,9 @@ else {
 			require('../web/html/bottom.html');
 			exit;
 		}
+	}
+	if($_SERVER['REQUEST_METHOD'] == 'POST' AND empty($_POST)) {
+		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> The corpus or corpora you uploaded exceeded the maximum upload size. If you are uploading a corpus for both A and B you may want to upload them separately under "My corpora". Please use high compression or contact the administrator of your snelSLiM installation if you need to upload a very large corpus.</div></div></div>';
 	}
 	
 	$get_global_corpora = $db->prepare('SELECT id, name FROM corpora WHERE owner IS NULL');
