@@ -63,4 +63,4 @@ Publicly available as open source software software under the BSD-3-Clause Licen
 Copyright (c) 2016 Interactive Data Lab and contributors
 
 libxml2 - xmllint
-snelSLiM uses the installed version of xmllint on the server it is deployed to. Non the less an acknowledgement is in place for the great work at the libxml2 project http://www.xmlsoft.org/
+snelSLiM uses the installed version of xmllint on the server it is deployed to. Nonetheless an acknowledgement is in place for the great work at the libxml2 project http://www.xmlsoft.org/
