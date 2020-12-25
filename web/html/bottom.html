@@ -7,11 +7,14 @@
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 		<script src="lumen/bootstrap/bootstrap.min.js"></script>
 		<script type="text/javascript">
+			// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 			$(document).ready(function(){
 				$('[data-toggle="tooltip"]').tooltip();   
 			});
+			// @license-end
 		</script>
 		<script>
+			// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 			$(function(){
 				$('.table tr[data-href]').each(function(){
 					$(this).css('cursor','pointer').hover(
@@ -31,10 +34,12 @@
 					);
 				});
 			});
+			// @license-end
 		</script>
 		<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 		<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
 		<script type="text/javascript">
+			// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 			$(document).ready(function() {
 				$('#resultTable').DataTable({
 					"paging":		false,
@@ -53,8 +58,10 @@
 					"order": [[ 2, 'desc' ]]
 				});
 			} );
+			// @license-end
 		</script>
 		<script>
+			// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 			$( document ).ready(function() {
 				$("#c1-format").change(function(){
 					if($(this).val()=="xpath" ) {
@@ -89,9 +96,11 @@
 			});
 			$('[name="sizefield"]').addClass('form-control');
 			$('[name="association"]').addClass('form-control');
+			// @license-end
 		</script>
 		<script src="bootstrap-list-filter/bootstrap-list-filter.min.js"></script>
 		<script>
+		// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 		$('#c1searchlist').btsListFilter('#c1searchinput', {
 			resetOnBlur: false,
 			initial: false,
@@ -120,6 +129,7 @@
 			$('.c2click').removeClass('active');
 			$('#c2-select').val('none');
 		});
+		// @license-end
 		</script>
 		<script src="clipboardjs/clipboard.min.js"></script>
 		<script>
