@@ -21,6 +21,18 @@ Alpino XML, TEI XML BNC/Brown Corpus Variant, CoNLL, DCOI XML, Eindhoven corpus,
 ![screenshot report](/screenshots/report.png?raw=true)
 ![screenshot report: keyword details](/screenshots/markerdetail.png?raw=true)
 
+## Demo
+
+A demo version is available on [http://demo.snelslim.org/](http://demo.snelslim.org/). While several features are locked in demo mode to prevent abusive use, it can come in handy to get a general idea of what snelSLiM can be used for.
+
+## Citing snelSLiM
+
+An initial publication introducing snelSLiM and comparing it to other tools is available to cite in research using snelSLiM (or of course as a general introduction and reference):
+* Van de Poel, B., & Speelman, D. (2020). SnelSLiM, a user-friendly and fast tool to perform better keyword analysis through Stable Lexical Marker Analysis. *Computational Linguistics in the Netherlands Journal, 10*, 147-160. Retrieved from [https://clinjournal.org/clinj/article/view/111](https://clinjournal.org/clinj/article/view/111) [PDF](https://clinjournal.org/clinj/article/view/111/98) [BibTeX](/docs/references/snelSLiM_VandePoel_Speelman_2020.bib?raw=true)
+
+To (also) refer to the tool itself as software:
+* Van de Poel, B. (2020). snelSLiM \[software\] . Available at: http://snelslim.org. [BibTeX](docs/references/snelSLiM_software_VandePoel.bib?raw=true)
+
 ## Installation
 
 SnelSLiM is a web application, it can easily be installed on cheap shared web hosting, a VPS or private (virtual or physical) server. This makes it possible for individuals, research groups, companies and faculties to deploy snelSLiM on infrastructure that suits their needs. Of course, more storage makes it possible to store larger corpora, and more CPU cores and power greatly increases analysis speed.
