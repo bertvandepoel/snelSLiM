@@ -2,6 +2,18 @@
 
 A linguistic set of tools in Go and web interface in PHP to do quick Stable Lexical Marker Analysis (key keyword analysis) and explore the results.
 
+## Table of Contents
+  * [Contact information](#contact-information)
+  * [Supported formats](#supported-formats)
+  * [Screenshots](#screenshots)
+  * [Demo](#demo)
+  * [Citing snelSLiM](#citing-snelslim)
+  * [Installation](#installation)
+  * [How to use](#how-to-use)
+  * [Contributing](#contributing)
+  * [License](#license)
+  * [Acknowledgements](#acknowledgements)
+
 ## Contact information
 
 If you have suggestions for features, feedback or a question, feel free to contact to create a GitHub issue or me about snelSLiM at bert.vandepoel AT uclouvain DOT be.
