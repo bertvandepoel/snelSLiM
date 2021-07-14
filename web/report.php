@@ -132,20 +132,6 @@ if(isset($report['owner'])) {
 		</div>
 	</div>
 </div>
-<div class="row">
-	<div class="col-md-12">
-		<h1>SLMA results</h1>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-12">
-		<h3>Table of Contents</h3>
-		<h4><a href="#slmareport">Go to result table</a></h4>
-		<?php if($visualjson){ echo '<h4><a href="#vis">Go to visualizations</a></h4>'; } ?>
-		<h4><a href="#freqreport">Go to frequency tables</a></h4>
-	</div>
-</div>
 
 <a href="#banner" id="totopbutton" class="btn btn-primary"><span class="glyphicon glyphicon-arrow-up"></span><br>Back to the top</a>
 
