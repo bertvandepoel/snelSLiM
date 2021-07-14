@@ -74,6 +74,9 @@ if(isset($_POST['add']) AND !$demo) {
 	elseif (strlen($_POST['c1-name']) < 2) {
 		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> Please supply a name for your corpus</div></div></div>';
 	}
+	elseif ( ($_POST['c1-format'] == 'eindhoven') AND ($_POST['c1-discard-cutoff'] != 'never') ) {
+		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> Discarding small corpus files isn\'t available for corpora in Eindhoven format.</div></div></div>';
+	}
 	else {
 		require('uploadparse.php');
 		if($_FILES['c1-file']['error'] !== UPLOAD_ERR_OK) {
@@ -97,10 +100,17 @@ if(isset($_POST['add']) AND !$demo) {
 		if($_SESSION['poweruser'] == 1 && isset($_POST['c1-plainwords']) && $_POST['c1-plainwords'] == 'on') {
 			$plainwords = TRUE;
 		}
+		$discard_cutoff = 0;
+		if($_POST['c1-discard-cutoff'] == '250' ) {
+			$discard_cutoff = 250;
+		}
+		elseif($_POST['c1-discard-cutoff'] == '500') {
+			$discard_cutoff = 500;
+		}
 		$insert_corpus = $db->prepare('INSERT INTO corpora (name, format, extra, owner, datetime) VALUES (?,?,?,?,NOW())');
 		$insert_corpus->execute(array($_POST['c1-name'], $_POST['c1-format'], $extra, $_SESSION['email']));
 		$id = $db->lastInsertId();
-		$corpus = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra, $plainwords, false, $id);
+		$corpus = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra, $plainwords, $discard_cutoff, false, $id);
 		
 		echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-success"><strong>Success</strong> Your corpus has been saved correctly and is being processed.</div></div></div>';
 	}
@@ -167,9 +177,17 @@ if(isset($_GET['add'])) {
 				</div>
 				<?php if($_SESSION['poweruser'] == 1) { ?>
 				<div class="form-group">
-					<label for="c1-plainwords" class="control-label"><input id="c1-plainwords" type="checkbox" name="c1-plainwords"> Enable collocational analysis for this corpus <span class="emphasize">(beware: this option can use a lot of disk space and slows processing)</span></label> 
+					<label for="c1-plainwords" class="control-label"><input id="c1-plainwords" type="checkbox" name="c1-plainwords"> Enable collocational analysis for this corpus <span class="emphasize">(beware: this option can use a lot of disk space and slows processing)</span></label>
 				</div>
 				<?php } ?>
+				<div class="form-group">
+					<label class="control-label">Discard small corpus files that may distort results:</label>
+					<div class="radio">
+						<label for="c1-discard-cutoff-never"><input id="c1-discard-cutoff-never" name="c1-discard-cutoff" type="radio" value="never" checked>Never</label><br>
+						<label for="c1-discard-cutoff-250"><input id="c1-discard-cutoff-250" name="c1-discard-cutoff" type="radio" value="250">When the file contains less than 250 tokens</label><br>
+						<label for="c1-discard-cutoff-500"><input id="c1-discard-cutoff-500" name="c1-discard-cutoff" type="radio" value="500">When the file contains less than 500 tokens</label>
+					</div>
+				</div>
 				<div class="form-group">
 					<button type="submit" class="btn btn-primary" name="add" <?php if($demo) echo "disabled" ?>><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> &nbsp; Add Corpus</button>
 				</div>
@@ -283,16 +301,16 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 				}
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles')) {
-					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles') . '">warning</span>';
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus has very few files. Stability across different texts is an important aspects of Stable Lexical Marker Analysis, so several files are required.">warning</span>';
 				}
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_small')) {
-					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_small') . '">warning</span>';
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus contains some smaller files. If a file contains fewer than 500 words it may not be very suitable for Stable Lexical Marker Analysis. Consider re-uploading the corpus with the option to discard small files.">warning</span>';
 				}
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall')) {
-					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall') . '">warning</span>';
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus contains some very small files. If a file contains fewer than 250 words it is most probably unsuitable for Stable Lexical Marker Analysis. Consider re-uploading the corpus with the option to discard small files.">warning</span>';
 				}
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution')) {
-					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution') . '">warning</span>';
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus contains files of very different sizes. The smallest file contains over 20 times fewer words than the largest, this may yield untrustworthy results.">warning</span>';
 				}
 				$corpussize = '';
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/corpussize')) {
@@ -405,16 +423,16 @@ if( isset($_SESSION['admin']) && ($_SESSION['admin']) ) {
 					$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 				}
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles')) {
-					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles') . '">warning</span>';
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus has very few files. Stability across different texts is an important aspects of Stable Lexical Marker Analysis, so several files are required.">warning</span>';
 				}
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_small')) {
-					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_small') . '">warning</span>';
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus contains some smaller files. If a file contains fewer than 500 words it may not be very suitable for Stable Lexical Marker Analysis. Consider re-uploading the corpus with the option to discard small files.">warning</span>';
 				}
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall')) {
-					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall') . '">warning</span>';
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus contains some very small files. If a file contains fewer than 250 words it is most probably unsuitable for Stable Lexical Marker Analysis. Consider re-uploading the corpus with the option to discard small files.">warning</span>';
 				}
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution')) {
-					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution') . '">warning</span>';
+					$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus contains files of very different sizes. The smallest file contains over 20 times fewer words than the largest, this may yield untrustworthy results.">warning</span>';
 				}
 				$corpussize = '';
 				if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/corpussize')) {

@@ -91,3 +91,11 @@ fieldset {
 .collocinvalid {
 	font-style: italic;
 }
+
+.radio {
+	margin-top: 0px;
+}
+
+.radio label {
+	padding-bottom: 2px;
+}

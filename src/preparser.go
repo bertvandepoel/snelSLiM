@@ -21,6 +21,7 @@ func main() {
 		fmt.Println("5. extra option for very specific formats (e.g. fast or xpath for folia), enter - if not using")
 		fmt.Println("6. the directory to write the preparsed results to")
 		fmt.Println("7. whether to write plaintext wordlists, 1 for yes, 0 for no, optional (0 is then presumed)")
+		fmt.Println("8. threshold in number of tokens below which to ignore and discard a file, 0 includes all files (including empty), optional (0 is then presumed)")
 		os.Exit(1)
 	}
 	filename := os.Args[1]
@@ -42,6 +43,19 @@ func main() {
 		}
 		if plainwordsarg == 1 {
 			plainwords = true
+		}
+	}
+	discard_small_cutoff := 0
+	if len(os.Args) > 8 {
+		var err error
+		discard_small_cutoff, err = strconv.Atoi(os.Args[8])
+		if err != nil {
+			err = ioutil.WriteFile(savedir+"error", []byte("error: Could not cast discard_small_cutoff to integer"), 0644)
+			if err != nil {
+				fmt.Println("Could not write error")
+				panic(err)
+			}
+			panic(err)
 		}
 	}
 
@@ -240,21 +254,38 @@ func main() {
 			}
 			panic(err)
 		}
-		corpussize += filesize
-		if filesize > largest {
-			largest = filesize
-		}
-		if filesize < smallest {
-			smallest = filesize
-		}
-		status := outputsplit[1]
-		if err != nil || status != "OK" {
-			err := ioutil.WriteFile(savedir+"error", []byte("error executing parser: "+string(output)), 0644)
-			if err != nil {
-				fmt.Println("Could not write error")
+
+		if filesize < discard_small_cutoff {
+			if format == "eindhoven" {
+				err = ioutil.WriteFile(savedir+"error", []byte("error: Minimum number of tokens per file threshold not supported for Eindhoven corpus format"), 0644)
+				if err != nil {
+					fmt.Println("Could not write error")
+					panic(err)
+				}
+				panic(err)
+			} else {
+				os.RemoveAll(savedir + "/" + base + ".snelslim")
+				if plainwords {
+					os.RemoveAll(plainwordsfile)
+				}
+			}
+		} else {
+			corpussize += filesize
+			if filesize > largest {
+				largest = filesize
+			}
+			if filesize < smallest {
+				smallest = filesize
+			}
+			status := outputsplit[1]
+			if err != nil || status != "OK" {
+				err := ioutil.WriteFile(savedir+"error", []byte("error executing parser: "+string(output)), 0644)
+				if err != nil {
+					fmt.Println("Could not write error")
+					panic(err)
+				}
 				panic(err)
 			}
-			panic(err)
 		}
 	}
 

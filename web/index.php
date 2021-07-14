@@ -205,6 +205,12 @@ else {
 		elseif ( ($_POST['c2-select'] == 'none') AND ($_POST['c2-format'] == 'xpath') AND (strlen($_POST['c2-extra-xpath']) < 2) ) {
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You have chosen XML with custom XPath as the format for your second corpus, but you have not specified your XPath query.</div></div></div>';
 		}
+		elseif ( ($_POST['c1-select'] == 'none') AND ($_POST['c1-format'] == 'eindhoven') AND ($_POST['c1-discard-cutoff'] != 'never') ) {
+			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> Discarding small corpus files isn\'t available for corpora in Eindhoven format.</div></div></div>';
+		}
+		elseif ( ($_POST['c2-select'] == 'none') AND ($_POST['c2-format'] == 'eindhoven') AND ($_POST['c2-discard-cutoff'] != 'never') ) {
+			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> Discarding small corpus files isn\'t available for corpora in Eindhoven format.</div></div></div>';
+		}
 		elseif ($_POST['freqnum'] < 10) {
 			echo '<div class="row"><div class="col-md-6 col-md-offset-3"><div class="alert alert-danger"><strong>Error</strong> You want to select at least 10 frequent items and probably much more.</div></div></div>';
 		}
@@ -250,11 +256,18 @@ else {
 					$extra = $_POST['c1-extra-xpath'];
 				}
 				$corpus1name = $_FILES['c1-file']['name'];
+				$discard_cutoff = 0;
+				if($_POST['c1-discard-cutoff'] == '250' ) {
+					$discard_cutoff = 250;
+				}
+				elseif($_POST['c1-discard-cutoff'] == '500') {
+					$discard_cutoff = 500;
+				}
 				if($colloc) {
-					$corpus1 = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra, TRUE);
+					$corpus1 = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra, TRUE, $discard_cutoff);
 				}
 				else {
-					$corpus1 = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra);
+					$corpus1 = uploadparse($_FILES['c1-file'], $_POST['c1-format'], $extra, FALSE, $discard_cutoff);
 				}
 			}
 			else {
@@ -292,7 +305,14 @@ else {
 					$extra = $_POST['c2-extra-xpath'];
 				}
 				$corpus2name = $_FILES['c2-file']['name'];
-				$corpus2 = uploadparse($_FILES['c2-file'], $_POST['c2-format'], $extra);
+				$discard_cutoff = 0;
+				if($_POST['c2-discard-cutoff'] == '250' ) {
+					$discard_cutoff = 250;
+				}
+				elseif($_POST['c2-discard-cutoff'] == '500') {
+					$discard_cutoff = 500;
+				}
+				$corpus2 = uploadparse($_FILES['c2-file'], $_POST['c2-format'], $extra, FALSE, $discard_cutoff);
 			}
 			else {
 				$get_corpusname = $db->prepare('SELECT name FROM corpora WHERE id=? AND (owner=? OR owner IS NULL)');
@@ -396,16 +416,16 @@ else {
 			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 		}
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles')) {
-			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles') . '">warning</span>';
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus has very few files. Stability across different texts is an important aspects of Stable Lexical Marker Analysis, so several files are required.">warning</span>';
 		}
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_small')) {
-			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_small') . '">warning</span>';
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus contains some smaller files. If a file contains fewer than 500 words it may not be very suitable for Stable Lexical Marker Analysis. Consider re-uploading the corpus with the option to discard small files.">warning</span>';
 		}
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall')) {
-			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall') . '">warning</span>';
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus contains some very small files. If a file contains fewer than 250 words it is most probably unsuitable for Stable Lexical Marker Analysis. Consider re-uploading the corpus with the option to discard small files.">warning</span>';
 		}
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution')) {
-			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution') . '">warning</span>';
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus contains files of very different sizes. The smallest file contains over 20 times fewer words than the largest, this may yield untrustworthy results.">warning</span>';
 		}
 		$corpora_dropdown .= '<option value="' . $corpus['id'] . '">' . $corpus['name'] . '</option>';
 		$corpora_c1search .= '<a class="list-group-item searchitem c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . $corpuslabel . '</a>';
@@ -452,16 +472,16 @@ else {
 			$corpuslabel .= ' &nbsp; <span class="label label-info" title="Prepared for Collocational Analysis">CA ready</span>';
 		}
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles')) {
-			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_numfiles') . '">warning</span>';
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus has very few files. Stability across different texts is an important aspects of Stable Lexical Marker Analysis, so several files are required.">warning</span>';
 		}
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_small')) {
-			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_small') . '">warning</span>';
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus contains some smaller files. If a file contains fewer than 500 words it may not be very suitable for Stable Lexical Marker Analysis. Consider re-uploading the corpus with the option to discard small files.">warning</span>';
 		}
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall')) {
-			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_extrasmall') . '">warning</span>';
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus contains some very small files. If a file contains fewer than 250 words it is most probably unsuitable for Stable Lexical Marker Analysis. Consider re-uploading the corpus with the option to discard small files.">warning</span>';
 		}
 		if(file_exists('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution')) {
-			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="' . file_get_contents('../data/preparsed/saved/' . $corpus['id'] . '/warning_distribution') . '">warning</span>';
+			$corpuslabel .= ' &nbsp; <span class="label label-warning" title="This corpus contains files of very different sizes. The smallest file contains over 20 times fewer words than the largest, this may yield untrustworthy results.">warning</span>';
 		}
 		$corpora_dropdown .= '<option value="' . $corpus['id'] . '">' . $corpus['name'] . '</option>';
 		$corpora_c1search .= '<a class="list-group-item searchitem c1click" data-href="' . $corpus['id'] . '" href="#">' . $corpus['name'] . $corpuslabel . '</a>';

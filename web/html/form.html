@@ -84,6 +84,14 @@
 						<input class="form-control" id="c1-extra-xpath" type="text" name="c1-extra-xpath">
 						<p>Please refer to the <a href="?formats#xpath" target="_blank">section on XPath</a> on the corpus formats help page for important limitations.</p>
 					</div>
+					<div class="form-group">
+						<label class="control-label">Discard small corpus files that may distort results:</label>
+						<div class="radio">
+							<label for="c1-discard-cutoff-never"><input id="c1-discard-cutoff-never" name="c1-discard-cutoff" type="radio" value="never" checked>Never</label><br>
+							<label for="c1-discard-cutoff-250"><input id="c1-discard-cutoff-250" name="c1-discard-cutoff" type="radio" value="250">When the file contains less than 250 tokens</label><br>
+							<label for="c1-discard-cutoff-500"><input id="c1-discard-cutoff-500" name="c1-discard-cutoff" type="radio" value="500">When the file contains less than 500 tokens</label>
+						</div>
+					</div>
 				</fieldset>
 			</div>
 		</div>
@@ -162,6 +170,14 @@
 						<label for="c2-extra-xpath" class="control-label">XPath Query</label>
 						<input class="form-control" id="c2-extra-xpath" type="text" name="c2-extra-xpath">
 						<p>Please refer to the <a href="?formats#xpath" target="_blank">section on XPath</a> on the corpus formats help page for important limitations.</p>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Discard small corpus files that may distort results:</label>
+						<div class="radio">
+							<label for="c2-discard-cutoff-never"><input id="c2-discard-cutoff-never" name="c2-discard-cutoff" type="radio" value="never" checked>Never</label><br>
+							<label for="c2-discard-cutoff-250"><input id="c2-discard-cutoff-250" name="c2-discard-cutoff" type="radio" value="250">When the file contains less than 250 tokens</label><br>
+							<label for="c2-discard-cutoff-500"><input id="c2-discard-cutoff-500" name="c2-discard-cutoff" type="radio" value="500">When the file contains less than 500 tokens</label>
+						</div>
 					</div>
 				</fieldset>
 			</div>

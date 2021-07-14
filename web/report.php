@@ -105,28 +105,28 @@ if(isset($report['owner'])) {
 				echo '<p class="lead collocinvalid">Collocational analysis was requested but Corpus A (target) was not pre-analysed for collocational analysis or the file was supplied by a user without the required premissions for pre-analysis for collocational analysis.</p>';
 			}
 			if(file_exists('../data/reports/' . $report['id'] . '/corpusA_warning_numfiles')) {
-				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusA_warning_numfiles') .  '</div></div></div>';
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> Corpus A has very few files. Stability across different texts is an important aspects of Stable Lexical Marker Analysis, so several files are required.</div></div></div>';
 			}
 			if(file_exists('../data/reports/' . $report['id'] . '/corpusA_warning_small')) {
-				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusA_warning_small') .  '</div></div></div>';
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> Corpus A contains some smaller files. If a file contains fewer than 500 words it may not be very suitable for Stable Lexical Marker Analysis. Consider re-uploading the corpus with the option to discard small files.</div></div></div>';
 			}
 			if(file_exists('../data/reports/' . $report['id'] . '/corpusA_warning_extrasmall')) {
-				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusA_warning_extrasmall') .  '</div></div></div>';
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> Corpus A contains some very small files. If a file contains fewer than 250 words it is most probably unsuitable for Stable Lexical Marker Analysis. Consider re-uploading the corpus with the option to discard small files.</div></div></div>';
 			}
 			if(file_exists('../data/reports/' . $report['id'] . '/corpusA_warning_distribution')) {
-				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusA_warning_distribution') .  '</div></div></div>';
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> Corpus A contains files of very different sizes. The smallest file contains over 20 times fewer words than the largest, this may yield untrustworthy results.</div></div></div>';
 			}
 			if(file_exists('../data/reports/' . $report['id'] . '/corpusB_warning_numfiles')) {
-				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusB_warning_numfiles') .  '</div></div></div>';
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> Corpus B has very few files. Stability across different texts is an important aspects of Stable Lexical Marker Analysis, so several files are required.</div></div></div>';
 			}
 			if(file_exists('../data/reports/' . $report['id'] . '/corpusB_warning_small')) {
-				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusB_warning_small') .  '</div></div></div>';
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> Corpus B contains some smaller files. If a file contains fewer than 500 words it may not be very suitable for Stable Lexical Marker Analysis. Consider re-uploading the corpus with the option to discard small files.</div></div></div>';
 			}
 			if(file_exists('../data/reports/' . $report['id'] . '/corpusB_warning_extrasmall')) {
-				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusB_warning_extrasmall') .  '</div></div></div>';
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> Corpus B contains some very small files. If a file contains fewer than 250 words it is most probably unsuitable for Stable Lexical Marker Analysis. Consider re-uploading the corpus with the option to discard small files.</div></div></div>';
 			}
 			if(file_exists('../data/reports/' . $report['id'] . '/corpusB_warning_distribution')) {
-				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> ' . file_get_contents('../data/reports/' . $report['id'] . '/corpusB_warning_distribution') .  '</div></div></div>';
+				echo '<div class="row"><div class="col-md-8 col-md-offset-2"><div class="alert alert-warning"><strong>Warning</strong> Corpus B contains files of very different sizes. The smallest file contains over 20 times fewer words than the largest, this may yield untrustworthy results.</div></div></div>';
 			}
 			?>
 		</div>

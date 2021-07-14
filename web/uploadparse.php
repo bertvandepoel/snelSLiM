@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  */
  
-function uploadparse($filepost, $format, $extra, $plainwords = FALSE, $tmp = TRUE, $id = NULL) {
+function uploadparse($filepost, $format, $extra, $plainwords = FALSE, $discard_cutoff = 0, $tmp = TRUE, $id = NULL) {
 	$randomid = rand(100000, 999999);
 	while(file_exists('../data/unpacked/' . $randomid)) {
 		$randomid = rand(100000, 999999);
@@ -121,6 +121,6 @@ function uploadparse($filepost, $format, $extra, $plainwords = FALSE, $tmp = TRU
 	}
 	
 	chdir('../bin');
-	shell_exec('nohup ./preparser ' . escapeshellarg($archive) . ' ' . $outdir . ' ' . $arguments . ' ' . $savedir . ' ' . $plainwords . ' > /dev/null &');
+	shell_exec('nohup ./preparser ' . escapeshellarg($archive) . ' ' . $outdir . ' ' . $arguments . ' ' . $savedir . ' ' . $plainwords . ' ' . $discard_cutoff . ' > /dev/null &');
 	return $savedir;
 }
